@@ -2,15 +2,22 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
     <url>
+        <loc>http://www.ruozedata.com/tags/Linux/</loc>
+        <lastmod>2019-12-01T03:52:43.467Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://www.ruozedata.com/tags/Hexo/</loc>
-        <lastmod>2019-12-01T03:08:55.768Z</lastmod>
+        <lastmod>2019-12-01T03:53:09.534Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.ruozedata.com/tags/other/</loc>
-        <lastmod>2019-12-01T03:09:31.998Z</lastmod>
+        <lastmod>2019-12-01T03:53:27.924Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

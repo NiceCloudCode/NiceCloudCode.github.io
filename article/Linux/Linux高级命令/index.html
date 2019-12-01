@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Do Not Stop Your Step If You Have A Dream - BigData@JackYang | Blog
+          Linux高级命令 - BigData@JackYang | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/article/ruozedata/">
+    <link rel="canonical" href="http://www.ruozedata.com/article/Linux/Linux高级命令/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,11 +88,11 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#other" title="other">other</a>
+                              <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
                             
                         </div>
-                        <h1>Do Not Stop Your Step If You Have A Dream</h1>
-                        <h2 class="subheading">This is hexo theme Demo.</h2>
+                        <h1>Linux高级命令</h1>
+                        <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by JackYang on
                             2015-07-11
@@ -212,8 +212,29 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="do-not-stop-your-step-if-you-have-a-dream">Do Not Stop Your Step If You Have A Dream.</h3>
-<hr>
+                <h3 id="linux高级命令">Linux高级命令</h3>
+<h4 id="1echo-打印">1.echo 打印</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"hello hadoop"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$PATH</span>	打印环境变量</span><br><span class="line">输入命令的时候默认去PATH里面去找，找到第一个就进行返回可以使用<span class="built_in">which</span> ls这种的命令进行查看</span><br></pre></td></tr></table></figure>
+<h4 id="2环境变量">2.环境变量</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">环境变量指的是以key=value的形式展现出来的东西</span><br><span class="line">K=V 之间不能有空格	使用的时候加<span class="variable">$K</span></span><br><span class="line">全局环境变量：/etc/profile		所有人都可以使用</span><br><span class="line"></span><br><span class="line">个人环境变量：~/.bash_profile	个人用户使用</span><br><span class="line">			  ~/.bashrc			个人用户使用（推荐）</span><br></pre></td></tr></table></figure>
+<h4 id="3jdk安装">3.jdk安装：</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">首先：mkdir -p /usr/java</span><br><span class="line">	然后：修正所属的用户和用户组 chown -R root:root /usr/java/*</span><br><span class="line">	配置全局jdk环境变量：</span><br><span class="line">		<span class="built_in">export</span> JAVA_HOME=/usr/java/jdk1.8.0.121</span><br><span class="line">		<span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>:<span class="variable">$PATH</span></span><br><span class="line">		<span class="built_in">source</span> /etc/profile</span><br><span class="line">	上面的意思是将环境变零暴露出来，再将JAVA_HOME追加到系统的环境变量当中</span><br><span class="line"></span><br><span class="line">总结：</span><br><span class="line">	1.出现<span class="built_in">command</span> not found 时候可能的原因是：我们没有部署安装包，或者部署了没有配置环境变量</span><br><span class="line">	2.习惯性的，我们部署一个软件之后，bin目录的可执行文件配置到环境变量当中然后<span class="built_in">source</span>，之后习惯性的<span class="built_in">which</span> xxx，比如<span class="built_in">which</span> java</span><br></pre></td></tr></table></figure>
+<h4 id="4别名alias">4.别名：alias</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 ~]<span class="comment"># alias</span></span><br><span class="line">	<span class="built_in">alias</span> cp=<span class="string">'cp -i'</span></span><br><span class="line">	<span class="built_in">alias</span> egrep=<span class="string">'egrep --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> fgrep=<span class="string">'fgrep --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> grep=<span class="string">'grep --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> l.=<span class="string">'ls -d .* --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> ll=<span class="string">'ls -l --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> ls=<span class="string">'ls --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> mv=<span class="string">'mv -i'</span></span><br><span class="line">	<span class="built_in">alias</span> rm=<span class="string">'rm -i'</span></span><br><span class="line">	<span class="built_in">alias</span> <span class="built_in">which</span>=<span class="string">'alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'</span></span><br></pre></td></tr></table></figure>
+<p>使用别名可以简化我们的操作，节省时间偷懒</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alias</span> j=<span class="string">'cd /home/jepson'</span></span><br><span class="line">.bash_profile   ssh bug</span><br><span class="line">.bashrc         个人环境变量文件  优先</span><br><span class="line">以上两者的区别，当我们进行ssh的时候回自动加载.bashrc 文件，但是不会自动加载.bash_profile 文件</span><br></pre></td></tr></table></figure>
+<p><strong>使用案例：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">root@hadoop01 ~]<span class="comment"># vi .bashrc</span></span><br><span class="line"><span class="comment"># .bashrc</span></span><br><span class="line"><span class="comment"># User specific aliases and functions</span></span><br><span class="line"><span class="built_in">alias</span> rm=<span class="string">'rm -i'</span></span><br><span class="line"><span class="built_in">alias</span> cp=<span class="string">'cp -i'</span></span><br><span class="line"><span class="built_in">alias</span> mv=<span class="string">'mv -i'</span></span><br><span class="line"><span class="comment"># Source global definitions</span></span><br><span class="line"><span class="keyword">if</span> [ -f /etc/bashrc ]; <span class="keyword">then</span></span><br><span class="line">		. /etc/bashrc</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="comment">#env</span></span><br><span class="line"><span class="built_in">alias</span> j=<span class="string">'cd /home/jepson'</span></span><br><span class="line">[root@hadoop01 ~]<span class="comment"># source .bashrc</span></span><br><span class="line">[root@hadoop01 ~]<span class="comment"># j</span></span><br><span class="line">[root@hadoop01 jepson]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+<h4 id="5history">5.history</h4>
+<p><strong>history 命令用来查看以前执行的命令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 ~]<span class="comment"># history</span></span><br><span class="line">1  <span class="built_in">history</span></span><br><span class="line">2  ll</span><br><span class="line">3  ls</span><br><span class="line">4  <span class="built_in">which</span></span><br><span class="line">5  <span class="built_in">history</span></span><br><span class="line">可以使用!2 来执行历史指定的命令</span><br></pre></td></tr></table></figure>
+<h4 id="6总结创建文件的操作">6.总结创建文件的操作</h4>
+<p><strong>文件：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">touch  xxx.log</span><br><span class="line">cat /dev/null &gt; xxx.log</span><br><span class="line">vi  xxx.log</span><br></pre></td></tr></table></figure>
+<p><strong>文件夹：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir 	mkdir -p</span><br></pre></td></tr></table></figure>
+<p><strong>删除操作：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rm -f ：直接删除文件</span><br><span class="line">rm -rf 直接删除文件夹</span><br><span class="line">在shell脚本中执行删除命令的时候一定要先判断被删除的内容是否存在</span><br></pre></td></tr></table></figure>
 
                 
 
@@ -221,9 +242,13 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
+                        <li class="previous">
+                            <a href="/article/ruozedata/" data-toggle="tooltip" data-placement="top" title="Do Not Stop Your Step If You Have A Dream">&larr; Previous Post</a>
+                        </li>
+                    
                     
                         <li class="next">
-                            <a href="/article/Linux/Linux高级命令/" data-toggle="tooltip" data-placement="top" title="Linux高级命令">Next Post &rarr;</a>
+                            <a href="/article/hexo-theme-jepson/" data-toggle="tooltip" data-placement="top" title="[Hexo] Theme Jepson">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -273,7 +298,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#do-not-stop-your-step-if-you-have-a-dream"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Do Not Stop Your Step If You Have A Dream.</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#linux高级命令"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Linux&#x9AD8;&#x7EA7;&#x547D;&#x4EE4;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1echo-打印"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1.echo &#x6253;&#x5370;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2环境变量"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">2.&#x73AF;&#x5883;&#x53D8;&#x91CF;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3jdk安装"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">3.jdk&#x5B89;&#x88C5;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4别名alias"><span class="toc-nav-number">1.4.</span> <span class="toc-nav-text">4.&#x522B;&#x540D;&#xFF1A;alias</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#5history"><span class="toc-nav-number">1.5.</span> <span class="toc-nav-text">5.history</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#6总结创建文件的操作"><span class="toc-nav-number">1.6.</span> <span class="toc-nav-text">6.&#x603B;&#x7ED3;&#x521B;&#x5EFA;&#x6587;&#x4EF6;&#x7684;&#x64CD;&#x4F5C;</span></a></li></ol></li></ol>
         
         </div>
       </aside>
@@ -293,7 +318,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#other" title="other">other</a>
+                          <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
                         
                     </div>
                 </section>
