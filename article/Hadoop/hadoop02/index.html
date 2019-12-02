@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Hadoop 之 Yarn部署 - BigData@JackYang | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/Hadoop/hadoop02/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+                            
+                        </div>
+                        <h1>Hadoop 之 Yarn部署</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by JackYang on
+                            2015-08-14
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="1yarn-伪分布式-单点部署-主从架构">1.Yarn 伪分布式 单点部署 主从架构</h3>
+<p><strong>Yarn的单点部署文档</strong>：<a href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html</a></p>
+<h4 id="11-configure-parameters-as-follows">1.1 Configure parameters as follows</h4>
+<p>etc/hadoop/mapred-site.xml:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;mapreduce.framework.name&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;yarn&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<p>etc/hadoop/yarn-site.xml:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;yarn.nodemanager.aux-services&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;mapreduce_shuffle&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="12-start-resourcemanager-daemon-and-nodemanager-daemon启动yarn">1.2 Start ResourceManager daemon and NodeManager daemon:启动yarn</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ start-yarn.sh </span><br><span class="line">starting yarn daemons</span><br><span class="line">starting resourcemanager, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.16.2/logs/yarn-hadoop-resourcemanager-bigdata01.out</span><br><span class="line">bigdata01: starting nodemanager, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.16.2/logs/yarn-hadoop-nodemanager-bigdata01.out</span><br><span class="line">[hadoop@bigdata01 ~]$ jps</span><br><span class="line">11857 SecondaryNameNode</span><br><span class="line">11570 NameNode</span><br><span class="line">11698 DataNode</span><br><span class="line">12002 ResourceManager</span><br><span class="line">12391 Jps</span><br><span class="line">12105 NodeManager</span><br></pre></td></tr></table></figure>
+<h4 id="13-查看resourcemanager进程">1.3 查看resourcemanager进程</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ netstat -nlp |grep 12002</span><br><span class="line">(Not all processes could be identified, non-owned process info</span><br><span class="line"> will not be shown, you would have to be root to see it all.)</span><br><span class="line">tcp6       0      0 :::8088                 :::*                    LISTEN      12002/java</span><br></pre></td></tr></table></figure>
+<h3 id="2运行案例测试yarn">2.运行案例测试yarn</h3>
+<h4 id="21-寻找yarn测试jar包">2.1 寻找yarn测试jar包</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@bigdata01 ~]<span class="comment"># find / -name '*example*.jar'</span></span><br><span class="line">/home/hadoop/app/hadoop-2.6.0-cdh5.16.2/share/hadoop/mapreduce1/hadoop-examples-2.6.0-mr1-cdh5.16.2.jar</span><br><span class="line">/home/hadoop/app/hadoop-2.6.0-cdh5.16.2/share/hadoop/mapreduce2/sources/hadoop-mapreduce-examples-2.6.0-cdh5.16.2-test-sources.jar</span><br><span class="line">/home/hadoop/app/hadoop-2.6.0-cdh5.16.2/share/hadoop/mapreduce2/sources/hadoop-mapreduce-examples-2.6.0-cdh5.16.2-sources.jar</span><br><span class="line">/home/hadoop/app/hadoop-2.6.0-cdh5.16.2/share/hadoop/mapreduce2/hadoop-mapreduce-examples-2.6.0-cdh5.16.2.jar</span><br><span class="line">最后一个为我们需要的案例jar包</span><br></pre></td></tr></table></figure>
+<h4 id="22-查看命令帮助确认怎么运行jar包">2.2 查看命令帮助，确认怎么运行jar包</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ hadoop</span><br><span class="line">Usage: hadoop [--config confdir] COMMAND</span><br><span class="line">       <span class="built_in">where</span> COMMAND is one of:</span><br><span class="line">  fs                   run a generic filesystem user client</span><br><span class="line">  version              <span class="built_in">print</span> the version</span><br><span class="line">  jar &lt;jar&gt;            run a jar file</span><br><span class="line">  。。。。</span><br><span class="line"></span><br><span class="line">Most commands <span class="built_in">print</span> <span class="built_in">help</span> when invoked w/o parameters.</span><br></pre></td></tr></table></figure>
+<h4 id="23-运行jar包">2.3 运行jar包：</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ hadoop jar /home/hadoop/app/hadoop-2.6.0-cdh5.16.2/share/hadoop/mapreduce2/hadoop-mapreduce-examples-2.6.0-cdh5.16.2.jar</span><br><span class="line">An example program must be given as the first argument.</span><br><span class="line">Valid program names are:</span><br><span class="line">  aggregatewordcount: An Aggregate based map/reduce program that counts the words <span class="keyword">in</span> the input files.</span><br><span class="line">  aggregatewordhist: An Aggregate based map/reduce program that computes the histogram of the words <span class="keyword">in</span> the input files.</span><br><span class="line">  bbp: A map/reduce program that uses Bailey-Borwein-Plouffe to compute exact digits of Pi.</span><br><span class="line">  dbcount: An example job that count the pageview counts from a database.</span><br><span class="line">  distbbp: A map/reduce program that uses a BBP-type formula to compute exact bits of Pi.</span><br><span class="line">  grep: A map/reduce program that counts the matches of a regex <span class="keyword">in</span> the input.</span><br><span class="line">  join: A job that effects a join over sorted, equally partitioned datasets</span><br><span class="line">  multifilewc: A job that counts words from several files.</span><br><span class="line">  pentomino: A map/reduce tile laying program to find solutions to pentomino problems.</span><br><span class="line">  pi: A map/reduce program that estimates Pi using a quasi-Monte Carlo method.</span><br><span class="line">  randomtextwriter: A map/reduce program that writes 10GB of random textual data per node.</span><br><span class="line">  randomwriter: A map/reduce program that writes 10GB of random data per node.</span><br><span class="line">  secondarysort: An example defining a secondary sort to the reduce.</span><br><span class="line">  sort: A map/reduce program that sorts the data written by the random writer.</span><br><span class="line">  sudoku: A sudoku solver.</span><br><span class="line">  teragen: Generate data <span class="keyword">for</span> the terasort</span><br><span class="line">  terasort: Run the terasort</span><br><span class="line">  teravalidate: Checking results of terasort</span><br><span class="line">  wordcount: A map/reduce program that counts the words <span class="keyword">in</span> the input files.</span><br><span class="line">  wordmean: A map/reduce program that counts the average length of the words <span class="keyword">in</span> the input files.</span><br><span class="line">  wordmedian: A map/reduce program that counts the median length of the words <span class="keyword">in</span> the input files.</span><br><span class="line">  wordstandarddeviation: A map/reduce program that counts the standard deviation of the length of the words <span class="keyword">in</span> the input files.</span><br><span class="line">[hadoop@bigdata01 ~]$</span><br></pre></td></tr></table></figure>
+<h4 id="24-提示输入参数这里做wordcount案例所以再次运行">2.4 提示输入参数，这里做wordcount案例，所以再次运行</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ hadoop jar /home/hadoop/app/hadoop-2.6.0-cdh5.16.2/share/hadoop/mapreduce2/hadoop-mapreduce-examples-2.6.0-cdh5.16.2.jar wordcount</span><br><span class="line">Usage: wordcount &lt;<span class="keyword">in</span>&gt; [&lt;<span class="keyword">in</span>&gt;...] &lt;out&gt;</span><br></pre></td></tr></table></figure>
+<p>提示需要输入和输出路径</p>
+<h4 id="25-我们创建文件">2.5 我们创建文件</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ hadoop fs -cat /wordcount/<span class="built_in">test</span>/test1.txt</span><br><span class="line">19/12/02 21:45:43 WARN util.NativeCodeLoader: Unable to load native-hadoop library <span class="keyword">for</span> your platform... using <span class="built_in">builtin</span>-java classes <span class="built_in">where</span> applicable</span><br><span class="line">hadoop hadoop hadoop spark flume spark flink hive hue </span><br><span class="line">flink hbase kafka kafka spark hadoop hive</span><br></pre></td></tr></table></figure>
+<h4 id="26-再次运行">2.6 再次运行</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ hadoop jar /home/hadoop/app/hadoop-2.6.0-cdh5.16.2/share/hadoop/mapreduce2/hadoop-mapreduce-examples-2.6.0-cdh5.16.2.jar wordcount /wordcount/<span class="built_in">test</span> /wordcount/output</span><br><span class="line">19/12/02 21:46:44 WARN util.NativeCodeLoader: Unable to load native-hadoop library <span class="keyword">for</span> your platform... using <span class="built_in">builtin</span>-java classes <span class="built_in">where</span> applicable</span><br><span class="line">19/12/02 21:46:45 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032</span><br><span class="line">19/12/02 21:46:46 INFO input.FileInputFormat: Total input paths to process : 1</span><br><span class="line">19/12/02 21:46:46 INFO mapreduce.JobSubmitter: number of splits:1</span><br><span class="line">19/12/02 21:46:46 INFO mapreduce.JobSubmitter: Submitting tokens <span class="keyword">for</span> job: job_1575293526101_0001</span><br><span class="line">19/12/02 21:46:46 INFO impl.YarnClientImpl: Submitted application application_1575293526101_0001</span><br><span class="line">19/12/02 21:46:47 INFO mapreduce.Job: The url to track the job: http://bigdata01:8088/proxy/application_1575293526101_0001/</span><br><span class="line">19/12/02 21:46:47 INFO mapreduce.Job: Running job: job_1575293526101_0001</span><br><span class="line">19/12/02 21:46:57 INFO mapreduce.Job: Job job_1575293526101_0001 running <span class="keyword">in</span> uber mode : <span class="literal">false</span></span><br><span class="line">19/12/02 21:46:57 INFO mapreduce.Job:  map 0% reduce 0%</span><br><span class="line">19/12/02 21:47:03 INFO mapreduce.Job:  map 100% reduce 0%</span><br><span class="line">19/12/02 21:47:10 INFO mapreduce.Job:  map 100% reduce 100%</span><br><span class="line">19/12/02 21:47:10 INFO mapreduce.Job: Job job_1575293526101_0001 completed successfully</span><br><span class="line">19/12/02 21:47:10 INFO mapreduce.Job: Counters: 49</span><br><span class="line">	File System Counters</span><br><span class="line">		FILE: Number of bytes <span class="built_in">read</span>=100</span><br><span class="line">		FILE: Number of bytes written=286249</span><br><span class="line">		FILE: Number of <span class="built_in">read</span> operations=0</span><br><span class="line">		FILE: Number of large <span class="built_in">read</span> operations=0</span><br><span class="line">		FILE: Number of write operations=0</span><br><span class="line">		HDFS: Number of bytes <span class="built_in">read</span>=209</span><br><span class="line">		HDFS: Number of bytes written=62</span><br><span class="line">		HDFS: Number of <span class="built_in">read</span> operations=6</span><br><span class="line">		HDFS: Number of large <span class="built_in">read</span> operations=0</span><br><span class="line">		HDFS: Number of write operations=2</span><br><span class="line">	Job Counters </span><br><span class="line">		Launched map tasks=1</span><br><span class="line">		Launched reduce tasks=1</span><br><span class="line">		Data-local map tasks=1</span><br><span class="line">		Total time spent by all maps <span class="keyword">in</span> occupied slots (ms)=4554</span><br><span class="line">		Total time spent by all reduces <span class="keyword">in</span> occupied slots (ms)=2929</span><br><span class="line">		Total time spent by all map tasks (ms)=4554</span><br><span class="line">		Total time spent by all reduce tasks (ms)=2929</span><br><span class="line">		Total vcore-milliseconds taken by all map tasks=4554</span><br><span class="line">		Total vcore-milliseconds taken by all reduce tasks=2929</span><br><span class="line">		Total megabyte-milliseconds taken by all map tasks=4663296</span><br><span class="line">		Total megabyte-milliseconds taken by all reduce tasks=2999296</span><br><span class="line">	Map-Reduce Framework</span><br><span class="line">		Map input records=2</span><br><span class="line">		Map output records=16</span><br><span class="line">		Map output bytes=160</span><br><span class="line">		Map output materialized bytes=100</span><br><span class="line">		Input split bytes=111</span><br><span class="line">		Combine input records=16</span><br><span class="line">		Combine output records=8</span><br><span class="line">		Reduce input groups=8</span><br><span class="line">		Reduce shuffle bytes=100</span><br><span class="line">		Reduce input records=8</span><br><span class="line">		Reduce output records=8</span><br><span class="line">		Spilled Records=16</span><br><span class="line">		Shuffled Maps =1</span><br><span class="line">		Failed Shuffles=0</span><br><span class="line">		Merged Map outputs=1</span><br><span class="line">		GC time elapsed (ms)=108</span><br><span class="line">		CPU time spent (ms)=1520</span><br><span class="line">		Physical memory (bytes) snapshot=329445376</span><br><span class="line">		Virtual memory (bytes) snapshot=5455265792</span><br><span class="line">		Total committed heap usage (bytes)=226627584</span><br><span class="line">	Shuffle Errors</span><br><span class="line">		BAD_ID=0</span><br><span class="line">		CONNECTION=0</span><br><span class="line">		IO_ERROR=0</span><br><span class="line">		WRONG_LENGTH=0</span><br><span class="line">		WRONG_MAP=0</span><br><span class="line">		WRONG_REDUCE=0</span><br><span class="line">	File Input Format Counters </span><br><span class="line">		Bytes Read=98</span><br><span class="line">	File Output Format Counters </span><br><span class="line">		Bytes Written=6</span><br></pre></td></tr></table></figure>
+<h4 id="27-查看结果">2.7 查看结果</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ hadoop fs -ls /wordcount</span><br><span class="line">19/12/02 21:48:00 WARN util.NativeCodeLoader: Unable to load native-hadoop library <span class="keyword">for</span> your platform... using <span class="built_in">builtin</span>-java classes <span class="built_in">where</span> applicable</span><br><span class="line">Found 2 items</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2019-12-02 21:47 /wordcount/output</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          0 2019-12-02 21:45 /wordcount/<span class="built_in">test</span></span><br><span class="line">[hadoop@bigdata01 ~]$ hadoop  -ls /wordcount/output</span><br><span class="line">Error: No <span class="built_in">command</span> named `-ls<span class="string">' was found. Perhaps you meant `hadoop ls'</span></span><br><span class="line">[hadoop@bigdata01 ~]$ hadoop fs -ls /wordcount/output</span><br><span class="line">19/12/02 21:48:40 WARN util.NativeCodeLoader: Unable to load native-hadoop library <span class="keyword">for</span> your platform... using <span class="built_in">builtin</span>-java classes <span class="built_in">where</span> applicable</span><br><span class="line">Found 2 items</span><br><span class="line">-rw-r--r--   1 hadoop supergroup          0 2019-12-02 21:47 /wordcount/output/_SUCCESS</span><br><span class="line">-rw-r--r--   1 hadoop supergroup         62 2019-12-02 21:47 /wordcount/output/part-r-00000</span><br><span class="line">[hadoop@bigdata01 ~]$ hadoop fs -cat /wordcount/output/part-r-00000</span><br><span class="line">19/12/02 21:49:10 WARN util.NativeCodeLoader: Unable to load native-hadoop library <span class="keyword">for</span> your platform... using <span class="built_in">builtin</span>-java classes <span class="built_in">where</span> applicable</span><br><span class="line">flink	2</span><br><span class="line">flume	1</span><br><span class="line">hadoop	4</span><br><span class="line">hbase	1</span><br><span class="line">hive	2</span><br><span class="line">hue	1</span><br><span class="line">kafka	2</span><br><span class="line">spark	3</span><br><span class="line">[hadoop@bigdata01 ~]$</span><br></pre></td></tr></table></figure>
+<h3 id="3-修改机器名称">3. 修改机器名称：</h3>
+<h4 id="31-查看当前机器名称">3.1 查看当前机器名称</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ hostnamectl</span><br><span class="line">   Static hostname: bigdata01</span><br><span class="line">         Icon name: computer-vm</span><br><span class="line">           Chassis: vm</span><br><span class="line">        Machine ID: 928fc74e61be492eb9a51cc408995739</span><br><span class="line">           Boot ID: 32e41529ec49471dba619ba744be31b1</span><br><span class="line">    Virtualization: vmware</span><br><span class="line">  Operating System: CentOS Linux 7 (Core)</span><br><span class="line">       CPE OS Name: cpe:/o:centos:centos:7</span><br><span class="line">            Kernel: Linux 3.10.0-957.el7.x86_64</span><br><span class="line">      Architecture: x86-64</span><br><span class="line">[hadoop@bigdata01 ~]$</span><br></pre></td></tr></table></figure>
+<h4 id="32-查看命令帮助">3.2 查看命令帮助：</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ hostnamectl --<span class="built_in">help</span></span><br><span class="line">hostnamectl [OPTIONS...] COMMAND ...</span><br><span class="line"></span><br><span class="line">Query or change system hostname.</span><br><span class="line"></span><br><span class="line">  -h --<span class="built_in">help</span>              Show this <span class="built_in">help</span></span><br><span class="line">     --version           Show package version</span><br><span class="line">     --no-ask-password   Do not prompt <span class="keyword">for</span> password</span><br><span class="line">  -H --host=[USER@]HOST  Operate on remote host</span><br><span class="line">  -M --machine=CONTAINER Operate on <span class="built_in">local</span> container</span><br><span class="line">     --transient         Only <span class="built_in">set</span> transient hostname</span><br><span class="line">     --static            Only <span class="built_in">set</span> static hostname</span><br><span class="line">     --pretty            Only <span class="built_in">set</span> pretty hostname</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  status                 Show current hostname settings</span><br><span class="line">  <span class="built_in">set</span>-hostname NAME      Set system hostname</span><br><span class="line">  <span class="built_in">set</span>-icon-name NAME     Set icon name <span class="keyword">for</span> host</span><br><span class="line">  <span class="built_in">set</span>-chassis NAME       Set chassis <span class="built_in">type</span> <span class="keyword">for</span> host</span><br><span class="line">  <span class="built_in">set</span>-deployment NAME    Set deployment environment <span class="keyword">for</span> host</span><br><span class="line">  <span class="built_in">set</span>-location NAME      Set location <span class="keyword">for</span> host</span><br></pre></td></tr></table></figure>
+<h4 id="33-使用的命令如下">3.3 使用的命令如下：</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span>-hostname NAME      Set system hostname</span><br><span class="line">[hadoop@bigdata01 ~]$ hostnamectl xxx bigdata01</span><br><span class="line"></span><br><span class="line">[hadoop@bigdata01 ~]$ cat /etc/hostname </span><br><span class="line">bigdata01</span><br></pre></td></tr></table></figure>
+<p>修改主机名称之后需要修改对应的hosts文件中的ip地址和主机名称的映射</p>
+<h3 id="4jps的正确使用">4.jps的正确使用</h3>
+<h4 id="41-jps的位置">4.1 jps的位置</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@bigdata01 ~]<span class="comment"># which jps</span></span><br><span class="line">/usr/java/jdk1.8.0_121/bin/jps</span><br><span class="line">[root@bigdata01 ~]<span class="comment"># jps -l</span></span><br><span class="line">11857 org.apache.hadoop.hdfs.server.namenode.SecondaryNameNode</span><br><span class="line">11570 org.apache.hadoop.hdfs.server.namenode.NameNode</span><br><span class="line">11698 org.apache.hadoop.hdfs.server.datanode.DataNode</span><br><span class="line">12002 org.apache.hadoop.yarn.server.resourcemanager.ResourceManager</span><br><span class="line">14471 sun.tools.jps.Jps</span><br><span class="line">12105 org.apache.hadoop.yarn.server.nodemanager.NodeManager</span><br></pre></td></tr></table></figure>
+<h4 id="42-对应的标识文件">4.2 对应的标识文件</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 tmp]$ <span class="built_in">cd</span> /tmp/</span><br><span class="line">[hadoop@bigdata01 tmp]$ ll</span><br><span class="line">total 28</span><br><span class="line">-rw-rw-r--  1 root   root    52 Nov 28 16:38 apache.log</span><br><span class="line">drwxrwxr-x  4 hadoop hadoop  37 Dec  2 21:32 hadoop-hadoop</span><br><span class="line">-rw-rw-r--  1 hadoop hadoop   6 Dec  2 21:31 hadoop-hadoop-datanode.pid</span><br><span class="line">-rw-rw-r--  1 hadoop hadoop   6 Dec  2 21:31 hadoop-hadoop-namenode.pid</span><br><span class="line">-rw-rw-r--  1 hadoop hadoop   6 Dec  2 21:31 hadoop-hadoop-secondarynamenode.pid</span><br><span class="line">drwxr-xr-x  2 hadoop hadoop  71 Dec  2 21:55 hsperfdata_hadoop</span><br></pre></td></tr></table></figure>
+<p>最后这个就是对应的标识文件里面的文件就对应我们jps中的pid进程号，本质上jps也是读取的文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 tmp]$ <span class="built_in">cd</span> hsperfdata_hadoop</span><br><span class="line">[hadoop@bigdata01 hsperfdata_hadoop]$ ll</span><br><span class="line">total 160</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  2 21:59 11570</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  2 21:59 11698</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  2 21:59 11857</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  2 21:59 12002</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  2 21:59 12105</span><br></pre></td></tr></table></figure>
+<h4 id="43-jps的作用">4.3 jps的作用</h4>
+<p>查询pid 进程名称</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@bigdata01 tmp]<span class="comment"># ps -ef |grep 11570</span></span><br><span class="line">hadoop    11570      1  0 21:31 ?        00:00:09 /usr/java/jdk1.8.0_121/bin/java -Dproc_namenode -Xmx1000m -Djava.net.preferIPv4Stack=<span class="literal">true</span> -Dhadoop.log.dir=/home/hadoop/app/hadoop-2.6.0-cdh5.16.2/logs -Dhadoop.log.file=hadoop.log -Dhadoop.home.dir=/home/hadoop/app/hadoop-2.6.0-cdh5.16.2 -Dhadoop.id.str=hadoop -Dhadoop.root.logger=INFO,console -Djava.library.path=/home/hadoop/app/hadoop-2.6.0-cdh5.16.2/lib/native -Dhadoop.policy.file=hadoop-policy.xml -Djava.net.preferIPv4Stack=<span class="literal">true</span> -Djava.net.preferIPv4Stack=<span class="literal">true</span> -Djava.net.preferIPv4Stack=<span class="literal">true</span> -Dhadoop.log.dir=/home/hadoop/app/hadoop-2.6.0-cdh5.16.2/logs -Dhadoop.log.file=hadoop-hadoop-namenode-bigdata01.log -Dhadoop.home.dir=/home/hadoop/app/hadoop-2.6.0-cdh5.16.2 -Dhadoop.id.str=hadoop -Dhadoop.root.logger=INFO,RFA -Djava.library.path=/home/hadoop/app/hadoop-2.6.0-cdh5.16.2/lib/native -Dhadoop.policy.file=hadoop-policy.xml -Djava.net.preferIPv4Stack=<span class="literal">true</span> -Dhadoop.security.logger=INFO,RFAS -Dhdfs.audit.logger=INFO,NullAppender -Dhadoop.security.logger=INFO,RFAS -Dhdfs.audit.logger=INFO,NullAppender -Dhadoop.security.logger=INFO,RFAS -Dhdfs.audit.logger=INFO,NullAppender -Dhadoop.security.logger=INFO,RFAS org.apache.hadoop.hdfs.server.namenode.NameNode</span><br><span class="line">root      14969  14657  0 22:03 pts/2    00:00:00 grep --color=auto 11570</span><br></pre></td></tr></table></figure>
+<p>这个是NameNode对应进程的pid</p>
+<h4 id="44-process-information-unavailable">4.4 process information unavailable</h4>
+<p>hadoop用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 ~]$ jps</span><br><span class="line">15781 NameNode</span><br><span class="line">15914 DataNode</span><br><span class="line">16187 Jps</span><br><span class="line">16078 SecondaryNameNode</span><br><span class="line">[hadoop@bigdata01 ~]$</span><br></pre></td></tr></table></figure>
+<p>mysqladmin用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[mysqladmin@bigdata01 ~]$ jps</span><br><span class="line">16266 Jps</span><br><span class="line">[mysqladmin@bigdata01 ~]$</span><br></pre></td></tr></table></figure>
+<p>root用户 看所有的，但是显示不可用</p>
+<h4 id="45-真假判断">4.5 真假判断：</h4>
+<p>使用ps -ef |gerp xxx |grep -V grep |wc -l</p>
+<p>jps本质上读取的是文件 并不影响进程启动和停止</p>
+<h4 id="46-linux机制-oom-kill-机制">4.6 Linux机制 oom-kill 机制</h4>
+<p>解释：某个进程占用的内存过高，机器为了保护自己，防止夯住，去杀死内存占用最多的进程<br>
+使用free -m 查看机器的内存状况</p>
+<p>进程被 oom kill 掉，日志是不会显示error信息的</p>
+<p>进程死掉的解决方案：<br>
+查看log文件的日志信息==&gt;有error的分析错误信息，没有的想到oom 用free -m 查看进程信息</p>
+<p>查看系统的日志信息<br>
+查看系统日志：/var/log/messages 和 /var/log/secure这两个文件<br>
+cat /var/log/messages | grep oom</p>
+<h4 id="47-linux机制">4.7 Linux机制</h4>
+<p>Linux机制 /tmp默认存储周期 1个月 会自动清空不在规则以内的文件</p>
+<p>生产上面将yarn和hadoop的pid放到自己的目录里面进行维护，不要放到/tmp 目录里面</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@bigdata01 hadoop]$ vi hadoop-env.sh</span><br><span class="line"><span class="built_in">export</span> HADOOP_PID_DIR=/home/ruoze/tmp</span><br><span class="line"></span><br><span class="line">[root@bigdata01 hadoop]$ cat yarn-env.sh</span><br><span class="line"><span class="built_in">export</span> YARN_PID_DIR=/home/ruoze/tmp</span><br></pre></td></tr></table></figure>
+<h4 id="48进入系统tmp-目录下面查看pid文件">4.8进入系统/tmp 目录下面查看pid文件</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[mysqladmin@bigdata01 tmp]$ ll</span><br><span class="line">total 20</span><br><span class="line">-rw-rw-r--  1 root       root    52 Nov 28 16:38 apache.log</span><br><span class="line">drwxrwxr-x  4 hadoop     hadoop  37 Dec  2 21:32 hadoop-hadoop</span><br><span class="line">-rw-rw-r--  1 hadoop     hadoop   6 Dec  2 22:08 hadoop-hadoop-datanode.pid</span><br><span class="line">-rw-rw-r--  1 hadoop     hadoop   6 Dec  2 22:08 hadoop-hadoop-namenode.pid</span><br><span class="line">-rw-rw-r--  1 hadoop     hadoop   6 Dec  2 22:08 hadoop-hadoop-secondarynamenode.pid</span><br><span class="line">drwxr-xr-x  2 hadoop     hadoop  45 Dec  2 22:08 hsperfdata_hadoop</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="彩蛋">彩蛋：</h3>
+<p>1.yarn中job的命名规范是什么？<br>
+application + 时间戳 + 任务序号</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/Hadoop/jps正确姿势/" data-toggle="tooltip" data-placement="top" title="Jps的正确使用姿势">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Hadoop/hadoop01/" data-toggle="tooltip" data-placement="top" title="Hadoop 基础01">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1yarn-伪分布式-单点部署-主从架构"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1.Yarn &#x4F2A;&#x5206;&#x5E03;&#x5F0F; &#x5355;&#x70B9;&#x90E8;&#x7F72; &#x4E3B;&#x4ECE;&#x67B6;&#x6784;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#11-configure-parameters-as-follows"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">1.1 Configure parameters as follows</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#12-start-resourcemanager-daemon-and-nodemanager-daemon启动yarn"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">1.2 Start ResourceManager daemon and NodeManager daemon:&#x542F;&#x52A8;yarn</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#13-查看resourcemanager进程"><span class="toc-nav-number">1.3.</span> <span class="toc-nav-text">1.3 &#x67E5;&#x770B;resourcemanager&#x8FDB;&#x7A0B;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2运行案例测试yarn"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2.&#x8FD0;&#x884C;&#x6848;&#x4F8B;&#x6D4B;&#x8BD5;yarn</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#21-寻找yarn测试jar包"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">2.1 &#x5BFB;&#x627E;yarn&#x6D4B;&#x8BD5;jar&#x5305;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#22-查看命令帮助确认怎么运行jar包"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">2.2 &#x67E5;&#x770B;&#x547D;&#x4EE4;&#x5E2E;&#x52A9;&#xFF0C;&#x786E;&#x8BA4;&#x600E;&#x4E48;&#x8FD0;&#x884C;jar&#x5305;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#23-运行jar包"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">2.3 &#x8FD0;&#x884C;jar&#x5305;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#24-提示输入参数这里做wordcount案例所以再次运行"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">2.4 &#x63D0;&#x793A;&#x8F93;&#x5165;&#x53C2;&#x6570;&#xFF0C;&#x8FD9;&#x91CC;&#x505A;wordcount&#x6848;&#x4F8B;&#xFF0C;&#x6240;&#x4EE5;&#x518D;&#x6B21;&#x8FD0;&#x884C;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#25-我们创建文件"><span class="toc-nav-number">2.5.</span> <span class="toc-nav-text">2.5 &#x6211;&#x4EEC;&#x521B;&#x5EFA;&#x6587;&#x4EF6;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#26-再次运行"><span class="toc-nav-number">2.6.</span> <span class="toc-nav-text">2.6 &#x518D;&#x6B21;&#x8FD0;&#x884C;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#27-查看结果"><span class="toc-nav-number">2.7.</span> <span class="toc-nav-text">2.7 &#x67E5;&#x770B;&#x7ED3;&#x679C;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3-修改机器名称"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3. &#x4FEE;&#x6539;&#x673A;&#x5668;&#x540D;&#x79F0;&#xFF1A;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#31-查看当前机器名称"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">3.1 &#x67E5;&#x770B;&#x5F53;&#x524D;&#x673A;&#x5668;&#x540D;&#x79F0;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#32-查看命令帮助"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">3.2 &#x67E5;&#x770B;&#x547D;&#x4EE4;&#x5E2E;&#x52A9;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#33-使用的命令如下"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">3.3 &#x4F7F;&#x7528;&#x7684;&#x547D;&#x4EE4;&#x5982;&#x4E0B;&#xFF1A;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4jps的正确使用"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4.jps&#x7684;&#x6B63;&#x786E;&#x4F7F;&#x7528;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#41-jps的位置"><span class="toc-nav-number">4.1.</span> <span class="toc-nav-text">4.1 jps&#x7684;&#x4F4D;&#x7F6E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#42-对应的标识文件"><span class="toc-nav-number">4.2.</span> <span class="toc-nav-text">4.2 &#x5BF9;&#x5E94;&#x7684;&#x6807;&#x8BC6;&#x6587;&#x4EF6;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#43-jps的作用"><span class="toc-nav-number">4.3.</span> <span class="toc-nav-text">4.3 jps&#x7684;&#x4F5C;&#x7528;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#44-process-information-unavailable"><span class="toc-nav-number">4.4.</span> <span class="toc-nav-text">4.4 process information unavailable</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#45-真假判断"><span class="toc-nav-number">4.5.</span> <span class="toc-nav-text">4.5 &#x771F;&#x5047;&#x5224;&#x65AD;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#46-linux机制-oom-kill-机制"><span class="toc-nav-number">4.6.</span> <span class="toc-nav-text">4.6 Linux&#x673A;&#x5236; oom-kill &#x673A;&#x5236;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#47-linux机制"><span class="toc-nav-number">4.7.</span> <span class="toc-nav-text">4.7 Linux&#x673A;&#x5236;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#48进入系统tmp-目录下面查看pid文件"><span class="toc-nav-number">4.8.</span> <span class="toc-nav-text">4.8&#x8FDB;&#x5165;&#x7CFB;&#x7EDF;/tmp &#x76EE;&#x5F55;&#x4E0B;&#x9762;&#x67E5;&#x770B;pid&#x6587;&#x4EF6;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#彩蛋"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x5F69;&#x86CB;&#xFF1A;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; JackYang 2019 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
