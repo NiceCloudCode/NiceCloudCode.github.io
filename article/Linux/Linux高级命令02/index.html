@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Linux高级命令02 - BigData@JackYang | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/Linux/Linux高级命令02/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                            
+                        </div>
+                        <h1>Linux高级命令02</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by JackYang on
+                            2015-07-12
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="1vi命令的使用">1.vi命令的使用</h3>
+<p><strong>1.1 黏贴的时候需要在编辑模式下才能不丢失数据</strong></p>
+<p><strong>1.2找ERROR</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">找ERROR 时候cat xxx.log | grep -C 10 ERROR &gt;error.log 意思是将出现ERROR的前后各10行的内容输入到error.log 文件中</span><br><span class="line">查找时候在尾行模式下 输入:/keyword 回车键自动匹配 按N键寻找下一个</span><br><span class="line">cat	more tail</span><br></pre></td></tr></table></figure>
+<p><strong>1.3 设置行号和取消行号</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> nu  <span class="built_in">set</span> nonu</span><br></pre></td></tr></table></figure>
+<p><strong>1.4清空文件内容方式</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /dev/null &gt; aaa.log ==&gt; 推荐</span><br><span class="line"><span class="built_in">echo</span> <span class="string">''</span> &gt; aaa.log  ===&gt;会出现一个字节的空格</span><br><span class="line">gg + dG  ==&gt; gg跳转到首行的第一个字母，然后dG进行删除首行及其以下的所有内容</span><br></pre></td></tr></table></figure>
+<p><strong>1.5 命令行模式的快捷键</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">dd 		删除当前行</span><br><span class="line">dG 		删除当前行及其以下所有行</span><br><span class="line">ndd		删除当前行及其以下n行</span><br><span class="line"></span><br><span class="line">gg   	跳转到第一行的第一个字母</span><br><span class="line">G		跳转到最后一行的第一个字母</span><br><span class="line"><span class="built_in">shift</span>+$ 跳转到行位</span><br><span class="line"></span><br><span class="line">使用场景：大数据组件中xml文件的覆盖</span><br><span class="line">	首先备份原来文件</span><br><span class="line">	其次将编辑好的配置文件用记事本编辑好</span><br><span class="line">	进入编辑模式（i）拷贝文本内容</span><br></pre></td></tr></table></figure>
+<h3 id="2系统命令">2.系统命令</h3>
+<p><strong>主要看 / 目录挂载的地方 根目录挂载的是系统盘<br>
+其他/dev/vdb1 这种的挂载的是数据盘</strong></p>
+<p><strong>2.1查看磁盘 df -h</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># df -h</span></span><br><span class="line">Filesystem               Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/mapper/centos-root   17G  1.3G   16G   8% /		===&gt;根目录系统盘挂载的情况</span><br><span class="line">devtmpfs                 1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs                    1.9G     0  1.9G   0% /dev/shm	===&gt;这些tmp相关的不重要</span><br><span class="line">tmpfs                    1.9G   12M  1.9G   1% /run</span><br><span class="line">tmpfs                    1.9G     0  1.9G   0% /sys/fs/cgroup</span><br><span class="line">/dev/sda1               1014M  148M  867M  15% /boot	===&gt;数据盘挂载的情况</span><br><span class="line">tmpfs                    378M     0  378M   0% /run/user/0</span><br></pre></td></tr></table></figure>
+<p><strong>2.2 查看内存</strong></p>
+<p>free -m 查看帮助命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># free --help</span></span><br><span class="line"></span><br><span class="line">Usage:</span><br><span class="line"> free [options]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line"> -b, --bytes         show output <span class="keyword">in</span> bytes</span><br><span class="line"> -k, --kilo          show output <span class="keyword">in</span> kilobytes</span><br><span class="line"> -m, --mega          show output <span class="keyword">in</span> megabytes</span><br><span class="line"> -g, --giga          show output <span class="keyword">in</span> gigabytes</span><br><span class="line">     --tera          show output <span class="keyword">in</span> terabytes</span><br><span class="line">     --peta          show output <span class="keyword">in</span> petabytes</span><br><span class="line"> -h, --human         show human-readable output</span><br><span class="line">     --si            use powers of 1000 not 1024</span><br><span class="line"> -l, --lohi          show detailed low and high memory statistics</span><br><span class="line"> -t, --total         show total <span class="keyword">for</span> RAM + swap</span><br><span class="line"> -s N, --seconds N   repeat printing every N seconds</span><br><span class="line"> -c N, --count N     repeat printing N <span class="built_in">times</span>, <span class="keyword">then</span> <span class="built_in">exit</span></span><br><span class="line"> -w, --wide          wide output</span><br><span class="line"></span><br><span class="line">     --<span class="built_in">help</span>     display this <span class="built_in">help</span> and <span class="built_in">exit</span></span><br><span class="line"> -V, --version  output version information and <span class="built_in">exit</span></span><br><span class="line"></span><br><span class="line">For more details see free(1).</span><br></pre></td></tr></table></figure>
+<p><strong>操作：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># free -m	   ===&gt;以M的方式显示出来</span></span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:           3770         114        3498          11         158        3440</span><br><span class="line">Swap:          2047           0        2047</span><br><span class="line">[root@localhost ~]<span class="comment"># free -h		===&gt;以可读的方式显示出来</span></span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:           3.7G        114M        3.4G         11M        158M        3.4G</span><br><span class="line">Swap:          2.0G          0B        2.0G</span><br></pre></td></tr></table></figure>
+<p><strong>2.3查看负载 top</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]<span class="comment"># top</span></span><br><span class="line">top - 23:06:07 up 17 min,  1 user,  load average: 0.00, 0.01, 0.04</span><br><span class="line">Tasks: 105 total,   1 running, 104 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :  3861484 total,  3580716 free,   117360 used,   163408 buff/cache</span><br><span class="line">KiB Swap:  2097148 total,  2097148 free,        0 used.  3522240 avail Mem </span><br><span class="line"></span><br><span class="line">   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND                                                                                                                                     </span><br><span class="line">     1 root      20   0  125428   3820   2568 S  0.0  0.1   0:00.99 systemd                                                                                                                                     </span><br><span class="line">     2 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kthreadd                                                                                                                                    </span><br><span class="line">     3 root      20   0       0      0      0 S  0.0  0.0   0:00.06 ksoftirqd/0                                                                                                                                 </span><br><span class="line">     5 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kworker/0:0H                                                                                                                                </span><br><span class="line">     6 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kworker/u256:0                                                                                                                              </span><br><span class="line">     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 migration/0                                                                                                                                 </span><br><span class="line">     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh                                                                                                                                      </span><br><span class="line">     9 root      20   0       0      0      0 S  0.0  0.0   0:00.28 rcu_sched                                                                                                                                   </span><br><span class="line">    10 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 lru-add-drain</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">重点参数  load average: 0.00, 0.01, 0.04	</span><br><span class="line">						1min   5min 15min</span><br><span class="line">		经验值：不要超过10</span><br><span class="line">	下面的部分主要查看cpu和内存的使用率是否正常，发现异常时候需要找到其对应的pid，查看对应pid的进程是干什么用的，找不出可以重启试试看，查看是否是硬件的问题</span><br></pre></td></tr></table></figure>
+<h3 id="3查看进程查看端口号">3.查看进程，查看端口号</h3>
+<p><strong>3.1进程		ps -ef |grep ssh</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost /]<span class="comment"># ps -ef |grep ssh</span></span><br><span class="line">root       9333      1  0 08:21 ?        00:00:00 /usr/sbin/sshd -D</span><br><span class="line">root       9874   9333  0 08:22 ?        00:00:00 sshd: root@pts/0</span><br><span class="line">root       9914   9876  0 08:23 pts/0    00:00:00 grep --color=auto ssh</span><br><span class="line">进程用户   PID    父ID							  进程的内容(进程所属目录)</span><br><span class="line"></span><br><span class="line">比如查看 ps -ef |grep ssh</span><br><span class="line">ps -ef |grep ssh -v grep     ===&gt; -v的意思是过滤 因为本身启动ps -ef 会出现一个grep的进程</span><br></pre></td></tr></table></figure>
+<p><strong>3.2端口号</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">netstat -nlp |grep ***</span><br><span class="line">使用netstat -nlp |grep ssh		这种方式有可能不准确，使用pid是正确姿势</span><br><span class="line">通过pid查找进程号：</span><br><span class="line">[root@localhost /]<span class="comment"># netstat -nlp |grep 9333</span></span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      9333/sshd           </span><br><span class="line">tcp6       0      0 :::22                   :::*                    LISTEN      9333/sshd</span><br><span class="line"> 这里可以看到其对应的进程是22</span><br></pre></td></tr></table></figure>
+<p><strong>3.3 安装http服务，打开web</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">通过yum命令安装http服务</span><br><span class="line">[root@localhost /]<span class="comment"># yum -y install httpd</span></span><br><span class="line">Loaded plugins: fastestmirror, langpacks</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line"> * base: mirror.bit.edu.cn</span><br><span class="line"> * extras: ap.stykers.moe</span><br><span class="line"> * updates: mirror.bit.edu.cn</span><br><span class="line">base                                                                                                                                  | 3.6 kB  00:00:00     </span><br><span class="line">extras                                                                                                                                | 2.9 kB  00:00:00     </span><br><span class="line">updates                                                                                                                               | 2.9 kB  00:00:00     </span><br><span class="line">Package httpd-2.4.6-90.el7.centos.x86_64 already installed and latest version</span><br><span class="line">Nothing to <span class="keyword">do</span></span><br></pre></td></tr></table></figure>
+<p><strong>启动httpd服务</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost /]<span class="comment"># systemctl start httpd</span></span><br><span class="line"></span><br><span class="line">查看httpd进程</span><br><span class="line">[root@localhost /]<span class="comment"># ps -ef |grep httpd</span></span><br><span class="line">root       9930      1  0 08:28 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9931   9930  0 08:28 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9932   9930  0 08:28 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9933   9930  0 08:28 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9934   9930  0 08:28 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9935   9930  0 08:28 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9936   9930  0 08:28 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">root       9938   9876  0 08:28 pts/0    00:00:00 grep --color=auto httpd</span><br><span class="line"></span><br><span class="line">查看httpd服务状态</span><br><span class="line">[root@localhost /]<span class="comment"># systemctl status httpd</span></span><br><span class="line">â— httpd.service - The Apache HTTP Server</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/httpd.service; disabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Fri 2019-11-29 08:28:32 CST; 43s ago</span><br><span class="line">     Docs: man:httpd(8)</span><br><span class="line">           man:apachectl(8)</span><br><span class="line"> Main PID: 9930 (httpd)</span><br><span class="line">   Status: <span class="string">"Total requests: 0; Current requests/sec: 0; Current traffic:   0 B/sec"</span></span><br><span class="line">   CGroup: /system.slice/httpd.service</span><br><span class="line">           â”œâ”€9930 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">           â”œâ”€9931 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">           â”œâ”€9932 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">           â”œâ”€9933 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">           â”œâ”€9934 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">           â”œâ”€9935 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">           â””â”€9936 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line"></span><br><span class="line">Nov 29 08:28:32 localhost.localdomain systemd[1]: Starting The Apache HTTP Server...</span><br><span class="line">Nov 29 08:28:32 localhost.localdomain httpd[9930]: AH00558: httpd: Could not reliably determine the server<span class="string">'s fully qualified domain name, using lo... message</span></span><br><span class="line"><span class="string">Nov 29 08:28:32 localhost.localdomain systemd[1]: Started The Apache HTTP Server.</span></span><br><span class="line"><span class="string">Hint: Some lines were ellipsized, use -l to show in full.</span></span><br><span class="line"><span class="string">[root@localhost /]# netstat -nlp |grep 9930</span></span><br><span class="line"><span class="string">tcp6       0      0 :::80                   :::*                    LISTEN      9930/httpd          </span></span><br><span class="line"><span class="string">tcp6       0      0 :::443                  :::*                    LISTEN      9930/httpd          </span></span><br><span class="line"><span class="string">[root@localhost /]#</span></span><br></pre></td></tr></table></figure>
+<p>http协议的默认端口是80<br>
+https协议的默认端口是443</p>
+<p><strong>3.3 Connection refused 错误出现时的解决方法</strong></p>
+<ul>
+<li>1.检查防火墙</li>
+<li>2.ping ip</li>
+<li>3.telnet 测试ip地址和端口号</li>
+</ul>
+<p><strong>操作：去A服务器打开xxx软件的web界面，比如打开http的web界面</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost /]<span class="comment"># clear</span></span><br><span class="line">[root@localhost /]<span class="comment"># ps -ef |grep httpd</span></span><br><span class="line">root       9933      1  0 14:27 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9934   9933  0 14:27 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9935   9933  0 14:27 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9936   9933  0 14:27 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9937   9933  0 14:27 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9938   9933  0 14:27 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">apache     9939   9933  0 14:27 ?        00:00:00 /usr/sbin/httpd -DFOREGROUND</span><br><span class="line">root       9942   9830  0 14:28 pts/0    00:00:00 grep --color=auto httpd</span><br><span class="line">[root@localhost /]<span class="comment"># netstat -nlp |grep 9933</span></span><br><span class="line">tcp6       0      0 :::80                   :::*                    LISTEN      9933/httpd          </span><br><span class="line">tcp6       0      0 :::443                  :::*                    LISTEN      9933/httpd </span><br><span class="line">找到对应的端口号，在web界面进行打开其对应的页面</span><br><span class="line"></span><br><span class="line">注意：127.0.0.1:22这种方式是本地自己访问自己  windows和其他服务器无法进行访问</span><br></pre></td></tr></table></figure>
+<h3 id="4高危命令">4.高危命令</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a.rm -rf /</span><br><span class="line">b.修改生产环境的配置文件，先进行本备份一份，然后再对原来的配置文件进行修改</span><br><span class="line">c.杀进程 <span class="built_in">kill</span> -9 进程pid  <span class="built_in">kill</span> -9 $(pgrep -f 关键字)</span><br><span class="line">注意：杀掉进程之前，先找到该进程相关的进程，确定好要<span class="built_in">kill</span>的进程，不然容易造成事故</span><br></pre></td></tr></table></figure>
+<h3 id="5yum安装软件">5.yum安装软件</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">yum -y install xxx</span><br><span class="line">yum search xxx</span><br><span class="line">yum remove xxx</span><br><span class="line">rpm -e 卸载软件</span><br><span class="line">rpm -e --nodeps 强制卸载软件</span><br><span class="line">wget http://archive.cloudera.com/cdh5/chd/5/xxxx</span><br></pre></td></tr></table></figure>
+<p>6.压缩与解压</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">zip -r xxx.zip ./*</span><br><span class="line">unzip xxx</span><br><span class="line">tar -zxvf xxx.tar.gz</span><br><span class="line">tar -czvf xxx.tar.gz  xxx/*</span><br></pre></td></tr></table></figure>
+<hr>
+<p><strong><a href="http://1.vi" target="_blank" rel="noopener">1.vi</a>  三种模式</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">命令行模式 编辑模式 尾行模式</span><br><span class="line">开始使用vi 首先是命令行模式 按i键进入编辑模式，编辑之后按esc退回编辑模式，<span class="built_in">shift</span>+：进入尾行模式，wq保存退出</span><br></pre></td></tr></table></figure>
+<p><strong>2.进程端口号</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">查找某个进程          ===&gt; ps -ef |grep xxx</span><br><span class="line">查找该进程对应端口号  ===&gt; netstat -nlp |grep pid</span><br><span class="line">设置行号和取消行号    ===&gt; <span class="built_in">set</span> nu  <span class="built_in">set</span> nonu</span><br><span class="line">清空文件			  ===&gt; <span class="built_in">echo</span> /dev/null &gt; xxx.log  <span class="built_in">echo</span> <span class="string">''</span> &gt; xxx.log</span><br></pre></td></tr></table></figure>
+<p><strong>3.链接拒绝(权限受限)</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">检查防火墙</span><br><span class="line">ping ip地址</span><br><span class="line">telnet ip地址加端口号</span><br></pre></td></tr></table></figure>
+<p><strong>4.常用命令</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget + 网址</span><br><span class="line">yum -y install xxx		 yum search xxx		yum remove xxx </span><br><span class="line">rpm -qa |grep xxx 		 rpm -e xxx			rpm -e --nodeps</span><br></pre></td></tr></table></figure>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/Linux/Linux高级命令03/" data-toggle="tooltip" data-placement="top" title="Linux高级命令03">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Linux/Linux高级命令01/" data-toggle="tooltip" data-placement="top" title="Linux高级命令01">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1vi命令的使用"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1.vi&#x547D;&#x4EE4;&#x7684;&#x4F7F;&#x7528;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2系统命令"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2.&#x7CFB;&#x7EDF;&#x547D;&#x4EE4;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3查看进程查看端口号"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3.&#x67E5;&#x770B;&#x8FDB;&#x7A0B;&#xFF0C;&#x67E5;&#x770B;&#x7AEF;&#x53E3;&#x53F7;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4高危命令"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4.&#x9AD8;&#x5371;&#x547D;&#x4EE4;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#5yum安装软件"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">5.yum&#x5B89;&#x88C5;&#x8F6F;&#x4EF6;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; JackYang 2019 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Do Not Stop Your Step If You Have A Dream - BigData@JackYang | Blog
+          Linux高级命令03 - BigData@JackYang | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/article/ruozedata/">
+    <link rel="canonical" href="http://www.ruozedata.com/article/Linux/Linux高级命令03/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#other" title="other">other</a>
+                              <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
                             
                         </div>
-                        <h1>Do Not Stop Your Step If You Have A Dream</h1>
-                        <h2 class="subheading">This is hexo theme Demo.</h2>
+                        <h1>Linux高级命令03</h1>
+                        <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by JackYang on
-                            2015-07-11
+                            2015-07-15
                         </span>
                     </div>
                 
@@ -142,13 +142,6 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/archive/">Archives</a>
                         </li>
                         
@@ -157,6 +150,13 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -212,8 +212,35 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="do-not-stop-your-step-if-you-have-a-dream">Do Not Stop Your Step If You Have A Dream.</h3>
-<hr>
+                <h3 id="1调度工具的选择">1.调度工具的选择</h3>
+<ul>
+<li>airflow</li>
+<li>azkaban		用的比较多</li>
+<li>rundeck		用的比较多</li>
+<li>crontab 	定时脚本（Linux自带）</li>
+</ul>
+<p><strong>sh脚本文件：</strong></p>
+<p>开头：#!/bin/bash ===&gt;解释器<br>
+命名：<a href="http://xxx.sh" target="_blank" rel="noopener">xxx.sh</a><br>
+没有开头和后缀命名的时候，使用sh命令也可以执行<br>
+脚本需要执行的权限</p>
+<h3 id="2crontab的使用">2.crontab的使用</h3>
+<p><strong>查看命令帮助</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost /]<span class="comment"># crontab --help</span></span><br><span class="line">crontab: invalid option -- <span class="string">'-'</span></span><br><span class="line">crontab: usage error: unrecognized option</span><br><span class="line">Usage:</span><br><span class="line"> crontab [options] file</span><br><span class="line"> crontab [options]</span><br><span class="line"> crontab -n [hostname]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line"> -u &lt;user&gt;  define user</span><br><span class="line"> -e         edit user<span class="string">'s crontab		===&gt;编辑定时任务</span></span><br><span class="line"><span class="string"> -l         list user'</span>s crontab		===&gt;列出所有的定时任务</span><br><span class="line"> -r         delete user<span class="string">'s crontab	===&gt;删除定时任务</span></span><br><span class="line"><span class="string"> -i         prompt before deleting</span></span><br><span class="line"><span class="string"> -n &lt;host&gt;  set host in cluster to run users'</span> crontabs</span><br><span class="line"> -c         get host <span class="keyword">in</span> cluster to run users<span class="string">' crontabs</span></span><br><span class="line"><span class="string"> -s         selinux context</span></span><br><span class="line"><span class="string"> -x &lt;mask&gt;  enable debugging</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">crontab -e</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">* * * * * sh /root/test.sh &gt;&gt; /root/test.log</span></span><br></pre></td></tr></table></figure>
+<p>* 代表的是每的意思<br>
+前面的五位依次代表的是：分钟  小时  日  月  周  最后是要执行的命令</p>
+<p>使用crontab -r 清除定时任务</p>
+<p><strong>这里的crontab是从分钟开始的，那么如果要是从秒开始应该怎么做？比如10秒执行一次</strong></p>
+<p><strong>解决：可以在定时任务里面用for循环控制</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>((i=1;i&lt;6;i++))</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	date</span><br><span class="line">	sleep 10s</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+<h3 id="3后台执行脚本">3.后台执行脚本</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">三种形式：</span><br><span class="line">	./test.sh &amp;						===&gt;开发测试使用</span><br><span class="line">	nohup /root/test.sh &amp;</span><br><span class="line">	nohup /root/test.sh 2&gt;&amp;1 &amp;		===&gt;生产上面使用</span><br></pre></td></tr></table></figure>
+<h3 id="4软连接">4.软连接</h3>
+<p>软连接的作用：可以防止以后升级版本带来的不便<br>
+语法： <code>ln -s originPath desPath</code><br>
+<strong>使用场景：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> a.CDH 升级的时候可以将原来版本文件夹删掉，用软连接指向新的版本</span><br><span class="line"> b.做软连接的时候最好使用绝对路径（建议）</span><br><span class="line"> c.磁盘挂载的时候</span><br><span class="line">比如数据盘不够了，可以将数据文件夹移动到新的磁盘挂载目录，然后用软连接指向过去</span><br><span class="line">有CDH的<span class="built_in">log</span>日志文件，磁盘空间不足，新的磁盘已经挂载在/data01/<span class="built_in">log</span>下面</span><br><span class="line">mv /var/<span class="built_in">log</span>/hbase /data01/<span class="built_in">log</span></span><br><span class="line">ln -s /data01/<span class="built_in">log</span>/hbase /var/<span class="built_in">log</span>/hbase</span><br><span class="line">在指向的方向是后面目录指向前面目录，单向指向</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：在大数据环境中想要查看某个文件夹的权限可以从不同的机器进行查看</p>
 
                 
 
@@ -221,9 +248,13 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
+                        <li class="previous">
+                            <a href="/article/Mysql/MysqlInstall/" data-toggle="tooltip" data-placement="top" title="MySQL 的安装和配置">&larr; Previous Post</a>
+                        </li>
+                    
                     
                         <li class="next">
-                            <a href="/article/Linux/Linux高级命令/" data-toggle="tooltip" data-placement="top" title="Linux高级命令">Next Post &rarr;</a>
+                            <a href="/article/Linux/Linux高级命令02/" data-toggle="tooltip" data-placement="top" title="Linux高级命令02">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -273,7 +304,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#do-not-stop-your-step-if-you-have-a-dream"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Do Not Stop Your Step If You Have A Dream.</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1调度工具的选择"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1.&#x8C03;&#x5EA6;&#x5DE5;&#x5177;&#x7684;&#x9009;&#x62E9;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2crontab的使用"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2.crontab&#x7684;&#x4F7F;&#x7528;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3后台执行脚本"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3.&#x540E;&#x53F0;&#x6267;&#x884C;&#x811A;&#x672C;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4软连接"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4.&#x8F6F;&#x8FDE;&#x63A5;</span></a></li></ol>
         
         </div>
       </aside>
@@ -293,7 +324,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#other" title="other">other</a>
+                          <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
                         
                     </div>
                 </section>
