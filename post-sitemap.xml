@@ -7,56 +7,8 @@
     </url>
 
     <url>
-        <loc>http://www.ruozedata.com/article/Hadoop/hadoop03/</loc>
-        <lastmod>2019-12-04T04:41:22.993Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Hadoop/jps%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/</loc>
-        <lastmod>2019-12-02T15:05:50.006Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Hadoop/hadoop02/</loc>
-        <lastmod>2019-12-02T15:01:28.665Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Hadoop/hadoop01/</loc>
-        <lastmod>2019-12-02T09:25:06.793Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://www.ruozedata.com/article/Mysql/MysqlInstall/</loc>
-        <lastmod>2019-12-02T09:16:48.219Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Linux/Linux%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A402/</loc>
-        <lastmod>2019-12-02T08:58:44.343Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Linux/Linux%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A403/</loc>
-        <lastmod>2019-12-02T08:58:38.533Z</lastmod>
+        <lastmod>2019-12-04T05:52:39.655Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -64,7 +16,23 @@
 
     <url>
         <loc>http://www.ruozedata.com/article/Linux/Linux%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A401/</loc>
-        <lastmod>2019-12-02T08:58:28.473Z</lastmod>
+        <lastmod>2019-12-04T05:52:18.276Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Linux/Linux%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A402/</loc>
+        <lastmod>2019-12-04T05:52:08.521Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Linux/Linux%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A403/</loc>
+        <lastmod>2019-12-04T05:51:59.786Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -72,7 +40,7 @@
 
     <url>
         <loc>http://www.ruozedata.com/article/Linux/Linux%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/</loc>
-        <lastmod>2019-12-02T08:57:13.678Z</lastmod>
+        <lastmod>2019-12-04T05:51:51.740Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -80,7 +48,39 @@
 
     <url>
         <loc>http://www.ruozedata.com/article/Linux/linux01/</loc>
-        <lastmod>2019-12-02T08:57:03.729Z</lastmod>
+        <lastmod>2019-12-04T05:51:41.306Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Hadoop/hadoop03/</loc>
+        <lastmod>2019-12-04T05:50:55.218Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Hadoop/jps%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/</loc>
+        <lastmod>2019-12-04T05:50:26.114Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Hadoop/hadoop02/</loc>
+        <lastmod>2019-12-04T05:49:55.970Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Hadoop/hadoop01/</loc>
+        <lastmod>2019-12-04T05:49:30.284Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
