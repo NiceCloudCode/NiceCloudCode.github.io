@@ -7,6 +7,70 @@
     </url>
 
     <url>
+        <loc>http://www.ruozedata.com/article/Hadoop/hadoop01Hadoop%20%E5%AE%89%E8%A3%85%E5%92%8C%E9%83%A8%E7%BD%B2/</loc>
+        <lastmod>2019-12-04T11:43:32.554Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Hadoop/hadoop03%E6%9E%B6%E6%9E%84%E3%80%81%E5%B0%8F%E6%96%87%E4%BB%B6%E3%80%81Block%E5%9D%97/</loc>
+        <lastmod>2019-12-04T11:39:09.701Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Hadoop/hadoop02Yarn%E9%83%A8%E7%BD%B2%E5%92%8C%E4%BD%BF%E7%94%A8/</loc>
+        <lastmod>2019-12-04T11:38:01.425Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Linux/Linux05crontab%E3%80%81%E8%BD%AF%E8%BF%9E%E6%8E%A5%E3%80%81%E5%90%8E%E5%8F%B0%E6%89%A7%E8%A1%8C/</loc>
+        <lastmod>2019-12-04T11:36:10.495Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Linux/Linux04Vi%E3%80%81%E7%A3%81%E7%9B%98%E3%80%81%E5%86%85%E5%AD%98%E3%80%81%E8%BF%9B%E7%A8%8B/</loc>
+        <lastmod>2019-12-04T11:34:47.522Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Linux/Linux03%E7%94%A8%E6%88%B7%E3%80%81%E6%9D%83%E9%99%90%E3%80%81%E6%90%9C%E7%B4%A2/</loc>
+        <lastmod>2019-12-04T11:28:49.826Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Linux/Linux02%E6%96%87%E4%BB%B6%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/</loc>
+        <lastmod>2019-12-04T11:26:47.826Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Linux/linux01%E5%85%A5%E9%97%A8%E5%9F%BA%E7%A1%80/</loc>
+        <lastmod>2019-12-04T11:24:14.019Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://www.ruozedata.com/article/Mysql/MysqlInstall/</loc>
         <lastmod>2019-12-04T05:52:39.655Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -15,72 +79,8 @@
     </url>
 
     <url>
-        <loc>http://www.ruozedata.com/article/Linux/Linux%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A401/</loc>
-        <lastmod>2019-12-04T05:52:18.276Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Linux/Linux%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A402/</loc>
-        <lastmod>2019-12-04T05:52:08.521Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Linux/Linux%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A403/</loc>
-        <lastmod>2019-12-04T05:51:59.786Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Linux/Linux%E7%94%A8%E6%88%B7%E5%92%8C%E6%9D%83%E9%99%90/</loc>
-        <lastmod>2019-12-04T05:51:51.740Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Linux/linux01/</loc>
-        <lastmod>2019-12-04T05:51:41.306Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Hadoop/hadoop03/</loc>
-        <lastmod>2019-12-04T05:50:55.218Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Hadoop/jps%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/</loc>
+        <loc>http://www.ruozedata.com/article/Hadoop/hadoop03jps%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/</loc>
         <lastmod>2019-12-04T05:50:26.114Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Hadoop/hadoop02/</loc>
-        <lastmod>2019-12-04T05:49:55.970Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Hadoop/hadoop01/</loc>
-        <lastmod>2019-12-04T05:49:30.284Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

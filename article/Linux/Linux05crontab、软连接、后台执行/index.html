@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Linux高级命令01 - BigData@JackYang | Blog
+          Linux crontab、软连接、后台执行 - BigData@JackYang | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/article/Linux/Linux高级命令01/">
+    <link rel="canonical" href="http://www.ruozedata.com/article/Linux/Linux05crontab、软连接、后台执行/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -91,11 +91,11 @@
                               <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
                             
                         </div>
-                        <h1>Linux高级命令01</h1>
+                        <h1>Linux crontab、软连接、后台执行</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by JackYang on
-                            2017-07-11
+                            2017-07-15
                         </span>
                     </div>
                 
@@ -142,7 +142,7 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -156,7 +156,7 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -212,28 +212,35 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h4 id="1echo-打印">1.echo 打印</h4>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"hello hadoop"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$PATH</span>	打印环境变量</span><br><span class="line">输入命令的时候默认去PATH里面去找，找到第一个就进行返回可以使用<span class="built_in">which</span> ls这种的命令进行查看</span><br></pre></td></tr></table></figure>
-<h4 id="2环境变量">2.环境变量</h4>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">环境变量指的是以key=value的形式展现出来的东西</span><br><span class="line">K=V 之间不能有空格	使用的时候加<span class="variable">$K</span></span><br><span class="line">全局环境变量：/etc/profile		所有人都可以使用</span><br><span class="line"></span><br><span class="line">个人环境变量：~/.bash_profile	个人用户使用</span><br><span class="line">			  ~/.bashrc			个人用户使用（推荐）</span><br></pre></td></tr></table></figure>
-<h4 id="3jdk安装">3.jdk安装：</h4>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">首先：mkdir -p /usr/java</span><br><span class="line">	然后：修正所属的用户和用户组 chown -R root:root /usr/java/*</span><br><span class="line">	配置全局jdk环境变量：</span><br><span class="line">		<span class="built_in">export</span> JAVA_HOME=/usr/java/jdk1.8.0.121</span><br><span class="line">		<span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>:<span class="variable">$PATH</span></span><br><span class="line">		<span class="built_in">source</span> /etc/profile</span><br><span class="line">	上面的意思是将环境变零暴露出来，再将JAVA_HOME追加到系统的环境变量当中</span><br><span class="line"></span><br><span class="line">总结：</span><br><span class="line">	1.出现<span class="built_in">command</span> not found 时候可能的原因是：我们没有部署安装包，或者部署了没有配置环境变量</span><br><span class="line">	2.习惯性的，我们部署一个软件之后，bin目录的可执行文件配置到环境变量当中然后<span class="built_in">source</span>，之后习惯性的<span class="built_in">which</span> xxx，比如<span class="built_in">which</span> java</span><br></pre></td></tr></table></figure>
-<h4 id="4别名alias">4.别名：alias</h4>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 ~]<span class="comment"># alias</span></span><br><span class="line">	<span class="built_in">alias</span> cp=<span class="string">'cp -i'</span></span><br><span class="line">	<span class="built_in">alias</span> egrep=<span class="string">'egrep --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> fgrep=<span class="string">'fgrep --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> grep=<span class="string">'grep --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> l.=<span class="string">'ls -d .* --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> ll=<span class="string">'ls -l --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> ls=<span class="string">'ls --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> mv=<span class="string">'mv -i'</span></span><br><span class="line">	<span class="built_in">alias</span> rm=<span class="string">'rm -i'</span></span><br><span class="line">	<span class="built_in">alias</span> <span class="built_in">which</span>=<span class="string">'alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'</span></span><br></pre></td></tr></table></figure>
-<p>使用别名可以简化我们的操作，节省时间偷懒</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alias</span> j=<span class="string">'cd /home/jepson'</span></span><br><span class="line">.bash_profile   ssh bug</span><br><span class="line">.bashrc         个人环境变量文件  优先</span><br><span class="line">以上两者的区别，当我们进行ssh的时候回自动加载.bashrc 文件，但是不会自动加载.bash_profile 文件</span><br></pre></td></tr></table></figure>
-<p><strong>使用案例：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">root@hadoop01 ~]<span class="comment"># vi .bashrc</span></span><br><span class="line"><span class="comment"># .bashrc</span></span><br><span class="line"><span class="comment"># User specific aliases and functions</span></span><br><span class="line"><span class="built_in">alias</span> rm=<span class="string">'rm -i'</span></span><br><span class="line"><span class="built_in">alias</span> cp=<span class="string">'cp -i'</span></span><br><span class="line"><span class="built_in">alias</span> mv=<span class="string">'mv -i'</span></span><br><span class="line"><span class="comment"># Source global definitions</span></span><br><span class="line"><span class="keyword">if</span> [ -f /etc/bashrc ]; <span class="keyword">then</span></span><br><span class="line">		. /etc/bashrc</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="comment">#env</span></span><br><span class="line"><span class="built_in">alias</span> j=<span class="string">'cd /home/jepson'</span></span><br><span class="line">[root@hadoop01 ~]<span class="comment"># source .bashrc</span></span><br><span class="line">[root@hadoop01 ~]<span class="comment"># j</span></span><br><span class="line">[root@hadoop01 jepson]<span class="comment">#</span></span><br></pre></td></tr></table></figure>
-<h4 id="5history">5.history</h4>
-<p><strong>history 命令用来查看以前执行的命令</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 ~]<span class="comment"># history</span></span><br><span class="line">1  <span class="built_in">history</span></span><br><span class="line">2  ll</span><br><span class="line">3  ls</span><br><span class="line">4  <span class="built_in">which</span></span><br><span class="line">5  <span class="built_in">history</span></span><br><span class="line">可以使用!2 来执行历史指定的命令</span><br></pre></td></tr></table></figure>
-<h4 id="6总结创建文件的操作">6.总结创建文件的操作</h4>
-<p><strong>文件：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">touch  xxx.log</span><br><span class="line">cat /dev/null &gt; xxx.log</span><br><span class="line">vi  xxx.log</span><br></pre></td></tr></table></figure>
-<p><strong>文件夹：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir 	mkdir -p</span><br></pre></td></tr></table></figure>
-<p><strong>删除操作：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rm -f ：直接删除文件</span><br><span class="line">rm -rf 直接删除文件夹</span><br><span class="line">在shell脚本中执行删除命令的时候一定要先判断被删除的内容是否存在</span><br></pre></td></tr></table></figure>
+                <h3 id="1调度工具的选择">1.调度工具的选择</h3>
+<ul>
+<li>airflow</li>
+<li>azkaban		用的比较多</li>
+<li>rundeck		用的比较多</li>
+<li>crontab 	定时脚本（Linux自带）</li>
+</ul>
+<p><strong>sh脚本文件：</strong></p>
+<p>开头：#!/bin/bash ===&gt;解释器<br>
+命名：<a href="http://xxx.sh" target="_blank" rel="noopener">xxx.sh</a><br>
+没有开头和后缀命名的时候，使用sh命令也可以执行<br>
+脚本需要执行的权限</p>
+<h3 id="2crontab的使用">2.crontab的使用</h3>
+<p><strong>查看命令帮助</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost /]<span class="comment"># crontab --help</span></span><br><span class="line">crontab: invalid option -- <span class="string">'-'</span></span><br><span class="line">crontab: usage error: unrecognized option</span><br><span class="line">Usage:</span><br><span class="line"> crontab [options] file</span><br><span class="line"> crontab [options]</span><br><span class="line"> crontab -n [hostname]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line"> -u &lt;user&gt;  define user</span><br><span class="line"> -e         edit user<span class="string">'s crontab		===&gt;编辑定时任务</span></span><br><span class="line"><span class="string"> -l         list user'</span>s crontab		===&gt;列出所有的定时任务</span><br><span class="line"> -r         delete user<span class="string">'s crontab	===&gt;删除定时任务</span></span><br><span class="line"><span class="string"> -i         prompt before deleting</span></span><br><span class="line"><span class="string"> -n &lt;host&gt;  set host in cluster to run users'</span> crontabs</span><br><span class="line"> -c         get host <span class="keyword">in</span> cluster to run users<span class="string">' crontabs</span></span><br><span class="line"><span class="string"> -s         selinux context</span></span><br><span class="line"><span class="string"> -x &lt;mask&gt;  enable debugging</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">crontab -e</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">* * * * * sh /root/test.sh &gt;&gt; /root/test.log</span></span><br></pre></td></tr></table></figure>
+<p>* 代表的是每的意思<br>
+前面的五位依次代表的是：分钟  小时  日  月  周  最后是要执行的命令</p>
+<p>使用crontab -r 清除定时任务</p>
+<p><strong>这里的crontab是从分钟开始的，那么如果要是从秒开始应该怎么做？比如10秒执行一次</strong></p>
+<p><strong>解决：可以在定时任务里面用for循环控制</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>((i=1;i&lt;6;i++))</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	date</span><br><span class="line">	sleep 10s</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+<h3 id="3后台执行脚本">3.后台执行脚本</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">三种形式：</span><br><span class="line">	./test.sh &amp;						===&gt;开发测试使用</span><br><span class="line">	nohup /root/test.sh &amp;</span><br><span class="line">	nohup /root/test.sh 2&gt;&amp;1 &amp;		===&gt;生产上面使用</span><br></pre></td></tr></table></figure>
+<h3 id="4软连接">4.软连接</h3>
+<p>软连接的作用：可以防止以后升级版本带来的不便<br>
+语法： <code>ln -s originPath desPath</code><br>
+<strong>使用场景：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> a.CDH 升级的时候可以将原来版本文件夹删掉，用软连接指向新的版本</span><br><span class="line"> b.做软连接的时候最好使用绝对路径（建议）</span><br><span class="line"> c.磁盘挂载的时候</span><br><span class="line">比如数据盘不够了，可以将数据文件夹移动到新的磁盘挂载目录，然后用软连接指向过去</span><br><span class="line">有CDH的<span class="built_in">log</span>日志文件，磁盘空间不足，新的磁盘已经挂载在/data01/<span class="built_in">log</span>下面</span><br><span class="line">mv /var/<span class="built_in">log</span>/hbase /data01/<span class="built_in">log</span></span><br><span class="line">ln -s /data01/<span class="built_in">log</span>/hbase /var/<span class="built_in">log</span>/hbase</span><br><span class="line">在指向的方向是后面目录指向前面目录，单向指向</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：在大数据环境中想要查看某个文件夹的权限可以从不同的机器进行查看</p>
 
                 
 
@@ -242,12 +249,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/article/Linux/Linux高级命令02/" data-toggle="tooltip" data-placement="top" title="Linux高级命令02">&larr; Previous Post</a>
+                            <a href="/article/Mysql/MysqlInstall/" data-toggle="tooltip" data-placement="top" title="MySQL 的安装和配置">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/article/Linux/Linux用户和权限/" data-toggle="tooltip" data-placement="top" title="Linux基础 02">Next Post &rarr;</a>
+                            <a href="/article/Linux/Linux04Vi、磁盘、内存、进程/" data-toggle="tooltip" data-placement="top" title="Linux Vi、磁盘、内存、进程">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -297,7 +304,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1echo-打印"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1.echo &#x6253;&#x5370;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2环境变量"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2.&#x73AF;&#x5883;&#x53D8;&#x91CF;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3jdk安装"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3.jdk&#x5B89;&#x88C5;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4别名alias"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4.&#x522B;&#x540D;&#xFF1A;alias</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#5history"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">5.history</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#6总结创建文件的操作"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">6.&#x603B;&#x7ED3;&#x521B;&#x5EFA;&#x6587;&#x4EF6;&#x7684;&#x64CD;&#x4F5C;</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1调度工具的选择"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1.&#x8C03;&#x5EA6;&#x5DE5;&#x5177;&#x7684;&#x9009;&#x62E9;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2crontab的使用"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2.crontab&#x7684;&#x4F7F;&#x7528;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3后台执行脚本"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3.&#x540E;&#x53F0;&#x6267;&#x884C;&#x811A;&#x672C;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4软连接"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4.&#x8F6F;&#x8FDE;&#x63A5;</span></a></li></ol>
         
         </div>
       </aside>
