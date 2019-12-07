@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Linux crontab、软连接、后台执行 - BigData@Jackson | Blog
+          HDFS Block损坏恢复 - BigData@Jackson | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/article/Linux/Linux05crontab、软连接、后台执行/">
+    <link rel="canonical" href="http://www.ruozedata.com/article/Error/HDFS Block 损坏恢复/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -91,11 +91,11 @@
                               <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
                             
                         </div>
-                        <h1>Linux crontab、软连接、后台执行</h1>
+                        <h1>HDFS Block损坏恢复</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Jackson on
-                            2017-07-15
+                            2017-08-11
                         </span>
                     </div>
                 
@@ -212,35 +212,35 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h3 id="1调度工具的选择">1.调度工具的选择</h3>
-<ul>
-<li>airflow</li>
-<li>azkaban		用的比较多</li>
-<li>rundeck		用的比较多</li>
-<li>crontab 	定时脚本（Linux自带）</li>
-</ul>
-<p><strong>sh脚本文件：</strong></p>
-<p>开头：#!/bin/bash ===&gt;解释器<br>
-命名：<a href="http://xxx.sh" target="_blank" rel="noopener">xxx.sh</a><br>
-没有开头和后缀命名的时候，使用sh命令也可以执行<br>
-脚本需要执行的权限</p>
-<h3 id="2crontab的使用">2.crontab的使用</h3>
-<p><strong>查看命令帮助</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost /]<span class="comment"># crontab --help</span></span><br><span class="line">crontab: invalid option -- <span class="string">'-'</span></span><br><span class="line">crontab: usage error: unrecognized option</span><br><span class="line">Usage:</span><br><span class="line"> crontab [options] file</span><br><span class="line"> crontab [options]</span><br><span class="line"> crontab -n [hostname]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line"> -u &lt;user&gt;  define user</span><br><span class="line"> -e         edit user<span class="string">'s crontab		===&gt;编辑定时任务</span></span><br><span class="line"><span class="string"> -l         list user'</span>s crontab		===&gt;列出所有的定时任务</span><br><span class="line"> -r         delete user<span class="string">'s crontab	===&gt;删除定时任务</span></span><br><span class="line"><span class="string"> -i         prompt before deleting</span></span><br><span class="line"><span class="string"> -n &lt;host&gt;  set host in cluster to run users'</span> crontabs</span><br><span class="line"> -c         get host <span class="keyword">in</span> cluster to run users<span class="string">' crontabs</span></span><br><span class="line"><span class="string"> -s         selinux context</span></span><br><span class="line"><span class="string"> -x &lt;mask&gt;  enable debugging</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">crontab -e</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">* * * * * sh /root/test.sh &gt;&gt; /root/test.log</span></span><br></pre></td></tr></table></figure>
-<p>* 代表的是每的意思<br>
-前面的五位依次代表的是：分钟  小时  日  月  周  最后是要执行的命令</p>
-<p>使用crontab -r 清除定时任务</p>
-<p><strong>这里的crontab是从分钟开始的，那么如果要是从秒开始应该怎么做？比如10秒执行一次</strong></p>
-<p><strong>解决：可以在定时任务里面用for循环控制</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>((i=1;i&lt;6;i++))</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">	date</span><br><span class="line">	sleep 10s</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
-<h3 id="3后台执行脚本">3.后台执行脚本</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">三种形式：</span><br><span class="line">	./test.sh &amp;						===&gt;开发测试使用</span><br><span class="line">	nohup /root/test.sh &amp;</span><br><span class="line">	nohup /root/test.sh 2&gt;&amp;1 &amp;		===&gt;生产上面使用</span><br></pre></td></tr></table></figure>
-<h3 id="4软连接">4.软连接</h3>
-<p>软连接的作用：可以防止以后升级版本带来的不便<br>
-语法： <code>ln -s originPath desPath</code><br>
-<strong>使用场景：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> a.CDH 升级的时候可以将原来版本文件夹删掉，用软连接指向新的版本</span><br><span class="line"> b.做软连接的时候最好使用绝对路径（建议）</span><br><span class="line"> c.磁盘挂载的时候</span><br><span class="line">比如数据盘不够了，可以将数据文件夹移动到新的磁盘挂载目录，然后用软连接指向过去</span><br><span class="line">有CDH的<span class="built_in">log</span>日志文件，磁盘空间不足，新的磁盘已经挂载在/data01/<span class="built_in">log</span>下面</span><br><span class="line">mv /var/<span class="built_in">log</span>/hbase /data01/<span class="built_in">log</span></span><br><span class="line">ln -s /data01/<span class="built_in">log</span>/hbase /var/<span class="built_in">log</span>/hbase</span><br><span class="line">在指向的方向是后面目录指向前面目录，单向指向</span><br></pre></td></tr></table></figure>
-<p><strong>注意</strong>：在大数据环境中想要查看某个文件夹的权限可以从不同的机器进行查看</p>
+                <h4 id="校验hdfs的健康状态">校验HDFS的健康状态</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">-bash-4.2$ hdfs fsck /</span><br><span class="line">Connecting to namenode via http://yws76:50070/fsck?ugi=hdfs&amp;path=%2F</span><br><span class="line">FSCK started by hdfs (auth:SIMPLE) from /192.168.0.76 <span class="keyword">for</span> path / at Sun Mar 03 14:44:44 CST 2019</span><br><span class="line">...............................................................................Status: HEALTHY</span><br><span class="line"> Total size:    50194618424 B</span><br><span class="line"> Total <span class="built_in">dirs</span>:    354</span><br><span class="line"> Total files:   1079</span><br><span class="line"> Total symlinks:                0</span><br><span class="line"> Total blocks (validated):      992 (avg. block size 50599413 B)</span><br><span class="line"> Minimally replicated blocks:   992 (100.0 %)</span><br><span class="line"> Over-replicated blocks:        0 (0.0 %)</span><br><span class="line"> Under-replicated blocks:       0 (0.0 %)</span><br><span class="line"> Mis-replicated blocks:         0 (0.0 %)</span><br><span class="line"> Default replication factor:    3</span><br><span class="line"> Average block replication:     3.0</span><br><span class="line"> Corrupt blocks:                0</span><br><span class="line"> Missing replicas:              0 (0.0 %)</span><br><span class="line"> Number of data-nodes:          3</span><br><span class="line"> Number of racks:               1</span><br><span class="line">FSCK ended at Sun Mar 03 14:44:45 CST 2019 <span class="keyword">in</span> 76 milliseconds</span><br><span class="line"></span><br><span class="line">The filesystem under path <span class="string">'/'</span> is HEALTHY</span><br></pre></td></tr></table></figure>
+<h4 id="直接dn节点上删除文件一个block的一个副本3副本">直接DN节点上删除文件一个block的一个副本(3副本)</h4>
+<p><strong>删除块和meta文件:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@yws87 subdir135]<span class="comment"># rm -rf blk_1075808214 blk_1075808214_2068515.meta</span></span><br></pre></td></tr></table></figure>
+<p><strong>直接重启HDFS，直接模拟损坏效果，然后fsck检查:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">-bash-4.2$ hdfs fsck /</span><br><span class="line">Connecting to namenode via http://yws77:50070/fsck?ugi=hdfs&amp;path=%2F</span><br><span class="line">FSCK started by hdfs (auth:SIMPLE) from /192.168.0.76 <span class="keyword">for</span> path / at Sun Mar 03 16:02:04 CST 2019</span><br><span class="line">.</span><br><span class="line">/blockrecover/ruozedata.md:  Under replicated BP-1513979236-192.168.0.76-1514982530341:blk_1075808214_2068515. Target Replicas is 3 but found 2 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).</span><br><span class="line">...............................................................................Status: HEALTHY</span><br><span class="line"> Total size:    50194618424 B</span><br><span class="line"> Total <span class="built_in">dirs</span>:    354</span><br><span class="line"> Total files:   1079</span><br><span class="line"> Total symlinks:                0</span><br><span class="line"> Total blocks (validated):      992 (avg. block size 50599413 B)</span><br><span class="line"> Minimally replicated blocks:   992 (100.0 %)</span><br><span class="line"> Over-replicated blocks:        0 (0.0 %)</span><br><span class="line"> Under-replicated blocks:       1 (0.10080645 %)</span><br><span class="line"> Mis-replicated blocks:         0 (0.0 %)</span><br><span class="line"> Default replication factor:    3</span><br><span class="line"> Average block replication:     2.998992</span><br><span class="line"> Corrupt blocks:                0</span><br><span class="line"> Missing replicas:              1 (0.033602152 %)</span><br><span class="line"> Number of data-nodes:          3</span><br><span class="line"> Number of racks:               1</span><br><span class="line">FSCK ended at Sun Mar 03 16:02:04 CST 2019 <span class="keyword">in</span> 148 milliseconds</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">The filesystem under path <span class="string">'/'</span> is HEALTHY</span><br><span class="line">-bash-4.2$</span><br></pre></td></tr></table></figure>
+<p><strong>手动修复hdfs debug</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-bash-4.2$ hdfs |grep debug</span><br></pre></td></tr></table></figure>
+<p>没有输出debug参数的任何信息结果！<br>
+故hdfs命令帮助是没有debug的，但是确实有hdfs debug这个组合命令，切记。</p>
+<p><strong>修复命令:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-bash-4.2$ hdfs debug  recoverLease  -path /blockrecover/ruozedata.md -retries 10</span><br><span class="line">recoverLease SUCCEEDED on /blockrecover/ruozedata.md</span><br><span class="line">-bash-4.2$</span><br></pre></td></tr></table></figure>
+<p><strong>直接DN节点查看，block文件和meta文件恢复:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@yws87 subdir135]<span class="comment"># ll</span></span><br><span class="line">total 8</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 56 Mar  3 14:28 blk_1075808202</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 11 Mar  3 14:28 blk_1075808202_2068503.meta</span><br><span class="line">[root@yws87 subdir135]<span class="comment"># ll</span></span><br><span class="line">total 24</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 56 Mar  3 14:28 blk_1075808202</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 11 Mar  3 14:28 blk_1075808202_2068503.meta</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 18 Mar  3 15:23 blk_1075808214</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 11 Mar  3 15:23 blk_1075808214_2068515.meta</span><br></pre></td></tr></table></figure>
+<p><strong>自动修复</strong></p>
+<p>当数据块损坏后，DN节点执行directoryscan操作之前，都不会发现损坏；<br>
+也就是directoryscan操作是间隔6h</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dfs.datanode.directoryscan.interval : 21600</span><br></pre></td></tr></table></figure>
+<p>在DN向NN进行blockreport前，都不会恢复数据块;<br>
+也就是blockreport操作是间隔6h</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dfs.blockreport.intervalMsec : 21600000</span><br></pre></td></tr></table></figure>
+<p>当NN收到blockreport才会进行恢复操作。</p>
+<p>具体参考生产上HDFS（CDH5.12.0）对应的版本的文档参数:<code>http://archive.cloudera.com/cdh5/cdh/5/hadoop-2.6.0-cdh5.12.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml</code></p>
+<p><strong>总结</strong><br>
+生产上本人一般倾向于使用 手动修复方式，但是前提要手动删除损坏的block块。</p>
+<p>切记，是删除损坏block文件和meta文件，而不是删除hdfs文件。</p>
+<p>当然还可以先把文件get下载，然后hdfs删除，再对应上传。</p>
+<p>切记删除不要执行: hdfs fsck / -delete 这是删除损坏的文件， 那么数据不就丢了嘛；除非无所谓丢数据，或者有信心从其他地方可以补数据到hdfs！</p>
 
                 
 
@@ -249,12 +249,12 @@
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/article/Error/Linux  oom-kill 和 clean机制/" data-toggle="tooltip" data-placement="top" title="Linux 的Oom-Kill 机制和 Clean机制">&larr; Previous Post</a>
+                            <a href="/article/Mysql/MysqlInstall/" data-toggle="tooltip" data-placement="top" title="MySQL 的安装和配置">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/article/Linux/Linux04Vi、磁盘、内存、进程/" data-toggle="tooltip" data-placement="top" title="Linux Vi、磁盘、内存、进程">Next Post &rarr;</a>
+                            <a href="/article/Error/Linux  oom-kill 和 clean机制/" data-toggle="tooltip" data-placement="top" title="Linux 的Oom-Kill 机制和 Clean机制">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -304,7 +304,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1调度工具的选择"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1.&#x8C03;&#x5EA6;&#x5DE5;&#x5177;&#x7684;&#x9009;&#x62E9;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2crontab的使用"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2.crontab&#x7684;&#x4F7F;&#x7528;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#3后台执行脚本"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3.&#x540E;&#x53F0;&#x6267;&#x884C;&#x811A;&#x672C;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#4软连接"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4.&#x8F6F;&#x8FDE;&#x63A5;</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#校验hdfs的健康状态"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x6821;&#x9A8C;HDFS&#x7684;&#x5065;&#x5EB7;&#x72B6;&#x6001;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#直接dn节点上删除文件一个block的一个副本3副本"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x76F4;&#x63A5;DN&#x8282;&#x70B9;&#x4E0A;&#x5220;&#x9664;&#x6587;&#x4EF6;&#x4E00;&#x4E2A;block&#x7684;&#x4E00;&#x4E2A;&#x526F;&#x672C;(3&#x526F;&#x672C;)</span></a></li></ol>
         
         </div>
       </aside>
