@@ -141,14 +141,14 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -211,15 +211,48 @@
 
 <div class="post-preview">
 
+    <a href="/article/Hadoop/hadoop04HDFS副本、读写/">
+        <h2 class="post-title">
+                                 
+            HDFS 副本存放策略、文件读写流程
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            HDFS 副本存放策略、文件读写流程、PID、常规命令、磁盘检查、数据均衡
+
+HDFS 副本存放策略
+HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.replication
+第一个副本:
+假如上传节点为DN节点，优先放置本节点；
+否则就随机挑选一台磁盘不太慢、CPU不太繁忙的节点存储副本
+第二个副本:
+放置在于第一个副本的不同的机架的一个节点上
+第三个副本:......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-20
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+              <a href="/tags/#BigData" title="BigData">BigData</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/article/Error/Link/">
         <h2 class="post-title">
-            
-                <i class="fa fa-thumb-tack" style="color:#F4711F" ></i>
-                <!-- <i class="fa fa-thumb-tack" style="color:#F89E8C" ></i> -->
-                <!-- <i class="fa fa-thumb-tack" style="color:#1CB7ED" ></i> -->
-                <font color=#F4711F>置顶</font>
-                <!-- <font color=#F89E8C>置顶</font>  -->
-                <!-- <font color=#1CB7ED>置顶</font>  -->
                                  
             相关连接地址
         </h2>
@@ -535,40 +568,6 @@ sh脚本文件：
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/article/Linux/Linux03用户、权限、搜索/">
-        <h2 class="post-title">
-                                 
-            Linux 用户、权限、搜索
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1.用户和用户组的查看
-用户命令：ll /usr/sbin/user*
-1234useradduserdelusermodusernetctl
-用户组命令： ll /usr/sbin/group*
-1234groupadd	groupdel	groupmod	groupmems
-123456789101112[root@localhost sbin]# ll /usr/sbin/user*-......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-07-10
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Linux" title="Linux">Linux</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -610,11 +609,11 @@ sh脚本文件：
     <div class="tags">
         
             
-            <a href="/tags/#Hadoop" title="Hadoop" rel="5">Hadoop</a>
+            <a href="/tags/#Hadoop" title="Hadoop" rel="6">Hadoop</a>
             
         
             
-            <a href="/tags/#BigData" title="BigData" rel="2">BigData</a>
+            <a href="/tags/#BigData" title="BigData" rel="3">BigData</a>
             
         
             
@@ -678,6 +677,10 @@ sh脚本文件：
     <ul>
       
         <li>
+          <a href="/article/Hadoop/hadoop04HDFS副本、读写/">HDFS 副本存放策略、文件读写流程</a>
+        </li>
+      
+        <li>
           <a href="/article/Error/Link/">相关连接地址</a>
         </li>
       
@@ -691,10 +694,6 @@ sh脚本文件：
       
         <li>
           <a href="/article/Hadoop/hadoop02Yarn部署和使用/">Hadoop 之 Yarn部署和使用</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hadoop/hadoop01Hadoop 安装和部署/">Hadoop 之HDFS部署测试</a>
         </li>
       
     </ul>
@@ -717,7 +716,7 @@ sh脚本文件：
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>
