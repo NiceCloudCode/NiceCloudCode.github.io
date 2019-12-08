@@ -141,14 +141,14 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -361,6 +361,38 @@ jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查
 
 <div class="post-preview">
 
+    <a href="/article/Mysql/MYSQL timestamp和datetime区别/">
+        <h2 class="post-title">
+                                 
+            MySQL 中 datetime 和 timestamp 的区别
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            占用空间
+12datetime	8 字节	yyyy-mm-dd hh:mm:sstimestamp	4 字节	yyyy-mm-dd hh:mm:ss
+表示范围
+12datetime	'1000-01-01 00:00:00.000000' to '9999-12-31 23:59:59.999999'timestamp	'1970-01-01 00:00:01.000000' to '203......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-16
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/article/Hadoop/hadoop02Yarn部署和使用/">
         <h2 class="post-title">
                                  
@@ -524,40 +556,6 @@ show processlist
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/article/Error/Linux  oom-kill 和 clean机制/">
-        <h2 class="post-title">
-                                 
-            Linux 的Oom-Kill 机制和 Clean机制
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Linux的oom-kill和clean机制
-
-oom-killer机制: 大数据相关进程是非常消耗内存的，在Linux内核检测到系统内存不足后，会触发oom-kill，挑选占用最大内存的进程杀掉。
-如果我们的进程突然断了，首先查看日志找EROOR，有ERROR具体分析产生的原因，没有ERROR但是INFO信息中断，很可能就是触发了oom-killer机制。
-解决方案：
-使用free -h命......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-10
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Linux" title="Linux">Linux</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -611,7 +609,7 @@ oom-killer机制: 大数据相关进程是非常消耗内存的，在Linux内核
             
         
             
-            <a href="/tags/#MySQL" title="MySQL" rel="2">MySQL</a>
+            <a href="/tags/#MySQL" title="MySQL" rel="3">MySQL</a>
             
         
     </div>
@@ -683,7 +681,7 @@ oom-killer机制: 大数据相关进程是非常消耗内存的，在Linux内核
         </li>
       
         <li>
-          <a href="/article/Hadoop/hadoop02Yarn部署和使用/">Hadoop 之 Yarn部署和使用</a>
+          <a href="/article/Mysql/MYSQL timestamp和datetime区别/">MySQL 中 datetime 和 timestamp 的区别</a>
         </li>
       
     </ul>
@@ -706,7 +704,7 @@ oom-killer机制: 大数据相关进程是非常消耗内存的，在Linux内核
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>
