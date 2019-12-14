@@ -18,7 +18,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/page/2/">
+    <link rel="canonical" href="http://www.ruozedata.com/archives/2/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -141,14 +141,14 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -211,6 +211,76 @@
 
 <div class="post-preview">
 
+    <a href="/article/Mysql/Mysql01/">
+        <h2 class="post-title">
+                                 
+            MySQL 建表剖析
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            创建数据库
+核心三条：
+123create database bigdata;grant all privileges on *.* to jspon@'%' identified by '123456';flush privileges;
+在登录mysql的时候 mysql -urooot -p   -和p之间不能有空格
+show processlist
+12345678mysql&gt;......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-13
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Mysql/MysqlInstall/">
+        <h2 class="post-title">
+                                 
+            MySQL 的安装和配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Mysql安装和配置
+注意：在安装时候要注意命令是在哪个用户，哪个目录下面执行的
+1.上传压缩包
+上传压缩包到/usr/local tar-zxvf mysql-5.6.23-linux-glibc2.5-x86_64.tar.gz 解压
+2.检查以前是否有安装
+123ps -ef |grep mysqld rpm -qa |grep -i mysql
+3.建立软连接
+12cd /usr/l......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-12
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/article/Error/HDFS Block 损坏恢复/">
         <h2 class="post-title">
                                  
@@ -231,7 +301,7 @@
         </p>
         <div class="tags">
             
-              <a href="/tags/#Linux" title="Linux">Linux</a>
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
             
         </div>
     
@@ -490,11 +560,11 @@ sh脚本文件：
     <div class="tags">
         
             
-            <a href="/tags/#Linux" title="Linux" rel="7">Linux</a>
+            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
             
         
             
-            <a href="/tags/#Hadoop" title="Hadoop" rel="7">Hadoop</a>
+            <a href="/tags/#Hadoop" title="Hadoop" rel="9">Hadoop</a>
             
         
             
@@ -502,7 +572,7 @@ sh脚本文件：
             
         
             
-            <a href="/tags/#MySQL" title="MySQL" rel="3">MySQL</a>
+            <a href="/tags/#MySQL" title="MySQL" rel="4">MySQL</a>
             
         
     </div>
@@ -558,6 +628,14 @@ sh脚本文件：
     <ul>
       
         <li>
+          <a href="/article/Mysql/MySQL分组求TopN/">MySQL 分组求 Top N 问题</a>
+        </li>
+      
+        <li>
+          <a href="/article/Hadoop/Yarn资源调优、调度器/">Yarn 资源调优、Yarn 三种调度器</a>
+        </li>
+      
+        <li>
           <a href="/article/Hadoop/Hadoop之MapReduce/">MR on Yarn、文件格式、文件压缩</a>
         </li>
       
@@ -567,14 +645,6 @@ sh脚本文件：
       
         <li>
           <a href="/article/Error/Link/">相关连接地址</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hadoop/hadoop03架构、小文件、Block块/">Hadoop 架构、小文件、Block块</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hadoop/hadoop03jps正确姿势/">Jps的正确使用姿势</a>
         </li>
       
     </ul>
@@ -597,7 +667,7 @@ sh脚本文件：
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">12</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>
