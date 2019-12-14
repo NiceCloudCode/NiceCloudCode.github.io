@@ -142,14 +142,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -225,7 +225,7 @@
 <h4 id="6查看文件内容">6.查看文件内容</h4>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat		文件内容全部展示</span><br><span class="line">more	文件内容一页一页往下翻，空格键往下，q退出，回退不了</span><br><span class="line">less	查看文件内容，上下箭头进行网上往下，q键退出</span><br></pre></td></tr></table></figure>
 <pre><code>应用场景：
-	配置文件	内容较少可以使用cat more less
+	配置文件	内容较少可以使用 cat more less
 	实时查看	tail -f xxx.log
 				tail -F xxx.log -f+retry
 				Flume exec source 切记使用 -F
@@ -250,7 +250,7 @@ cat xxx.log | grep -C 10 ERROR  前后各10行，经常使用此来迅速定位E
 </ul>
 <ul>
 <li>
-<p>d.tail -300f message  实时产科男倒是300行文件</p>
+<p>d.tail -300f message  实时查看文件倒数300行文件</p>
 <p>tail -300F message  不能这样写</p>
 </li>
 </ul>
