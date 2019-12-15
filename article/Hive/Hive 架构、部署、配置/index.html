@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Hive架构、部署、配置 - BigData@Jackson | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/Hive/Hive 架构、部署、配置/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Hive" title="Hive">Hive</a>
+                            
+                        </div>
+                        <h1>Hive架构、部署、配置</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Jackson on
+                            2017-09-02
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="hive-概述">Hive 概述</h3>
+<p><strong>Hive 官网</strong> <a href="https://hive.apache.org/" target="_blank" rel="noopener">https://hive.apache.org/</a></p>
+<p>The Apache Hive ™ data warehouse software facilitates reading, writing, and managing large datasets residing in distributed storage using SQL. Structure can be projected onto data already in storage. A command line tool and JDBC driver are provided to connect users to Hive.</p>
+<p>Facebook开源，用于解决海量结构化的日志数据统计问题<br>
+构建在Hadoop（HDFS/MapReduce/YARN）之上的数据仓库<br>
+Hive的数据是存放在HDFS之上</p>
+<ul>
+<li>Hive底层执行引擎：MapReduce/Tez/Spark</li>
+<li>只需要通过一个参数就能够切换底层的执行引擎</li>
+<li>Hive作业提交到YARN上运行</li>
+<li>提供了HQL查询语言，和SQL类似，但不完全相同</li>
+<li>适用于离线处理/批处理</li>
+</ul>
+<h4 id="基于hadoop处理大数据的弊端">基于Hadoop处理大数据的弊端：</h4>
+<ul>
+<li>面向MapReduce麻烦(编写Map、Reduce、Main方法、提交jar包)</li>
+<li>对数据库人员不友好</li>
+</ul>
+<p>Hive产生的背景：<br>
+很难对HDFS上面的文件进行相应的业务统计分析，使用MR会损耗大量的时间</p>
+<h4 id="hive的优缺点">Hive的优缺点：</h4>
+<p>优点：可以使用SQL语句进行统计分析和查询</p>
+<p>缺点：如果底层的引擎是MR，那么Hive的性能必然是不高的</p>
+<h3 id="hive-的架构">Hive 的架构</h3>
+<p>Hive架构图<br>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAy8AAAM+CAIAAACcxalZAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAGFeSURBVHhe7d0BbBvnYf/9syXTisxartom6N4ojpTISFdF6Rr8hyJt4reKrC7R6vdvNdUKbMFmzG+UtjHWRCu0osZQFCr6JzInLZysVf4u1MEd0KqdvL9Txa2iqK+SNgg2dGsVpTWsWHLsbEWSVjUVWpZp0Xqf5+654/F4pEiK1HMkvx8c7IfH05E8Hnk/Ps9zz21aXV01AAAAoMlm9T8AAAB0II0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADotGl1dVUVkZ9o9HXDuL6hQd0EABTuphMfVyVUkzN7n1al6kYay9/rMy/8r1++NqduGS0773riIzeoG4DCoaU6cWhZEx8N5KLaPkoVlMZeP/fyd89dUDdsN9x6Z29OtVfRl2amf+r96x0fufXWD3n+/NwL977wmirbWm77+BNtVJJVJw4tyEU1pzQ+I1i/iv8EVVIam/nhA7/05qmOO//ib3Oqt4qOjD397bQ09ld/+qepYc53MWHn3//5nR9SZVQ2Di1Yv2oIZ3xSUCIV+fGhFz+QE3FosSZ1G1gHZ3eqvD2qUl8XgqMi9zHqxpQc68aMl376nS97GyrFgrc91X3r9eoGKgkHFWyYcv/Fv84PSzU35laz9X/HVsaeQxpTck1jhnHuH/75+UlVtvguhnLHoQUFqM5DS16vmo8GcpHvR6nc9yvSmJJ7GhPLRl96+YXvRM1yw86/SO/pj/LGoQVFV6mHllxeF58RrF/F72mkMSWfNIaKxaEFG6My9rTsr4JPCkqhUvc6evEDypofcmtSt4F1yGV3yiWxBROfFJRO9s9O+X5qSGPAGji0oHTK99Di+9z4sGDDZNrZyjSQ0VKp5NFS+XrU6jLm0tDgnFDpc6/RcP0azZ3R19P+KPs1l14/d+7Fc6+di0bPqhkNN+7c8ZGmGz7ElZoKlOnQokrAhiij/TD9qfJ5gRaVsSuSxpSc09gaY/Gnn3EpZX0aeXVZk9cM+I7rukxpdnTcduffcmGAvHFoQUCUy67oeZ58XqBRBeyNtFQW2Q0f2alKbmcX0yvMbNFzz3ujmMhUO+9ID1TRc/8w9vSXs0Ux4cLkL5++d+zl19VNFIZDC3Rh3wOqEGms2D50g08cm3vtXKZ49Pp5n3TVsvMG71iy0Zcf+uHzk+m5zdeFXz5AIAMAoDxUeho7u3jupXM5TefUX6zbDe1/tUMVky689qJ/7Vj0xdfSE9bOv/A2NZ77hx/+0r9KbMeOFlVKJQLZT4v2mgAAQMlUer+x9Smg35iUTw82v35mO+965iPuRX07lhktO+/6u484VWjRl376wpe9wY7x0nJHJxgER1nsjXxkEBz0G4Of65t2ptdXTfrWvp17zafL/w2pqe3ctE8UE/kvGcWEhg995E//3ttGeuH585n7qwEAgEAgjZVCww13pTdWvvbaS6qU9NK59CuQ70ypF/NdZsdtf+d31mR6l7Us/dUAAEAwkMZKouGOnT5xLK0f17mfpgWtltvaP6SKFr9l0vv4W27Y2aFKtoz91QAAQECQxkrDt7HSO85FcuxWx467mlIrvXyaMtOWyebCOdIYAACBVulprGXHzo6dOU3+ZyYWzK+x0tNu6DO2RdowY6/7DFR24ds//M69/+w7+Qw8C5SZlZPnluUUXVEz8vTqueVXVREAykOlp7Ebb73zbz+Sy9Tu09NrXRp6b00beCyl3dBnbIv0JsjXL6R14EfFWzn5crTv6YUP21PfCxdPVk8VZ/Ty4FT0XjFN+6exV89d7HshKqavn0tfYOXrT7/ROhVtPbbwdSqFAZQPWipLJ70Xl/skR58h+NOHGUO1efXl6IeP/e7eXyw/deHKi/b01NnYv5ItHNHLT51dFtOIzzZZ+ZX6VF35FVsMQPkgjZWQz1WS5i44aeyCt5ly587U/vuoNq++vND6i+UX1S3jjh11D9y45Y4iV9pWtrqhvQ1fu7HugQ+8ayjjhWGBgpn11rJq9qLVGu7U1Lqmi1/3ayv3XfKkT/2upboryKsSVw1XinXV8FQ+C+/8+z+/U6Sul376nS+n3uP7VP1e1I6/uvNOn6tYZnB9A/VtudA/eOC56KapZat4xwfe9bNba62yaeXVaO3NVfJGRi9++ERMRtIbG1bvrLPmuZmZ9YoopG2lysHor0G18vWnf/c5+Y1c98z9Dfe49kYfO+qeuavhHvtjm3nJLV/b2/g3rk/3qy9H/9L1q8zxwO7r+I2RCaO/IjufxkprnIv0cSu8w4xl09AgMlaOk/oTBNzK13+ZKYoJ7igmfzR/+Ok3Nh0zJ/Gj+eWUH+InX7B+TEe/HpVf6x9Wi0XNH9bm39pz3D2rCvsrI2o9mQV5l7xXPJnkb/1M60xZgxBd/voLag0ffnqdFQArYlXWg540b+f6HNyv8djCh1/gPADka8sdO+SkbgkXlu894dd/UdZ5m9Xe6vaVzz2vatoEKsirFmmstHwaK+Wg/GnjVqQNM6b4jZTBCPuVyOnwVHcoW33Pct/TslfZi0596YUrT/0i2vp08ttcfLmbvc0SI8+/kfxaFweG56Nff8H8W3vO506oyGIq5K9ePbdoPhn7F798Mr/b9IKKlZnWmfq4y30nop87q9bw4oXYvVNmxVjBVGc7dSu35yArPJKvUfzJWbFJ3QsAa7jjA9t/9vFGMa3ef93s7jrfpGW548ZtQ3c2DN3Z+LO9YbXYhZVZq3Au6tSfiV9lYlU/+7i55MevW73/XZ/nt3VFI42V2Iduvc0bp6LRl7zjVmQeQqyh4UZVSpr75Qt+HZhRxqKJGauwo7bVKvg5+UL0KStn7Ag/s/dds3sbvmb9aL4Q+0tXpZTpyotGnVxmt/ONv/y5s1se2C3/6gFrjrH8r94BifP9q5oHPtAwu1ccKuTRQj2Zs5dTc4wIQ3VfM59t+hrkK7JKN4Zn3Y9bZNmfg9X2ZIiXKV+IdYy8sDzo3aRATm6+ocGVtC6PZfq2bqhpswrqU597BTkqEGms1NIHHrtw4aeecSvShhlzueFTt6XXUl/49g9feClLIIueG/npD//Be6RFcEVXcqgQWv5Xa7jgHeHZj2+7p0F8O9f9zcdVvHjxFxc9dTkP3NYgl7lh2yE70Iuf70M3yL8a2q36Y82kjemV11/dfGvD0K116iARNXbdaDXTJE6n7psP7G74G/PZpq3B9Yru3Haz+bg/s5cprrWfw40N4mXKQsPWXvMj9+LZy7RXokANzicow+m90RX7p8iWB27bdrMs5FhBjspEGiu59KskvTaZ2mks45WOTNe3tad1PhNe+/IPv3Pv2AsjM+deOnfu9aj896VzL4/89IWH/vk79/7w+W+nDWaGIGuoXbtOKFl/VmN+d1tq/1DtXp4MtOUP7YTfavdlaWtY8ys+378SR5QF1d3qxO/uVY0snsNPcp1evq8ol02Rtxyew9kls4eZmBatqrJk+xGQP+cT5PnN8+Ivfqc+L+JnwI66Z/Y2qr75uVWQo1KRxkrP9ypJLmsOM3bD396Z1vvMcuG1b//y+S+/8PwDP5T/fvmFX377tbTx/VEOnDaLLO0aOdWfbaTlvmPiiHLlRWPLHTfWPfCBhq+purGcBeEVJZ+D1cNMTmoGUGpmT3917kvgPuDYUKSxDeB3laSkXIYZu+HOp3zaK1FB6v6n3a6R3u1XcSqNLiRcCzitGzW7sof6ojt32ery9cDuxp/dKZssu/PdR32rwTb4mOQ8hxsbzN5v7kkOYQAUZtaO9Z7a5TtkV8t3mb0krc7+8tyXvnMZPg6oGqSxjZDeWJnUcUNOI1tc3/anT91Z7ItpIkDuaXe6/cZaj8lxK05GV16NLp98+WLf02+YX9aqP5NY4FF70MhXX16ye8Fv3eDo8Go0oUrK8qP2qZG5cmoEz0b7rFcUXXY6Mq/twmV1RUt1XUs1Oz/OVj275B6MQGz5VwtbISqZ8+NnTXZ/RJ9W8lrZRVL2kmz4pw+4WjNzqSBH5SKNbYjMjZV5DDN2/Q13PvHnH//729bOZC07b/v7P81x2FsERYPswG7/OJbjVtx74netJ6L3/iKmzqM0av/mLpXYnpoyu54ce8M+H77uGb+BUkvq5hu22k9GjjS26Zh9vmce6j5vH43UKzoRVX22cvDi2Zi8nKU9DWYc1jy72r+5zdp0Vz53Qr6QD5vDp7WeWBoz5wJJuXbtWvn6087JwvXukV2zyqGCHJWrgsbiry7R6EvRqLH42k/VsWvHDTc03GBYI75ac5CXoAzlHF3ue37pKU/XpR1bvnaXPVp39GLf804+k+64MfxPd1rnZEknX3hD9g52DfDtDAKeHMvbHvffOZG+sL9yDy9+x40Nh3YsWR35rT9JX2f6GoSTLyzc61Sq7ah75rbaQWvIsbXG4vcw12l4hkrP8Tm8ei76l1POeGOmHeFnPr5NV0slY/EHysmXLxoNW1uNy4/+Un300j8C4mN4aGeNKJyOXh5Jjl2n9kMhueQHGv7JOns3etHZ69SnzLkQhbTlgQ/U/88bROxbmT2X+NezMeM2xuLPqAL2RtIYIAXtw/yqM4qE/ymNK1Y7WoZ7N5L5TBpqXad5FsJ8vbWaR1SKrlgVEtq3KmksUOxM7/DJWD5yvTJS6g+Pc9EPe34Y2LgyUhYVsDfSUgkEkepZkjEWZL93I5nPRJULZ74cVdZmjW0OmBlr7xqnd9yxo+5ru9+1+vFkFMtohxxaOaUOWI4c2/CA+wpLlh2ZR2lBRaBuDJCq54c+go+6scCx6k2L8cMjd2tVkCOJujEAACqdVW+qbmwQq6aWKFYlSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDACwXjed+LgqARurMvY90hjgg0MLdCmXfe/M3qdVySaeOR8cbCTfXS59zywLm1ZXV1URqG6+B5Iy/WCjHJXdHpgle/HBQUlV3r5HGgMUDi3QpXz3vSzP3MJnB0VUwfsbaQxI4tCCjVQZ+9uar8LBxwcFqJIdjDQGpODQgpKq1B0s99flxocIHlW7I5HGAB8cWlAU1bYjFfZ6gYJVzLcuaQzIiEMLNlhlHFr44GADVNivX9IYsAYOLdgAFVmxymcHRVeRnxSBNAbkikMLiq5SDy3p+PigMFXyGSGNAYXg0ILCVE/8ygWfI3hU7QeENAYUDYcWeJC9AOSCNAYAAKAT16kEAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnTatrq6qYmAsNLWqEoKt8fysKgEAgEIFKI0RwsoXsQwAgIIFIo2RwyoDmQwAgALoT2NEsQpDJgMAIC+ae/ETxSoP7ykAAHnRVjeW/ZhN/Urw8Q4CAFAUgUtjHMXLDm8lAADroSeN+R6/OXiXtQC+p5uOvaFKAICqsXr/dapUPjT0GyOKVSTfdzBTtRkAAHBsdBojilUwAhkAAAXQf2Ukolgl4d0EACBfG5rG0qtJOHhXnvT3lOoxAACy2NBe/KSxKhGQN9rTi78c+3UCANZUAd/2OlsqiWKVincWAIDcbVwao7mqmvHuAwCQiba6MapPKhvvLwAAOdJ/TiUAAEA1I40BAADoRBoDAADQiTQGAACgE2kMAMrKpXFjpsOcHjIuqXkAytrGjf7qGeOAc+4qnvZ3nNFfsUEuPWH81ylV9lW/13jnTcY1N6mb6zJu/NsnVVG63/jjJ1QRqFaM/goAVe/SKWPhWLbp9U8aL3/Q+LcGszbrjPqrwiycUAXlV1SPARWANAYAG2XpmIxlr66jNuuaW1RB+UPjGlUCUL5IYwCwsRa+KCvJCnPNQ8bN96uycbtxM82UQCUgjQFAUV3/fePW/1DTzd83Gp3w5LJ0zJgpNEg1PmH8cdScJo1GNQ9AWSONAUBxmR32ramxS1ZfieR0fVomW/qisaCKAKocaQwASu8PnnC1MNr+O7V67NIZ16TmyfLCuJzcc3wXc0/+1lxGPNYTxqsPyUk8t4UM63GvJMvzBJAzRrhAqTDCBarFgogvx1RZuP4/jD/IMJjFf3cYr/9claXbjVsn7W74Z4yZDxpLVtkw6r9itIlI5FperTZ1hAtrMeHVhpSatpujaY2Yqev3DI1xadz4r/9lLLifm+V24/r/nfpycnyewMZhhAsAQM7+4O9UQfl5tpokb3TLytM7bWFcFRyXTrqimFh+ryoIl54wXv6kXxQTfm68/kHj1bS1ueX1PAH4IY0BwIbp8lZZLWdqVRzNL+K405XgHZbMMH4/qgqWxi5VkFHsi6psqb/faLxdlS0LIqupYpo8nycAP6QxANhA9alBJ5MlO+LIbHR/Dn/lyXmeUWHPpFR91X8lufB/uaPY7catUaPtCePmSeOP/yNlhZ4ubo68nycAH6QxAAgmJxs9YbRNrt0Z6//6iipIPzd+7651O5PaTHmPKlx6IrW3mdOJTbgpZYVLo5kbVfN8ngDSkMYAIJCu/9/5jbN/zT1GvSpKCydVQUhpuLxdXjTTktJ8eb+3FTVlhZm7uOX7PAGkIY0BwAZymvYsdZlqku7Pv5LpppT+Xu7arAXXKZ/1PcnwlPJkjhkzHanT/5tSo+bfxa2A5wnAizQGABtmPLU7/O1FrlV6Z48qSE5tVuqD/oE5IoZ0xlhWJUWEM88EYEOQxgBgo/z3/1IFJfM1v+s9VwfPjbex0hyZ4tJp84YlrTlynQp7ngBSkcYAYGOMeweDuP5hVSia1MZKq7uYu3NYykAYNxl1qiTV35+8vKbvRIskUDKkMQAovUupY+hLpelxldJY+SvzgkWuCOgMM2ZxD0ix9KuUK2ymTwBKhjQGAKUkctirHXKwe4+bM4zgtU7XPORqi/y58XvXEPzuYcYsdX+oCtLPjf/KOuY+gJIhjQFAUb3+QePfGpKT70WHrk8dW7W43FdJWnA3U9rDjDkaH07tZ/ZJ49UnZHWaQ5T/+yHj3zoyDzYGoAhIYwCwkW43bi5xHyx357DkeZGuYcaSbjL+wHOByy8aL7vSpCi/7hodA0BpkMYAYKM0fsW4ddJoLHUfrLSrYQruYcbcGp8wbk4NZAA2HGkMAErqdnm64vXfN/44atz80AYNW+9urLQkhxlLIwLZrd/3Xik86Xbj+r/boKcNVKtNq6urqlhiC02tqmRqPD+rSqhQ2t/xTcfeUCXT6v3XqRKATC6dSfYb41RKlIkK+LanbgwAYBPxq7FLTUQxYKOQxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOm1aXV1VxRJbaGpVJVPj+VlVQoXS/o5vOvaGKplW779OlYph/IufUqUq0/WV76oS8sQ+Awc7Q3GV9Nt+Y5DGUCoVmcaq9js0HYfYHLHPONhn2Bkcxd0ZSGN5II1VmwpLY3yN+uL4mgX7jK/q3GfYGXwVa2cgjeWBNFZtKimN8U2aHZksHftMdlW1z7AzZLf+naEC0hi9+IE18E26JjaRBxtkTdWzidgZ1sQmEqgbQ6lUQN1Y9u+IKqwQYoOsiU3kUc0bhJ3Bo3QbhJbKPJDGqk0FpzFiB1smE7ZMJlW4ZdgZMin6liGN5YE0Vm3KPY35fl/wNerGJvJgg6ypejYRO8OairiJKiCN0W8M8ME3aS58N4jvpqsG7DO5qJJ9hp0hF3yBuJHGAC++SXPH96mFfSZ3Fb/PsDPkji8QB2kMWBvfpFmwcXyxWbKoto3DzpAFG8dCGgNSpP8s48tiTembqKp+3bLPFKBS9xl2hgJU+ReIhTQGAACgE2kMyIbftTliQznYFDmqhg3FzpAjNhRpDEiqwurx0qmSjck+U0TlvjHZGYqo2jYmaQzIiJ9reWFzCWyEvFT25mJnyEuVby7SGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAoGwk5ibjE3JKqBlFlijGmsVKzCc5X6InWXlIYwAABEJi4misfyB1OioyjbrblHiyL7ZfTEeuzKk5xTO/3N0a3d8Xbdq3vK6Vz1953HqS3ySN5Yg0BgBAMJwZi4+Mpk6R2P6uhe6B9cWjHM2vTFuFmZWNeDgkkcYAAAiY9p5Qb0+ovU3dnB5dOni09PVMHeGpoXrxuIfGw51qFjYGaQwAgGCp3ftg+HAkPHa8cWooZM2aHitB02Salo468bh9zeomNgppDACAoGrpCPVapfTWw/n40MBiU+tCU+ti90Bc3Tu/3L1v0ZzcjZuJoZSZsoNa9z7xh3IS8/utnvvzy/3WYgNxedMyn5gYEDOTCw+Z/djmzEd3zY9Z81EQ0hgAAIE1f/WUKnnED3bFBkdXzPLK9GhstxWhmrfsFTdnxBR/1olH81dOyDkrRveWFpnMovsj8ekZdaeYf8oObqfMxVTvMUFku67o/lExU80Q956Wq008+4h8dNf8+GDXQv+kuok8kcYAAAioxMQ3l1Q26gml9OUSmamnfmq8YWpANWUao/EJ+V/Nnu5a8/bKiedUV7O55+LmSmr33l1jJjNzbk94arbxvJjGww+3mHO84v1d6tHbe+qHxWONNwwPhHaZc4xdoUNDDfYa6tvNeSM/dlWqIQ+kMQAAgmVlsMtqAYzuH7XmhIYjdupSxJy6luaalgPXHFKd/a+eMSvDWg7UWY2bdlezxLNjZhVaW2hPs5E8cfL01Tmr8qw51NlRY5ZSTcZHrEJPeCxS1ykeq7mm80C4r0PMqumLiEKNleLmjM17recg1mn+jzyRxgAACLD2nvqp2bSTHNtq7fqsmptUbZUjdE+P+b/VWGlXhrXLZkrDSHZEW9ovMt++2FCG4V7n5q5ahd6PeYKgaT7ev8/qtbawuys2aNW3MTRGgUhjAAAES61sBDRbBs/PNo5F6vwbEjPrfNBqOpSNlXYzZejhA1YFWOjwePhQj9WaKRPbYF+022/4jLlZq1Oan8lYU1dsZGZFhEI5IsZQfa89GAcKQhoDACBozGZBMamb+WreYjUdTs9eedYKVe5uZ82hvsj287MNU0Mhq7/XdOSS2ecsRUurSmyn5rxZbUL1DwsNH98uR8To2OKtnkN+SGMAAFQauy//6NKg2fMs2do471xqqaalI/yw1abpp+VuJ6tdTLZmzsfn5hNnTqtbyuQldWYACkQaAwCg4jh9+U2he2TXe9N8XHYXa7WGH1tQZwl4Tti0NNc9rBo0Vwb7olYXsaau5WeTp23G98uRxhaa+qzGUBSMNAYAQAWy+/IbRvvANWlhyxxXzOrd3xOe8p6wqXRGtk8NqBoyt5YD2+wTOY3pmdreobBzEwXZtLq6qoolJjK1Kpkaz8+qEiqU9nd807E3VMm0ev91qpTZ+Bc/pUqmrq98V5WQmyrcgOwz61RJGzBwr2ViwKr6qj00vt17saP5hHXyY65d09TyNS3u9ZgzC+/c5lXwBizg2z5oqBsDAKACxU9arZDWMGMe+Z4loJZXt5T1nGeAFKQxAAAqR2JoYLF/INbdGjPHbq099FjeA2Rgw5HGAACoJKdXRkZVt/r2gW3eNkoEEWkMAIDKUbPnYH1vT6h3IDw13jimRnxFwJHGAACoIC0ddYcj4cMHQt5uXggu0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQBQNhITk3E5zSfUDFQC0hgAAIGQmDga6x9InY6K4KXuluavPN4X2y+mb5LGKglpDACAYDgzFh8ZTZ0isf1dC90Dy3NqEVQk0hgAAAHT3hPq7Qm1t6mb06NLB49SGVbBSGMAAARL7d4Hw4cj4bHjjVNDIWvW9NgVqscqF2kMAICgaukI9VqlmRXfNDY3Hx8aWOzet9DUKqfufbGhZD+zeP8+cdei2dCZEIupZWj3DBzSGAAAgTV/9ZQq+Uo8+0hscHRlekbdnp6JD3Yt9E+qmyLDTYvpdPxga1QsZs2bHl3aPRC3yggG0hgAAAGVmPjm0rRV7Al1WgWPXaFDQw1Ts43nxTRe327OG/lxatgSgaynfmq8wWn3NEbjE6qEICCNAQAQLCuDXVbLY3T/qDUnNByxg1SKmr5IuK+jpsW8MWds3mt1/D99NbUtUvx5XUtzTUtHeLjHmnP1jHvgDGhGGgMAIMDae+qnZsP+FWPCvOwcZnUI290VG7SaLD2dzNpqrbiGoCKNAQAQLLWy8XFcTudnG8cidRmz1GSsqSs2MrMi8lZvT+jQUH2vPSgGygppDACAoGmukQ2LzTXqZgYTqn9YaPj49sOyyXLLLvM2yg1pDACAspQ4c1qVlMlLJ+yTK1FWSGMAAJSlmj3dtWYhvl+ONLbQ1BdXJ2CizJDGAAAoTy0Hth1yrp40U9s7FHZuoqyQxgAACISavuPmsGGz2/ua1Syv5roxa2gxNeCF+Seqv//2wx0hew3WOZihw9bCx5PnAXRGrAUyPwQ0II0BAFDWcujvj2AjjQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADotGl1dVUVS2yhqVWVTI3nZ1UJFUr7O77p2BuqZFq9/zpVymz8i59SJVPXV76rSshNFW7AQl7y3OTykz+Onzpt3dp8S3foswdCzoVrqkxF7TP/1qAKWLfx/3NP7jtDAd/2QUPdGFAi84mJo7HufYvO1H80PqfuSxIH5v4BZ5mY3zJyPf0DYlqemFezUK7m4/37Fnb3LY2MrkzPWFN8JBLb3brYP6kWAVB9SGNAKUzGurui+yNx+4grp5HI8rPuOJXzgfnMWHxkVE5n1AyUqXh/V2xkRt1obwv19tSqG8bKSN/iEGkbqFK0VKJUqrilcn65u2tp2iyKI+7e7tBNxtWTsyJOGYfGt/c1m3eIA3NrbMQqmovdsuuqiGXqtlHrWjIxtC86KA/h7pnBREtltpc8MbCwf9QstdVPHa+zmyYTEwNRv/lVopL2mSrc/4ur4A1ISyWAdPMrVhQzesJjx8N9B0KdB+oOR7afn922x85SEwN2FBMH4NlGsZi5QMNwjzV3ZfCR5fRmTZSx+eXHrchlhIZTIldNZyTcaxVnlp60qkXnl/utxuuBuHlbSAypFu3YhJpjmo+L+U2t4sfPQtO+xf7JhJov4r5aw/KcrIWVfzg0uWy3ibv3LhH302cC2EikMaDY5uauqtLpq6mHtxp1DM7rwIyKMPdc3M7ooU6rkBT67IBqsjw1p+LUKavx2rphOW01Z6tbkqyFjQ06VaozKyN90WSAs9ZweuXJR2IjsnzVaN6y17BWEk82ms9fOWEuaXRvqbJqOSA4SGNAsbXcHWq3SjNLu/fF0rve53tgRiVpb61RJZeWFvVdPD2b+5se71cN4qHh8cbzs41T5p4zPbqc0v9sJj4yU9veE+rt2XyTUbOn29q7Vk48px7I3htr997t88QAbAjSGFB0zXVH7EQljoX7uxaaZCORz1G2eAdmBN3crNMpsEgm41Zjd+9QuNNsAbd/BiSTlkl2NxyLhA9H5GItB+qsytfpsStmxW3i2THzibWFnGZ0ABuONAaUQMuB7VNDdg2ZMBMfdDUhFf/AjMBrabUDuh+ndds3oPty/mTkiNXra7H7EXXuSEqO98as0D1W30SrsVI2U8pb7TRTAjqRxoDSaOkIj802yEzWpuZMj8asoSuKfmBG8CWrPFWllJtdQWUYt7TknMacTG/1D5OTmpFd54P1ThWa3UwZevgAOxugEWkMKKEamcmOO2dKGiM/ltVjRT8wowx0hJzzMw4eTW2DnrxkjmAihO7psAprczJ975DsNJYyRULWXf6at+w1fyFMz1551op0Pv0XAWwk0hhQcjWdH7OPjtZZlsU+MKMcJM/PmI5EuweWJyYTc9b4FH2qCbt94BpvKhqNW2eBzCV3DMU5WWTkSMpwFXNitaqcid2Xf3Rp0Dy3t9fZPwHoQRoDim4yZnXbVwdFccQ9Yg86sGuz2TunoAOzyHLPxScmk9NaB10ES8uB7cP24PvTo0v7+6K73eNTtNUfcZoL7eorwzDPAmld2G3vGEnNdQ+rHmBLu1sXzK5jYsno7iNXzLnZOH35TeR+QDvSGFAKZrd9cYyUY3KKI66q1ag99KCqhMjjwJy0MhKJ7e9zptTrLKEcdEa2Tw3V99pdCVPMLB1MjvVa0/dY2LVYbe9Qw6G0v+qMNCT3IrvfWHu3lfizs/vyZ8j9ADYWaQwouuZap+e+o70tNJx6XaOcD8yoKC0ddYePN56fbZgaNydRcCpKR2PJsVubQ3Ixc5nzs9sPd9T0yb8SU9gVnmrEXiRmqlWZo46NHbASf+iw1YdsjUstMcwYEASkMaDomuvGzAOnfYwUR1N57SNrUCi33A7MzmHYMwX8mpXIrqal2ZxEwawobW+Tk3F6ufuoK4iby6hyZmpVeewP8ZPqypgMMwYEAWkMKBn7GLnm0VQttsaBGZWrM7J97Lg9qcqtUpAXu+wfiHWrK9bXHnqs2i5SDgQTaQwImI06MKMqnV4ZGVUX5mof2Eb1KhAMpDEAqBY1ew7W9/aEegfCU+ONY4z4CgQFaQwAqobsqhgJHz4QyqeTGYBSI40BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACaJSaOxvoHxOS+Brw0Z8+3rh/vWtI1HZXXurXudvFbUk7eh0AAkMYAANDtzFh8ZFRMK940NmvNj59RM5wlXVNEXuu2qXWheyDu/nOfJeXkfQgEAGkMAIByZF60w31V3OnR2O59flVfaknv8ggM0hgAAOWn9tBj1kU7Gs/PNgz3qEvcGjNLB496Wi2dJa3JfeF5BARpDACA8lbTGdk+NaAC2fTYFdoiyw1pDACA8tdyoK7XKs3QM6zskMYAAKgENbtUn7CrZ9QJmJaVwUcWu/fZ00BczUaAkMYAAKhsMyvTzqRmIVBIYwBQURJ+Q0/lqygrwQZLnJ6xCptvSr0qfHtPqNeZWmvUXAQIaQwANtbc5HL/gNNyFOs/mjJG1LrML3e3RuXQU77DHOSoKCtBgTyNjIkzp1VpbZPxEavQVttiFZTavQ+GD0fs6QBpLIBIY0Dx+Q6WHbeH0kYVm4/371vY3bc0Muq0HMVHIrHdrYv9k2qRPCVEthty6rHm7Xao9fTjLspKkJ+am3ZZhZUTz7lrJTNWd3mJDN2nOoT1HqxLTWMIPtIYUAJ+g2XH9nctdHNNkqoW7++KjaiDq9HeFup1xogyVkb6FofyzeuTsabWqMh2J5y9qiM8NVTf2xM6NL6OMaWKshLkqfNjIaswHblo/niTObt/X0xVd/WE0t+L08/FJybFtDw0sNjUtaQydE/4cIdVQhkhjQGlZHXXcAa/nh5NH5gR1WJiwD6yttVPzTaOHQ8fjmw3x+205q4MPlKEsN7SUXc4Eu7LXo+ylqKsBPnpCDt7gvnjTeZsO7uHhiMqq7mYi/WJaWlwdMWa1d4TnvJZEsFHGgNKSHXXGDveODVk//BlYMbqNL/8+KhVCg0fdzck1XRGwvYwUUtPqvbKeL8ajGB5bj4uaz5aF8yrEDqXjjYXsFumpiMX1cgF88v2H1p3udZjJFzrMXuqpa45uVumrmQi2cUtZep3fle41tMk5ie7/6e8CrMcy7v+r5p0RhqGB2rb1S2lvUdk9zUrKWvFYsPjjWOREG2U5Yk0BmyIlo6QZ2BG6yjbvc88honDYcqBKsthTHZKc/2V++DHcTG45p6L2w1J6U1Ooc/ao6ifmrPfMqtX2en4wa6YU/MxPbq0vys2Yd1IGaogOXLBKesPzbJk3RTraY261hM7OLDcn7rm3a5hqFJXYpbTplPWnfPL3a71iIcb6YsmR7SyFj698uQjsRFZvqrmw19N54HtY7ON58cbpszp/KwIWJ5OYDV98lJInmm7WKzTW5fpLLmdas7AI40BG2P+qjp6KYlnH5HHsGm7F9H0THywayHZldv/MJYY2hfdH4m7/mrllFOnwXGxHLT7jS/Q0qK+i6dnXdlaEO9UW2hYHpjDvaq9O/64rJSq+exQeNjOcLJeRNx8MPO5cjMrRk9YHN2dPxHxa8Ras11ra4zGVc5L1fJgWK7cmuw/N9rqj8hT8+L9qruSWJU88FsX55keXU7J+jPxkZlas9V+801qFrJqrmkxJ3UTlY80BmyExMQ3nT62dtXIrtChoYYp66fteL3VPDHy42T9hOQ5jM1fOWHlMHFkVX8Yflj9cOa4GGhzs3ZKzk9o+Hi4Ux6YQ4cfUzuJ2dhd09IR6rQznNG6pVPczHbwDj0cCYmje6dz8Rx5JWlzzcnuSp6xFRTx0HLlcjJORqxXIf7WrLCxh1ToHRKrkoWWu0Pmk/ScGFh7aHz7mDm8Qlr9DQCBNAaU0Mpgl9WkGN3v9BlSfWxr+iLhvo4aK0rNGZv3WjUfp6+m9ipLPYw5Qw+IxawDpzxSmsdgjovB1tJq1yr5mZtTVZXemjP3wFHNm2+xCgUMPJFcj3PxnLVGTEjjnIXQO6RavpynPXLEbAcX0yPqV0dKJV9baA87G5ANaQzYKN7euGb/LauP1+6u2KBV6eU50HoOY8nOZ0v7Rc7bF3MGmuK4GHDJtkif0zgSz46pmrNbWnJonPKO7bkR5o4uql8UrgEUkhV+Vju4nNQMAPkgjQElVCvbIn17407GmuTQUyviyCoHdhqqt3sFZRc6PB4+5AxSNRMf7It2m6e2cVwMOleS9o5yMnlJZXEjdE+WkaK8XQ830GRst9VG2VbvHkDBqfDrHTLbzd0T4ywAeSCNASWVoTfuhOofFho+vl0O7NSxRQ3EvabmUJ85SNXUkNUQaUxHLk1wXCwDyRMnpyPR7oHlicmEGr3CHqiifeAa7+mWM0tPquiWGLIrO9u7t3jqxrx9/4ss3q+eYejQY1uMefG0zSnZGm6MHHGPlJaYEy9NlQHkIhhpbC79MjIDsaG1rxMivsi8f1XMK76VjLpKnTUMgWvqlkP4OOMJoYKlXXtu8pLqnp/dvHN5Jdn5+mHV+VriuBh8LQe2D9v1mnKsir6obKG2z4FtH2gY87uA4Egkan4/RJ36s4edxZrtsalGY3IZ1xAVxZMYcoaDN+KDXeI5q0nW8DXXqZ1wZmm3+Q1mjr0S3X3kijkXQI4CksZm0y4jMxof9Jxclmbu6PJg2l+NjAX7vH05rKJ9lTo1K2l6ZmUksvR4Sp9rVKSaPd3WUTm+Xx7DFpr67MGospuPy+5irVbPsAW7H495kibHxXLQGdkuLzrkaZVuk2fX+kYxo60+2TAttIWG3V0Pm+uOOENOlIhzGm8GcsBSJ2La7ePt3Zs3vmcbUM6C3FLpOTPfK9nvtVTm7WE2i/WLU3YVcq50kaeiPxlo1XJg2yH7kDw9U9s7FHZu5iDZLcx9IRSOi2VBXnRIjsmpOhTKkUqOy7Nr1d1p9lgN0/aSnqbMlgPi3kbVN1HsCc11cuzQZPN06LB1Mzn6vzMiaHJVnRFrjj1GqHslTjltsuNjjYiY4qZ6OeboKmMHMj06AF+B7jfmOTM/1Vq/2NYn3t+60NSVMszmerkusO/W3lZrTuqmnxI8GZRWLkNgm8tYB9HZ7Yc7QqnHyAyHsY6wnKkOe9aZAe4LoXBcLCOqQ2Fub8caS/r2Tdxg6uVwxi5QiOClMRFNVEn8vs98Rb/kZUbKRNoTlmfbyYPl8e3mJI+U5nDbJW53QKAUdhBVh72Mf8hxEQDKSgDrxnZtVv1ShZn4s/6Nla5myrZQbkMD6OVtV5XDJ6a1TcjhtkUy8+0+AgAAKlMA01hrrRpvWsrQWOluptxVm+vQAMJ8fMI+f3PoqHN6mpt18ra64VBndM/7PJk5sU55jqS1WvOsdXXP+uX9ZEwJ8Xycs00zvMwkZ21yUvOsFyUn/9ey9mYEsB7mZSjFdNA7mAWAShS8NDY9u/ke13n7vo2VyUv+GUbvx3J6DXJQiX0LTV2x/RF19uVgJKZGM3eFiYkB6+Rt54xu02jMOanbuaizWqE5ivp+eY6ktVrzrPXWhe6BNQbaGPnx2iNx5P5kLPZTiorn45xtql5m62K/PWh7ivnlg/baxGQOSpkY2me9KDEte+omc9yMANbHvAylnKgpB6pBAOvGDKPzY67BKn0aK+Mn1SX/BDl09em1+rbPHV2Ug0r4LjYTH+wSSUXdylni2SPZzo6cFpkp5eRHZ0QDm1hgX6yItUrZXqO0MtIXbVorI5pRzBnWyKsEmxEAAAQyjSUvISKtDH4z9VRE++rIkjXSUlYyQ1jX9LC194RSO8uLpBKbUOVCtJsXt/F2wB+NudOJMzhn0owcO6q7GJks/TX682bENGPL2aJYiTcjAABVKZhpzAi5GyuN0bj7GG9fUkbqddei+Ys/6c4QbfVTclCA8OHj28+Ph12ZL/64efmRlgfNvhpD9SnJqa3enCmnz7rOU2vvqR+2BhEwL26Ttk7ZHKlKQnPdkSGfZzttZjL35Z8duT6Z+eWD3pwUtkY3OD/bMDyQmgJTM6LH9Iy1nlqZtHpCrnE38tuMAAAgZwFNY0bng+4IEj+ZDBDeZsrs5o4uuzpdhYbdgy01Jy8bJ1gd1Fqarb4am11nEsjTPM2ZcrJHDajZ85i8CHSnZxCB1HV6cmRLR9i5tqCXdfnnAfc1bXJ9Mp6xM+T1VSLJ59l5IDyWmgJTMmI6mbS2y6QVCYuUaQ2Xle9mBAAAOQtqGjOat+x1jVuRDBD5NVOmjiuRtnxK6+HMSl4xIn0wJ3lOYqaTEG0ikI2Nh1MudeIyPbokO5OpWznyjJ3huoado+OalHHeUzNiqtpDj6WPDlrCzQgAUNQ1V6xLn8lp3Vdeliu0zn9PTkfluf/qfgRFYNOYp9u7HSBczZS1hx5cs5kykdLBf3TZvZfL6ZHkuZmGcfVMvv23nKsVmdf8lqcl9sX2pzQa+q2zOdQX2X5+PHkRmxQz8f35Xfso9TW21fqdD19zU8ooIJlfaU+d39jxJd6MAIDJWHeXdc0V69JnchqJeE9sz9eZMXX+e3KKyHP/xTFrzXP/sYGCm8Y83d7Nxsr55cedZsq20B6f3JBq/uopVbIkd3F7UncUYGJgcV1XK2q2LmLjl8nWuEBnKs9r3FWCixKWcjMCAKxL51k/a9vbQocGwsMD9b0ZWlEKJC/Bl3IVPnnu/76U7jHQJ8BpzKexcn7FqYNp79Y5KOLc0cX9o+46MKvbu9m/fmDNGjs3M5ONp/bTz36BzlJqb2VwIwDYcM7RrSc8djzcdyDUeaDusPzFvm3teoec1B56zLkKn6sWYGbJHGYS2gU5jRk1fQddyWY03u9qptx7dw65oTml/7t5pqG63LLftC3zBZ49Uk4wbB+QV302u73Xyc71BYTE5rqH3eeQ5iX1NRqnr/r90EmcOa1Kps035fXxLtVmBABIc3NXVcn7HZ56tfj5+NDAotU3pmmfe0zveL/Vb2RgeW7eKmcZkVvWAkzZZ1+lnHqVcf1CSs8c8Vj+I4qjQIFOY56Bx+IjeTVTSjW73LWyp686l1v2ndRya3KfSZDWaz75oUqRKFmvyZTXmKETfS59y7IozWYEAJiSPXNmzHO5fIPU/HJ3V2zQaZaZkWN6dzv9jK1+I6dXnnwkNiLLvkeipJYDderw6hw1sq1fDgzu7pkjHuuU38EGhQp4GvMMPGbLuZkytff6zNKThQ0W71/h5Ct1XC6XM0eiTfIz5pfJ3P3hTLe0ZM40ab+cUkf59zkJIHV8igIaeYu0GQEAvprrjjhDBfkPQhnv77LOlwpZ41xalVvTnn7GM/GRGavnzOab1KxMnJ/Z1qlXWdfvXBu6JzwlR7JsPD8efriAhiBkFPQ0lnqVJCW3ZkpT6rhlxkifecJwct9NzFkVs96ejJ4Kp6WDA+KvEnOTy2k/WWT6sX9YxPv3pV5T0kN+xqJNrYvd1sW2J81rb+9bbFKfAYdnHLU1nox3lP/RmKyjnjSvAj4pX13qGPp+Q2CspdDNCADIScuB7SkDUqpBKO1f13abTO9Q2Brn0v7m9/Qzrj00rgaM9A6HmV329Tvd2k5fVd/8cjhMWkKKKPBpLLWx0uQ/CkMG3i5ZKyOR2G55FW1riu52V8wmeYaEMM89kQNYLJ0UO6LnKYm7rLV1xbJcudJlZdq62LYcDkP8jvE+uvwwqKIl65MRmus847tOmx9ja8QNz6tLW3luCtyMAIBcyQEpZxtkJrN/gYtve+vqKU4fmJEj3qGFpmddaSzXbjyC04NF9iReY/3OUW9mKdPFY7A+wU9jRuro9jldDSlFZyTDyF5ZeWqDUnmfUlJbaNjv8kc5q+0daDicdoGBrE/GlGWU/6Ta3iGfleeosM0IAMhHjcxkx8X3rbptDX4+N2v/3FXjCq17aCGnA7TZk3it9YcOu8ctt+rtOBmzmMogjXla4ta+GlIa8/yRofped3ufW1vo0MG0rlTNdWPjGf9EVil7rv8oTzasnzqeqeapZs9jGYfgt5hXvdx+2LcZMeuTsWQf5V+tfF0VywVtRgBA3mqSvXTMvsItreq7vXfI7LblniL5VwGYw5tZxd6D8vora6/fGrfcqrozl5yOXMrzyjHIYtPq6qoqlthCU6sqmcR7rEoby+xNpTo81bQ0G2ufAzifsLvei58sqScbi98T81b3KZ+7MhJPQD4NdUuen2g+k5xkfTIO8zWqXy0tzc41K4sol82o/R3fdOwNVTKt3n+dKmU2/sVPqZKp6yvfVSXkpgo3IPvMOlXSBlzHa5mMNR0xDh28Zo/1xT4fH3okNmh3nJd5SJ7waDYdtomf/c716xJzk4Yh/yTe32r2Wk65V5DnQprrqe0dqLtH3nH1zI/jyY4l1sqF7Oufj08YIacj2sTAwn555lloeLagri8ZFbwBC/i2D5qqS2PYMKSxKlSFG5B9Zp0qaQOu47WINGZXVqWSvfKtrtJ2BpLa22plF2QRs1R4WjON+WjvCR+JhJyFs61fPT1rKH+7EdNJckVT8AasgDRWDi2VAABUsuaUaxZZ2ttCw3YUE9ydd51+Xe3dBVwNr9bsu9I45opiQg7rFzPt+T3hqSJHsSpH3RhKhbqxKlSFG5B9Zp0qaQMW4bW4Oplk7EVjL5NzF5c8ZVy/7GYjlWyU74I3IHVjAACgSETQsSZ124+9jLpZdBnXr+aXKIpVOdIYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHTatLq6qoolttDUqkqmxvOzqoQKpf0dL+Cq/uNf/JQqmbq+8l1VQm6qcAOyz6xTJW1A8Vq6/p+T6gbWZ/z/3JP7zlDAt33QUDcGAACgE2kMAABAJ1oqUSq0VFYhWirZZ/JVYS2VqmRiZ8hXwRuQlkoAAACsC2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAPKQmJhMqCKKgzQGAIA2iYmjsf6B9Gl5Ti0QMPPL3a3R/X3Rpn1BfYZliTQGAIA+Z8biI6Pp00pgsk5ibnJ5yKkMm1+ZtgozwXmGFYA0BgBAELTVticnNU+zyVhTa3R339IJJ3l1hKeG6nt7QofGw51qFtaPNAYAgH61hx7bPnbcmYKbdVo66g5Hwn3N6iaKgTQGAEAQJYb2LXabU/+kmmXML/erma5uW/PxoYHFptYFOcmFU7vYzycmBsTy5r2tC+Jvh+Zd6xmIq8XEw8nFxBSbkDfjcoE+de905KJa2OcP1RPotp6AfIhYsmVTMlcl/0Q8Z/koarHA9o3TgDQGAEAQ1fQd3Dw9syKmkSMquEx8c2nEnHPLwboWc47sVt8VGxxdsW4ZYuG+aDIqyXuj+0fFn6gZ4m9PizRmGKfM9ahOYJbT5hx7SbEq173Jhb1/OBmznoAzZ3omPiiew1FXILP+5HT8YGvUearTo0u73ZGuqpHGAADQb2WwS9UtycmKKR3h4R7zzpmlJydltHp8VN5qH2g43GHON+L9XUtmDAoNjzeen22cGqgVN6ZHl2UFWPJeo72nfni8YWq8YXggtMucs5aazw6Fh821CfLPxc0Ha6ybLvH+vrh6iIGwWP/UUH27eXM6ctF8Di4ikPXUm8uE1JzRuFkPB9IYAABB1RkJ95qFkSOx/m+a0aqt/sgBOxVNxkfM/3uHwp1mR66Wu0NmGFo58VzCudfoCY9F6jqba1qaazoPhPtUksuupqUj1Nlip4TWLZ3iZnNaGrMfQgTEsQMhsf6WjroxFbZWBr/pqfoKDUfqzGXslGlcPeNJbFWKNAYAgH61vQNhWf9kTclaqNBhK9zMxEdkxVjtocfsNkrDmJu7ahVGjlhdvha7H1GVYdOzCefe3o/ZdVHF5jzELS2uoNZca1WPGaevpvQMa6t1njlSkcYAAAiAXXeHZP2TNblroZxwk2ZuNtldzOzyJSY1Q0jeWzIb8BDVgTQGAEBwJYas6q42K5OtDD6SPBWxpVX16+odkp3GUqZIyLn31FypLmTk/xDOCLG7NlMZlhvSGAAAAXD6ufjEZHKaMztUzR29OGhWd/Ue3HbE6lM/s3TQPl3R7iVmOCddmhJzkwlx07lXdqhPDqav1qyMxiesB5q8ZD2Qr+lZ/zzneohL1npkfDyiuouVroW04pDGAADQb2UkEtvfl5yeFOFmfvlgxGwKbKv/bEdNy4E6q0d/8nTF5rqH7ZMud5tjiZnjikV3H7li32vVXa0M9kXV2Zpdy8/Ku7bsVcP9x/eb53LutocWS+E0ko7Gkmd6ujXXqYxor0c8ukp1PWH7xE+siTQGAEAQ2W2UsmLM6rkf+qyKPsnTFTsjDcMqcsmxxKx+Y+3dqomwM7J9akBVX6Wq6Xss3Ju8/lJt71DDofTLMSXDVkYtB9IforZ3oOF8hIqx3G1aXV1VxRITeVmVTI3nZ1UJFUr7O77p2BuqZFq9/zpVymz8i59SJVPXV76rSshNFW5A9pl1qqQNqPm1zM1bjYk1Lb7XLJqXbZc+95rzW9KHrkhlrXyNxTI9RK4K3oAFfNsHDXVjAACUPzmOl5zUTa9M95rzVTkza+XqRiaZHgJrI40BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BGY1/8VOqhBywuQQ2Ql4qe3OxM+SlyjcXaQxI6vrKd1UJ61YlG5N9pojKfWOyMxRRtW1M0hgAAIBOpDEgG9oacsSGcrApclQNG4qdIUdsKNIYkCK9epyviTWlb6KqamVgnylApe4z7AwFqPIvEAtpDFgb36dZsHF8sVmyqLaNw86QBRvHQhoDvHx/lvGV4ct3s1Th71r2mdxV/D7DzpA7vkAcpDHAB9+nueCb1I19JhdVss+wM+SCLxC3Taurq6pYYgtNrapkajw/q0qoUNrf8U3H3lAl0+r916lSbrJ8dVbt94Uj08ap8i3DPpNFte0z7AxZFH1nWOe3fRCQxlAq5Z7GhCzfp0J1fqWyTbJj+6Sr2m3CzpCuRNuENJYH0li1qYA0Zsn+9QELOcyNfSYXVbLPsDPkYp07QwWkMfqNAWsgZ6yJTeTBBllT9WwidoY1sYkE6sZQKhVTN2bhB64vvkazYJ/xVZ37DDuDr2LtDLRU5oE0Vm0qLI1Z+Ep1I4rlgn3Grcr3GXYGtyLuDKSxPJDGqk1FpjFH1X6rksAKxj4DBztDcZHG8kAaqzaVncYAAAFRAd/29OIHAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6MToryiVoI3+CgCoBoz+CgAAgPyQxgAAAHQijQEAAOhEGgMAANCJXvwoFd5xAAByQd0YAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnTatrq6qYoktNLWqkqnx/KwqoULxjq/HpmNvqBIAlN7q/depEnQgjaFUeMcFQhWAykaMKwrSGEqlGt5xwhYAZEdcywVpDKVSSe84qQsAio6g5iCNoVTK9B0neAGALlWbz0hjKJVyeceDFr/4sQhAiwD+Fq2e70PSGEol4O/4xnzvEK0AVLYNy3CV/XVKGkOpBPMdL+4XB2ELALIrelyryC9e0hhKJVDv+Dq/DkhdAFBc609plfTNTBpDqQTnHc/3M0/2AgAtqvbrmjSGUgnCO57jB5v4BQABVD3f4aQxlIr2dzz7x5gEBgBlJMtXegV8n3PVcFQX8aG1JnUbAFAOsnx159u+GUCkMVQRQhgAlLVK/TlNGkO1IIoBQGWovO9z0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaA4DKNh+fmJTT3LyaASBgNq2urqpiiS00taqSqfH8rCqhQml/xzcde0OVTKv3X6dKQGaJiaOXTtr76q6PXdPXUaNu2OYmY0/+WJV9FyhUykMrraF77q7pbF7XQ8wdXdwdWRGF3qHGwx3WPKDcVdg3PHVjAOByZiw+MqqmwSNX5tRsR/zJvuQCJ9LuXg/3Q6spEtvfFW3at1zUxwEQNKQxAMhkJv6sp3VvMj6iSiXU3hPqFVNbrbo9s7R7IK7KACoQaQwA0rXVtsv/Vk48lzBvKxM/NlORurdEavc+GD4cCR8+vv38UEjNO32V6jGgcpHGAMDH5lva5H/TkUsT5m1T/OSo/K931+Zp87bb3Hx8aGCxe99CU6ucuvfFhpL1avH+feKuxe6BZWsxtczA8kT2nvXNGWKfayVN+xb7J1Mi49zkcr96GovdR+PeGDcv7rWejFPfljCfuZhirhcrlkxMpLyixeQryvoEAOSJNAYAPmrv6bYaCuMnJ83/BdVMGbrnY+bNFIlnH4kNjq5Mz6jb0zPxwa6FfudvZ8RdK9On4we75GLWvOnRpf1dqQEo1dxzcRX7dm1usQrC/HK3ayVizSN90WS0mozt7lsaUU9jZToS22924Xc7ZT0Zdct02pxjP3lJPkp0f8orWjltpbHsTwBA3khjAOCn5e6QVS81YrVOOs2UPaFO86bXrtChoYap2cbzYhqv9/ytIhJPW2h4vGFqPNxr1r2JtPf4UW/F0unn4hOTy/0D6lxIkf+GI3aTpRHv71oyg5RYj3ysqQGZGqdHl82Kq3h/n3rE3gHxKA3D5r35cx7FaO+pN5+wWFVoV8pdvk8AQAFIYwDgq7nu4R6zMBo3q6/sZsqPOcHIraYvEu7rqLFqsOaMzXutsOXt7xUaPh7ubK5paQ4dfkwltukxz5mbK/JUyr6lEbPyqb0nPDUbTuY/+zSC3iGxHlmwU6PZxc2+t32g4fAB8Sg1nQe2D1uvIi/OyQo94bFInfmExarEC1zrCQAoBGkMADLoVMFLNlbOHV1WzZSZhuyal53DrK5Uu7tig1YD38xKStJqq002ODZvvsUqeJYRMp8lMDd31SqMHLF6ei12P6IqsaZnE869t7Qkhyhrac27esxZT3r0zP4EzP8B5Is0BgCZdIR6zf9Hfrz87JhZUzVwjX8z5WSsqSs2MrMiglRvT+jQUL3dEJkDd0STag89tn1sttGq05oejbmHt5ibTfbWMnt6pXT2St67PlnWk/0JACgIaQwAMgrdYzXznY6fkJmjdu/d/sPiqy5lsiFy+2HZZLnF7GKV1fzVU6rkrzMStrKg4eqS5VR09Q6ZHdTcUyTkWw1WQERz1nNqzlvdlf0JWHcByBNpDAAyU42VM+YZiG2hPWZPqTSJM6dVSZm8ZKa3NDNLT6o++4khu4GvvXtLat2YI3RYjTe2MviIGo4/eW7BEfcA/Ym5yYS42dKivtNH+mLW2Blzk8uPm93dfIzG7WUuqXZVm/Mo05GLQ87oFfPySpfZnwCAgpDGACCLjmsO2W2OmWNTzR57OIz9clyuhaY+e2SKNCORqNm3LGoHoNDDBzJfhtJ59Jmlg1aMc84tmFnabY4BZo4HFt195IqcmXy28f1dZg+2PpX5kpq3qDMMksuknvgpyEexXtHKYJ/1hBeaupafVXeZ9/g+AQCFII0BQDZO0srYTCm0HNjmhLbpmdreobBzM0Vb/SGVckxtoWH3+ZI+avqcUy8jF632ys5Iw7C9EqfbVnu3NSBZTd9xZ+wMqb0nnDbIhVinexnxbBvSn21nZPvUgKoG88j6BAAUYNPq6qoqlpj48aRKpsbzs6qECqX9Ha+wK/yjHMybzYXN6aEt3t8ak6dkttVPHa9rMRJzIlc1q+EwCjY3b7Uh1rT4tJ/m8BAZn20qczHfR8n6BICSqrBveOrGAKBYzHG5VDkbudj6a5LkSuSkbqbK4SFyfLaZHyXrEwCQO9IYAACATqQxAAAAnUhjAFByNZ8dCg+L6WCmszIBVDPSGACUXE1LR6hTTrn0KgNQbUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGkO12HTsDTGpGwCA8lSRX+akMVQXMhkAlKkK/gLftLq6qoolttDUqkqmxvOzqoQKFYR3fM3P7er916kSACB4colfFfBNThpDqQTkHc/rhxThDAC0q8LvbdIYSiU473jBNduEMwAoNb6iBdIYSiVo73jBH3gPIhoAFIbv4UxIYyiVwL7jxfo68EVWA1DNSvoFK1TqdyxpDKVSFu94qb84MiG0ASgjur4qLdXwhUkaQ6mU3Tuu9+sGAGCpwt+rpDGUSgW84+QzACg12goE0hhKpVLfcSIaABSG4JUJaQylUp3vOFkNQDUjbxWGNIZS4R1fE9ENQPARsDYAaQylwjsOAEAuuGo4AACATqQxAAAAnUhjAAAAOmlLY55ORagwvL8AAORo49IYnbirGe8+AACZ0FIJAACgk840RmNWpeKdBQAgdxuaxtKbqzhsV57095RmSgAAstDfUkkgqyS8mwAA5Guj05hvNQmH8Mrg+z5SMQYAQHYa6sYIZBWJKAYAQGE27jqVblmyF8fvspPp3eStBAAgF3rSmJC9MowDeVngTQQAYP20pTFL9sM5yhQ5DACA3Gk+p5LDduXhPQUAIC+a68Ys1JBVBnIYAAAFCEQas5DJyhpRDACAwgQojTmIZeWCBAYAwPoFMY0BAABUD/1XRgIAAKhmpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAp02rq6uqCJSh79z7z6oEAIDpL575c1UqExrSWCUdPgt7vxeaWlWp4jSen1WlEiOEAQDWVC6xjJZKlBmRw4hiAIBclMshgzSGckIOAwDkK/iZjDSGskEUAwAULMgHEfqNrQv9xjxK1G8s+z5Tdr01AQClU46HDP1prLwOpUV58p40tmE930thY15Lpo8WOQwAkEkZHTtoqUTQ+X6cxGeJKAYAyCLTkSJTStOINIZAyxTFVAkAgKzKIpCRxhBcRDEAwPoFP5CRxlBOiGIAgAIE/PBBGkNApf9qIYoBAAqWfhAJTvUYaQwAAEAn0hjKAxVjAIB1CuyhhDSGIAra2S4AgIoUkMMNaQxlgIoxAEBRBPOAQhoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgOAYvvtWePXP/FOv1V3AoAHaQwAiu2tIeN7n/ZOvzqr7gWAVKQxABvutz8xfvAF7/R8zmHl19/y/q2Yfk3WAVCuyiiNzccnJuU0N69mZJWYMxeemEyoGQCCY86YOe6d3szpoy299Yz3b8X0lroTAMpO+aSxueeW9/fFxPRkbmnsSXPh/UeuzKk5AAAAAURLJQAAgE6kMQAAAJ1IYwAAADoFOI3NTS7371toahXTYvfRuH/3r/n40MCiucxC077Fft8++65luvctT1jdzuaXu/ctmtOya82JIZ+ZAAAApRPYNDYZ2923NDJj3ViZjsT2R1asG0kiUXXFBkft+TMrI33R7oG4uqnED7qWmZ5Z2t8VmxCl5i17xWpnxBR/1jktYP7KCTlnxeje0qJmId3v3748L6fE79UMAABQuICmsXh/nwpVvQMNU+MNwwO11k2XeH/X0rQshIbHG8/PNk6Zy0yPLg+5T7oU6apNLCBWEu5ts2bFHz+aMIyaPd3WOldOPKdq1Oaei5srrN17d405Q7vfv7303G8W1bRw2Sf9XL68xgLFlzi7sPjsb8R08YKaAwAAChfMNDYZHzH/bx9oOHygpqW5pvPA9uEec5bDXqZ3KNzZLAstd4fa5f/JdGUKDR8XC4iVhA4/Vm8uYEyPyWEvWg7U9bpuipTx7JhZhdYW2mOuMAiuLJ95+7Kafnvx7GU12zG/sJhc4G3GVgMys65W9PwXjB98wvhHe/rBF4znC7tmkVibOQitWpVYz7eKdO0j83nKIW2L8jwt616n2HreSd2jpGwNsfJvMR4vkLtAprG5uatW4ZaWZB1VS2tK9ZizzMgRq6fXYvcjVlWZMT3rSiVttck2x+bNt1iFmRUzfoXusRKe1VgpmynlrfbANlMmzlz05K3Lc2+rEgB/ctz/TxhfusV44k/k5Ykmjxszrxhv2tPMcWPy08YTt8g4lWt6OGuuUKztUfnnalViPY+a6/mWWqoA4qmKHCPX/GlzSFu/5/mlT8gIlbvirPOsMfIncgO6pxH7lf76C3LzpmwNsfJHje/9iVwzmQzIQTDT2GxaF7E0yWXMnl7mpGaszY5onQ9atWWyOs1upgw9fCAgzZQuNY1b5X8Lb6e2Rb59+Yz8T90LwEsEhSdECnlF3cxCxCmRHta8OtNvvyWTTZYVvvmo8aUvqHIezIQnnqrIMWt4RUYokR3XrtMqxTrTPP8J43vHVdnHK3Kr/iCf+AhUpUCmMU81mMUT0Zxleodkp7GUKRKy7vKav3pKlWzNW/aancmmZ688a62/J9Qp/wuad4bMiHj54n+4KsPmY2bL5Ttq35nSgpn4z9cWfmBO/+ma//uFlJmyR9prC0+dfktOYv5vXDnv8uX//M3CD8y7fvCbpd9flkvKv/1NWkMpUGEm/8T4tSr6EFHsiUdVORsR7LIElHRnjX/MmvDSiez4xCeyPdWSrDONiGKTOTzEzKfzuAgpUJWCmcZa1NMa6YtZA1LMTS4/PmrOstm9xIyRIylDVMxNJlIGp5hZOij77AuJIbsp09UWafflH10aNNff+7EMSU6zxnBdo1k4YyUwSTVT3hT21IzV3PgOY+FyQkyuls3E2bflnAWj7satMpl9/zcXz1y27xXz486Sl597bfHfxcLmjYW3L37/Nbmk+bdAKb05J/s25TK9qf6icNeq/318L1PN1k9yi2L5MmNTIa/oFeN7n8hQm1WKdaZ589Gcophlsr+QijegagQyjRkd1xyyz3/c3yXHCdvdp4JUUnPdw6rX19JuOZDYYrccnCy6+8gVc27SdCRqDjYWHVRNmSltkU5fflPong5VCprQ1pus0PX2ZXXKqGqm3NryDvOmyzu3qeiWbNm8fPmMmeIa37H1nWYyM+du3bPzPQ/sElPjnka1SeZ/s2iuVty5bc/Oxk++d5u1KqDkxNH9e5/Oacqrykd5v9HxDeOhHxlfOiWnz5j/PvQNv1h23L8i5wefVgWv9xttnzf+7BvGn33euPb9al7unu/PGJva9pmr/YbRsS9DfHwl2XnLrRTrzM7ZAm2ZtsArxv9HeyWQUTDTmFHTd9wZkEJq7wmnD3LRGWkY7lEznX5j7d2bU/rgt9UfspeR5GgX4dS2SLsvvzyF85pANlOaav5I9Q5TVWJ2M+VWn/M/t9bfbkW0y8vWaZi/v7hs1mzV3LRNpK6VBVW/tnJBVYnVNMuUJjinBYigVt+8tead76i/7730SkM5u1bkDxHC/sW466PGu29UMy3v/qjxmR/5hJI33aPkmH77LcO3Y+q1n5drvu+vjfd91HjfXxuf+ReZ8PLwE//qJbnaU8Z9XzVX+1Hjrq/K+Phn+9S9biLCerNjKdaZmVjtQ2K19ha471+ML/ltUmHmCarHgEwCmsaE0OHjjedn5WBjU7ONY5FQ54HtVreww8nqq5rOiJwpl5GTvHfsgNXUGDps9SE7Xtcnl1HrOS9HuzDv9xGcYcb8vWPrTeb/srHy8tLP/ZsplWY132qstCvDtspmSvGfXZ2W+PffLDx1eiE5UNlle0BXd8gL1VI9hnL1vj7jMyJ/pIawFDf6VOfMjKuC41fPqIKbCCKf+WtVdoiE99DnVXlNzz+hCm6+qxXe91Wjw6/maeY5VbCUYp0Z7ZOrfbe6YbvR+IxvJH3F+BW9xwB/wU1jFjnY2JrjTchl5KRu+smynvhJq0dakIYZ82enqLcv/6dV17V12wfTmimVd2z7H2Yek42VdjPlTY31ZgWY0fzexj3v3mpnrMSZ3y5+/7UlmcPiK3QOQ2XJksNs79mlChmd9W8b/ahfvhHe/deGq2Y/szxXK9z1kCq4vfmMq86pFOvM7M++qgpeH/UPeemVjgBMQU9jpZMYGljsH4h1t8bMUWRrDz1Wt2bs082u8VqxBno1O4FlUnPjO6zTMFfOXrQylruHWU1z4/b7dr3nkzu3q+5o1tmaTjVY3HXVIyIaKslvrTFg7aFK5UBZ6ec/nk7NIvN+3bD2Ge9TJR/v92sB9Mp/tSLl+OS8V4y3VKk068wk62r/8F5VcHsz5RwrAI7qTWPiC3dlZNQaY8xoH9jWF/CKMZNqrEyYHb+sTmAZ2X35L//7bz09zBLzVsOlWGbr1rvdg5VtrVHxToYzc5nLl//T7mUGlNa175d9zHOZ/LufZyYS2PPmCKXJMWDtoUpz8Vu/DNHWpQq+3nOzKmRRwGoF3xMF3rJbAEuxzkyuzeE1AshN9aaxmj0H63t7Qr0D4anxxrEAjvjqa+sH320/U9UJLDOnL7/J1cNsZU52F3vLGn7sKTWKmFVzllz/GXOZp15b/HfCGDbGtQ/JPua5TBlP3EtnjYD6J3II/oK99aoqFFdhq83erlqKdRbm3YFvawCCpIrrxlo66g5HwocPhLJ2OAsaZ/SKrM2Uit2yKVKWTw8za0wyWdq6dc/O7dZWeGdj4x6ridMi7mKQC5Sr/EdAzd21pfneKMVqS/RUARRPNbdUlgGRjazxwP7IqdjaWn+fnPOe++wRwsSsu805D+xUnfTTpUY3a/nGT+40J/mH25td1WzN75UPat5r3uUdD7fmj9QoZSrAAQH1A98RUM32UDk41o/U8GO+ozysqUQd0kuxWi19533bTAFkQBqrZGpMMv8eZjXv3GpO6qaXea8qA+XHd4Swtm+Yw4NZY27d6B1+LJNcOoF55NJiWMBqhbdOq4Lbe+wXUop1FsZ3C1xL8yXgjzRWgX6/sPiD3yw+99pbz5pjkjW+uyFZtQZUifQRwq79vHHfR1V5/bKfHuibbzx8e1alD3Xm4XPmwfuN96hSSdaZyZtZE6fvFqDNFMiANFaRVhbeVmOMGVu33Z1s0wSqRnrCyFQx88paHfx9I86bj2a+wHaG0fC9mv1ODj2e9brdP/G7JMAu1/irpVhnJllWm2ELrLO+DahcpLEK9M5t2/7HO7be9A55ocksnclytXXr7e/dvkdMjd5rUwFlL9Mlj1L4jsglIkeG6zlmvKKlh99lAIRMqxV815wygEUp1plZptX6Xg9gjWHPgKpGGqtEW7f+0Xu33/1eeaFJNWdd5FUs5VSctQGa+Fwn8awx8qgqZuc7muubjxr/+K3UdZoDaqwd72z+4+CL1X7B56n6r/n9xv+d2vxainVm4rsFnv+Ef8VYjgkPqEqkMQCVyGdE01eMJz5hPP8TORa/mEQQ+ZLvSZd+3pchSYg48sQtckx/NbJ/vgNqZLqC0HG52i+Zq5VrFuUMa+44nNakWIp1Zpa+BfxbaXNOeEBVIo0BqES+V+YRgWzy03IsfjHlG5uyDITx5it5jOzvcde/ZL6opblauWZ12+vazxt3+fXEKsU6s1tzC+SV8IDqQxoDUIlyvXT3vlzHG3vfV3NboZDzOi33/Sjvaz0JIjZ9JvO1wEuxTo9rc75EVds3Ckl4QDUhjQGoUGsnkvcbD31VFXNx36kcLsqU5zqlG43PnDI68glwIt+sEZtKsU6Pm43PfGPtQNbxo2IOLAJUKNIYgEolEsmP/DtRCW2flyPB5tt8dt+/GH/2+YwRpLB1Wu76qrw2wJppTzzEQ6dyzTelWGeKj8otnGn91+6Tq6VWDMjBptXVVVXcKN+5959VyfQXz/y5KpWDojz5haZWVTI1np9VpTJUotdS1jsJgujXPzHeGpedpa692XjP3XIg/nX67VnjrXnjFXNg1Wu7jPc0F2GdDmvl1hMW5PoN4z0fXVfXq3Wt07zip6erWUqz5lnj1/bKi7WFgZIJ4CGGNJYf0pgHaQyoAmumMaCcBPAQQ0slAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGABgLW370qYWdReAdSONAQCyu1Fe8vK+1OkurgUOFA1pDAAAQCfSGMqA55piAAAUJpgHFNIYgojLhAMANkBADjekMQAAAJ1IYygPNFYCANYpsIcS0hgCKr32mEAGAChY+kEkOL1iSGMoJwQyAEABAn74II0huHx/tRDIAAB58T1wBOp0MdIYAo1ABgBYj+BHMYE0hrIkPl1kMgBAFpmOFEGLYgJpDEGX5WNDJgMApCu7o8Om1dVVVdwong0UwIiaRVGe/EJTqyqZGs/PqlIZ2sjXQvACAKxHYCMHdWMoG+UV3AEAgRLkg4j+urGyRt3Yxr8WasgAAHkJ/o956sZQZsSHikoyAECOyuKQQd3YulA3pv21UFUGAPAoux/tpLF1KUoaqyRlnSwBANCClkoAAACdNNSNgboxAADgoG4MAABAJ9IYAACATrRUAgAA6ETdGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAnUhjAAAAOpHGAAAAdCKNAQAA6EQaAwAA0Ik0BgAAoBNpDAAAQCfSGAAAgE6kMQAAAJ1IYwAAADqRxgAAAHQijQEAAOhEGgMAANCJNAYAAKATaQwAAEAn0hgAAIBOpDEAAACdSGMAAAA6kcYAAAB0Io0BAADoRBoDAADQiTQGAACgE2kMAABAJ9IYAACATqQxAAAAfQzj/wf8sI2/n6RY0wAAAABJRU5ErkJggg==" alt="avatar"></p>
+<p><strong>架构图解析</strong>：</p>
+<ul>
+<li>用户接口层：命令行、JDBC</li>
+<li>Driver/驱动器：</li>
+<li>SQL解析：SQL ===&gt; AST(antlr)将SQL解析成为抽象语法树，使用antlr这种工具</li>
+<li>查询优化：逻辑/物理执行计划，生成逻辑执行计划和物理执行计划<br>
+UDF/seDes：用户自定义函数，实现序列化和反序列化</li>
+<li>Execution：最终生成执行计划在MR中运行。<br>
+MeteStore：元数据信息包含表名、列称、表类型、表数据所在目录。。。</li>
+</ul>
+<p>Hive的数据是存放在HDFS之上的，分为两部分：数据+元数据（一般存储在MySQL上面）</p>
+<h4 id="hive和传统关系型数据库的区别">Hive和传统关系型数据库的区别？</h4>
+<p><strong>相同点</strong>：<br>
+	都支持SQL语法<br>
+	都支持事务<br>
+<strong>不同点</strong>：<br>
+	数据量上面Hive处理的要多，<br>
+	延迟性上面Hive是批处理，延迟比较高，传统的关系型数据库要求的延迟比较低</p>
+<p>注意：Hive中的Insert、Update、Delete 只有在Hive-0.14及以后才支持，我们对Hive的操作更多的是批次加载数据到Hive中然后进行统计分析</p>
+<h3 id="hive的部署">Hive的部署</h3>
+<p><strong>官网参考地址</strong>：<a href="https://cwiki.apache.org/confluence/display/Hive/GettingStarted" target="_blank" rel="noopener">https://cwiki.apache.org/confluence/display/Hive/GettingStarted</a></p>
+<p><strong>1.前置条件</strong>：</p>
+<ul>
+<li>JDK8</li>
+<li>Hadoop2.x</li>
+<li>Linux</li>
+<li>Mysql</li>
+</ul>
+<p><strong>2.下载tar包</strong>：<br>
+wget <a href="http://archive.cloudera.com/cdh5/cdh/5/hive-1.1.0-cdh5.16.2.tar.gz" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/cdh/5/hive-1.1.0-cdh5.16.2.tar.gz</a></p>
+<p><strong>3.解压</strong>：<code>tar -zxvf hive-1.1.0-cdh5.16.2.tar.gz -C ~/app/</code></p>
+<p><strong>4.修正用户和用户组</strong>：<code>chmod -R hadoop：hadoop 	/home/hadoop/app/hive/* /home/hadoop/app/hive-1.1.0-cdh5.16.2/*</code></p>
+<p><strong>5.软连接</strong>：<code>ln -s hive-1.1.0-cdh5.16.2/ hive</code></p>
+<p><strong>6.配置环境变量</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 app]$ <span class="built_in">cd</span> ~</span><br><span class="line">[hadoop@bigdata01 ~]$ vim .bashrc</span><br><span class="line"><span class="built_in">export</span> HIVE_HOME=/home/hadoop/app/hive</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$HIVE_HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"></span><br><span class="line">[hadoop@bigdata01 ~]$ <span class="built_in">source</span> .bashrc</span><br><span class="line">[hadoop@bigdata01 ~]$ <span class="built_in">which</span> hive</span><br><span class="line">~/app/hive/bin/hive</span><br></pre></td></tr></table></figure>
+<p><strong>7.拷贝MySQL驱动包到$HIVE_HOME/lib/下</strong></p>
+<p><strong>8.Hive 配置文件</strong>：</p>
+<p>Hive中是没有hive的template的，需要自己创建一个hive-site.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0"?&gt;</span><br><span class="line">&lt;?xml-stylesheet type="text/xsl" href="configuration.xsl"?&gt;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">	  <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionURL<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	  <span class="tag">&lt;<span class="name">value</span>&gt;</span>jdbc:mysql://bigdata01:3306/bigdata_hive?createDatabaseIfNotExist=true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">	</span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">	  <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionDriverName<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	  <span class="tag">&lt;<span class="name">value</span>&gt;</span>com.mysql.jdbc.Driver<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">	  <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionUserName<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	  <span class="tag">&lt;<span class="name">value</span>&gt;</span>root<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">	  <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionPassword<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	  <span class="tag">&lt;<span class="name">value</span>&gt;</span>ruozedata<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.cli.print.current.db<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">	</span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.cli.print.header<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="hive日志查看">Hive日志查看</h4>
+<p>进入Hive客户端执行show databases;报错</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FAILED: SemanticException org.apache.hadoop.hive.ql.metadata.HiveException: </span><br><span class="line">java.lang.RuntimeException: Unable to instantiate </span><br><span class="line">org.apache.hadoop.hive.ql.metadata.SessionHiveMetaStoreClient</span><br></pre></td></tr></table></figure>
+<p>进入/tmp/hadoop查看hive.log 完整的日志信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br></pre></td><td class="code"><pre><span class="line">Unable to open a <span class="built_in">test</span> connection to the given database. JDBC url = jdbc:mysql://192.168.52.50:3306/bigdata_hive?createDatabaseIfNotExist=<span class="literal">true</span>, username = root. Terminating connection pool (<span class="built_in">set</span> lazyInit to <span class="literal">true</span></span><br><span class="line"> <span class="keyword">if</span> you expect to start your database after your app). Original Exception: ------</span><br><span class="line">java.sql.SQLException: Access denied <span class="keyword">for</span> user <span class="string">'root'</span>@<span class="string">'bigdata01'</span> (using password: YES)</span><br><span class="line">	at com.mysql.jdbc.SQLError.createSQLException(SQLError.java:1078)</span><br><span class="line">	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:4237)</span><br><span class="line">	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:4169)</span><br><span class="line">	at com.mysql.jdbc.MysqlIO.checkErrorPacket(MysqlIO.java:928)</span><br><span class="line">	at com.mysql.jdbc.MysqlIO.proceedHandshakeWithPluggableAuthentication(MysqlIO.java:1750)</span><br><span class="line">	at com.mysql.jdbc.MysqlIO.doHandshake(MysqlIO.java:1290)</span><br><span class="line">	at com.mysql.jdbc.ConnectionImpl.coreConnect(ConnectionImpl.java:2493)</span><br><span class="line">	at com.mysql.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:2526)</span><br><span class="line">	at com.mysql.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:2311)</span><br><span class="line">	at com.mysql.jdbc.ConnectionImpl.&lt;init&gt;(ConnectionImpl.java:834)</span><br><span class="line">	at com.mysql.jdbc.JDBC4Connection.&lt;init&gt;(JDBC4Connection.java:47)</span><br><span class="line">	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)</span><br><span class="line">	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)</span><br><span class="line">	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)</span><br><span class="line">	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)</span><br><span class="line">	at com.mysql.jdbc.Util.handleNewInstance(Util.java:411)</span><br><span class="line">	at com.mysql.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:416)</span><br><span class="line">	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:347)</span><br><span class="line">	at java.sql.DriverManager.getConnection(DriverManager.java:664)</span><br><span class="line">	at java.sql.DriverManager.getConnection(DriverManager.java:208)</span><br><span class="line">	at com.jolbox.bonecp.BoneCP.obtainRawInternalConnection(BoneCP.java:361)</span><br><span class="line">	at com.jolbox.bonecp.BoneCP.&lt;init&gt;(BoneCP.java:416)</span><br><span class="line">	at com.jolbox.bonecp.BoneCPDataSource.getConnection(BoneCPDataSource.java:120)</span><br><span class="line">	at org.datanucleus.store.rdbms.ConnectionFactoryImpl<span class="variable">$ManagedConnectionImpl</span>.getConnection(ConnectionFactoryImpl.java:501)</span><br><span class="line">	at org.datanucleus.store.rdbms.RDBMSStoreManager.&lt;init&gt;(RDBMSStoreManager.java:298)</span><br><span class="line">	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)</span><br><span class="line">	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)</span><br><span class="line">	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)</span><br><span class="line">	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)</span><br><span class="line">	at org.datanucleus.plugin.NonManagedPluginRegistry.createExecutableExtension(NonManagedPluginRegistry.java:631)</span><br><span class="line">	at org.datanucleus.plugin.PluginManager.createExecutableExtension(PluginManager.java:301)</span><br><span class="line">	at org.datanucleus.NucleusContext.createStoreManagerForProperties(NucleusContext.java:1187)</span><br><span class="line">	at org.datanucleus.NucleusContext.initialise(NucleusContext.java:356)</span><br><span class="line">	at org.datanucleus.api.jdo.JDOPersistenceManagerFactory.freezeConfiguration(JDOPersistenceManagerFactory.java:775)</span><br><span class="line">	at org.datanucleus.api.jdo.JDOPersistenceManagerFactory.createPersistenceManagerFactory(JDOPersistenceManagerFactory.java:333)</span><br><span class="line">	at org.datanucleus.api.jdo.JDOPersistenceManagerFactory.getPersistenceManagerFactory(JDOPersistenceManagerFactory.java:202)</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</span><br><span class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</span><br><span class="line">	at java.lang.reflect.Method.invoke(Method.java:498)</span><br><span class="line">	at javax.jdo.JDOHelper<span class="variable">$16</span>.run(JDOHelper.java:1965)</span><br><span class="line">	at java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at javax.jdo.JDOHelper.invoke(JDOHelper.java:1960)</span><br><span class="line">	at javax.jdo.JDOHelper.invokeGetPersistenceManagerFactoryOnImplementation(JDOHelper.java:1166)</span><br><span class="line">	at javax.jdo.JDOHelper.getPersistenceManagerFactory(JDOHelper.java:808)</span><br><span class="line">	at javax.jdo.JDOHelper.getPersistenceManagerFactory(JDOHelper.java:701)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.ObjectStore.getPMF(ObjectStore.java:420)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.ObjectStore.getPersistenceManager(ObjectStore.java:449)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.ObjectStore.initialize(ObjectStore.java:344)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.ObjectStore.setConf(ObjectStore.java:300)</span><br><span class="line">	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:73)</span><br><span class="line">	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:133)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.RawStoreProxy.&lt;init&gt;(RawStoreProxy.java:60)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.RawStoreProxy.getProxy(RawStoreProxy.java:69)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.HiveMetaStore<span class="variable">$HMSHandler</span>.newRawStore(HiveMetaStore.java:685)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.HiveMetaStore<span class="variable">$HMSHandler</span>.getMS(HiveMetaStore.java:663)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.HiveMetaStore<span class="variable">$HMSHandler</span>.createDefaultDB(HiveMetaStore.java:712)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.HiveMetaStore<span class="variable">$HMSHandler</span>.init(HiveMetaStore.java:511)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.RetryingHMSHandler.&lt;init&gt;(RetryingHMSHandler.java:78)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.RetryingHMSHandler.getProxy(RetryingHMSHandler.java:84)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.HiveMetaStore.newRetryingHMSHandler(HiveMetaStore.java:6517)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.&lt;init&gt;(HiveMetaStoreClient.java:207)</span><br><span class="line">	at org.apache.hadoop.hive.ql.metadata.SessionHiveMetaStoreClient.&lt;init&gt;(SessionHiveMetaStoreClient.java:74)</span><br><span class="line">	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)</span><br><span class="line">	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)</span><br><span class="line">	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)</span><br><span class="line">	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.MetaStoreUtils.newInstance(MetaStoreUtils.java:1660)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.RetryingMetaStoreClient.&lt;init&gt;(RetryingMetaStoreClient.java:68)</span><br><span class="line">	at org.apache.hadoop.hive.metastore.RetryingMetaStoreClient.getProxy(RetryingMetaStoreClient.java:83)</span><br><span class="line">	at org.apache.hadoop.hive.ql.metadata.Hive.createMetaStoreClient(Hive.java:3412)</span><br><span class="line">	at org.apache.hadoop.hive.ql.metadata.Hive.getMSC(Hive.java:3431)</span><br><span class="line">	at org.apache.hadoop.hive.ql.metadata.Hive.getAllFunctions(Hive.java:3656)</span><br><span class="line">	at org.apache.hadoop.hive.ql.metadata.Hive.reloadFunctions(Hive.java:232)</span><br><span class="line">	at org.apache.hadoop.hive.ql.metadata.Hive.registerAllFunctionsOnce(Hive.java:216)</span><br><span class="line">	at org.apache.hadoop.hive.ql.metadata.Hive.&lt;init&gt;(Hive.java:339)</span><br><span class="line">	at org.apache.hadoop.hive.ql.metadata.Hive.get(Hive.java:300)</span><br><span class="line">	at org.apache.hadoop.hive.ql.metadata.Hive.get(Hive.java:275)</span><br><span class="line">	at org.apache.hadoop.hive.ql.parse.BaseSemanticAnalyzer.createHiveDB(BaseSemanticAnalyzer.java:201)</span><br><span class="line">	at org.apache.hadoop.hive.ql.parse.DDLSemanticAnalyzer.&lt;init&gt;(DDLSemanticAnalyzer.java:222)</span><br><span class="line">	at org.apache.hadoop.hive.ql.parse.SemanticAnalyzerFactory.get(SemanticAnalyzerFactory.java:265)</span><br><span class="line">	at org.apache.hadoop.hive.ql.Driver.compile(Driver.java:546)</span><br><span class="line">	at org.apache.hadoop.hive.ql.Driver.compileInternal(Driver.java:1358)</span><br><span class="line">	at org.apache.hadoop.hive.ql.Driver.runInternal(Driver.java:1475)</span><br><span class="line">	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1287)</span><br><span class="line">	at org.apache.hadoop.hive.ql.Driver.run(Driver.java:1277)</span><br><span class="line">	at org.apache.hadoop.hive.cli.CliDriver.processLocalCmd(CliDriver.java:226)</span><br><span class="line">	at org.apache.hadoop.hive.cli.CliDriver.processCmd(CliDriver.java:175)</span><br><span class="line">	at org.apache.hadoop.hive.cli.CliDriver.processLine(CliDriver.java:389)</span><br><span class="line">	at org.apache.hadoop.hive.cli.CliDriver.executeDriver(CliDriver.java:781)</span><br><span class="line">	at org.apache.hadoop.hive.cli.CliDriver.run(CliDriver.java:699)</span><br><span class="line">	at org.apache.hadoop.hive.cli.CliDriver.main(CliDriver.java:634)</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</span><br><span class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</span><br><span class="line">	at java.lang.reflect.Method.invoke(Method.java:498)</span><br><span class="line">	at org.apache.hadoop.util.RunJar.run(RunJar.java:226)</span><br><span class="line">	at org.apache.hadoop.util.RunJar.main(RunJar.java:141)</span><br></pre></td></tr></table></figure>
+<p><strong>错误分析</strong>：不能实例化hive的元数据信息，可能的原因是mysql数据库未连接成功，检查myslq服务，以及hive-site.xml 中配置的mysql的连接信息，mysql的驱动jar包是否有，这里的问题应该是mysql用户名密码配置有误。</p>
+<p><strong>原因</strong>：hive-site.xml 中mysql的用户名和密码配置错误</p>
+<h4 id="hive中的命令">Hive中的命令：</h4>
+<ul>
+<li>!clear; 清屏命令</li>
+<li>exit; 退出命令</li>
+<li>use dbname; 切换到dbname所在数据库</li>
+<li>show tables; 查看当前数据库下的所有表</li>
+</ul>
+<p>创建表：create table stu(id int, name string, age int);</p>
+<p><strong>查看表结构</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">desc stu;</span><br><span class="line">desc extended stu;</span><br><span class="line">desc formatted stu;</span><br><span class="line">show create table stu;</span><br></pre></td></tr></table></figure>
+<p><strong>插入数据</strong>：insert into stu values(1,‘tom’,30);</p>
+<p><strong>查询数据</strong>：select * from stu;</p>
+<p>创建stu表，<strong>默认存储在HDFS的目录</strong><br>
+	hdfs://bigdata001:8020/user/hive/warehouse/stu<br>
+		hive.metastore.warehouse.dir：/user/hive/warehouse	<br>
+		stu：表的名字<br>
+<strong>表的完整路径是</strong>: ${hive.metastore.warehouse.dir}/tablename</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Hive的完整执行日志：</span><br><span class="line">	<span class="built_in">cd</span> <span class="variable">$HIVE_HOME</span></span><br><span class="line">	cp hive-log4j.properties.template hive-log4j.properties</span><br><span class="line">		hive.log.dir=<span class="variable">$&#123;java.io.tmpdir&#125;</span>/<span class="variable">$&#123;user.name&#125;</span></span><br><span class="line">		hive.log.file=hive.log</span><br><span class="line">		</span><br><span class="line">		<span class="variable">$&#123;java.io.tmpdir&#125;</span>/<span class="variable">$&#123;user.name&#125;</span>/<span class="variable">$&#123;hive.log.file&#125;</span></span><br><span class="line">		/tmp/hadoop/hive.log</span><br></pre></td></tr></table></figure>
+<p><strong>cat hive-log4j.properties</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 conf]$ cat hive-log4j.properties</span><br><span class="line"><span class="comment"># Licensed to the Apache Software Foundation (ASF) under one</span></span><br><span class="line"><span class="comment"># or more contributor license agreements.  See the NOTICE file</span></span><br><span class="line"><span class="comment"># distributed with this work for additional information</span></span><br><span class="line"><span class="comment"># regarding copyright ownership.  The ASF licenses this file</span></span><br><span class="line"><span class="comment"># to you under the Apache License, Version 2.0 (the</span></span><br><span class="line"><span class="comment"># "License"); you may not use this file except in compliance</span></span><br><span class="line"><span class="comment"># with the License.  You may obtain a copy of the License at</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#     http://www.apache.org/licenses/LICENSE-2.0</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Unless required by applicable law or agreed to in writing, software</span></span><br><span class="line"><span class="comment"># distributed under the License is distributed on an "AS IS" BASIS,</span></span><br><span class="line"><span class="comment"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span></span><br><span class="line"><span class="comment"># See the License for the specific language governing permissions and</span></span><br><span class="line"><span class="comment"># limitations under the License.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Define some default values that can be overridden by system properties</span></span><br><span class="line">hive.log.threshold=ALL</span><br><span class="line">hive.root.logger=WARN,DRFA</span><br><span class="line">hive.log.dir=<span class="variable">$&#123;java.io.tmpdir&#125;</span>/<span class="variable">$&#123;user.name&#125;</span></span><br><span class="line">hive.log.file=hive.log</span><br><span class="line"></span><br><span class="line"><span class="comment"># Define the root logger to the system property "hadoop.root.logger".</span></span><br><span class="line">log4j.rootLogger=<span class="variable">$&#123;hive.root.logger&#125;</span>, EventCounter</span><br><span class="line"></span><br><span class="line"><span class="comment"># Logging Threshold</span></span><br><span class="line">log4j.threshold=<span class="variable">$&#123;hive.log.threshold&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Daily Rolling File Appender</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Use the PidDailyerRollingFileAppend class instead if you want to use separate log files</span></span><br><span class="line"><span class="comment"># for different CLI session.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># log4j.appender.DRFA=org.apache.hadoop.hive.ql.log.PidDailyRollingFileAppender</span></span><br><span class="line"></span><br><span class="line">log4j.appender.DRFA=org.apache.log4j.DailyRollingFileAppender</span><br><span class="line"></span><br><span class="line">log4j.appender.DRFA.File=<span class="variable">$&#123;hive.log.dir&#125;</span>/<span class="variable">$&#123;hive.log.file&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Rollver at midnight</span></span><br><span class="line">log4j.appender.DRFA.DatePattern=.yyyy-MM-dd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 30-day backup</span></span><br><span class="line"><span class="comment">#log4j.appender.DRFA.MaxBackupIndex=30</span></span><br><span class="line">log4j.appender.DRFA.layout=org.apache.log4j.PatternLayout</span><br><span class="line"></span><br><span class="line"><span class="comment"># Pattern format: Date LogLevel LoggerName LogMessage</span></span><br><span class="line"><span class="comment">#log4j.appender.DRFA.layout.ConversionPattern=%d&#123;ISO8601&#125; %p %c: %m%n</span></span><br><span class="line"><span class="comment"># Debugging Pattern format</span></span><br><span class="line">log4j.appender.DRFA.layout.ConversionPattern=%d&#123;ISO8601&#125; %-5p [%t]: %c&#123;2&#125; (%F:%M(%L)) - %m%n</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># console</span></span><br><span class="line"><span class="comment"># Add "console" to rootlogger above if you want to use this</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line">log4j.appender.console=org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.console.target=System.err</span><br><span class="line">log4j.appender.console.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.console.layout.ConversionPattern=%d&#123;yy/MM/dd HH:mm:ss&#125; [%t]: %p %c&#123;2&#125;: %m%n</span><br><span class="line">log4j.appender.console.encoding=UTF-8</span><br><span class="line"></span><br><span class="line"><span class="comment">#custom logging levels</span></span><br><span class="line"><span class="comment">#log4j.logger.xxx=DEBUG</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Event Counter Appender</span></span><br><span class="line"><span class="comment"># Sends counts of logging messages at different severity levels to Hadoop Metrics.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">log4j.appender.EventCounter=org.apache.hadoop.hive.shims.HiveEventCounter</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">log4j.category.DataNucleus=ERROR,DRFA</span><br><span class="line">log4j.category.Datastore=ERROR,DRFA</span><br><span class="line">log4j.category.Datastore.Schema=ERROR,DRFA</span><br><span class="line">log4j.category.JPOX.Datastore=ERROR,DRFA</span><br><span class="line">log4j.category.JPOX.Plugin=ERROR,DRFA</span><br><span class="line">log4j.category.JPOX.MetaData=ERROR,DRFA</span><br><span class="line">log4j.category.JPOX.Query=ERROR,DRFA</span><br><span class="line">log4j.category.JPOX.General=ERROR,DRFA</span><br><span class="line">log4j.category.JPOX.Enhancer=ERROR,DRFA</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Silence useless ZK logs</span></span><br><span class="line">log4j.logger.org.apache.zookeeper.server.NIOServerCnxn=WARN,DRFA</span><br><span class="line">log4j.logger.org.apache.zookeeper.ClientCnxnSocketNIO=WARN,DRFA</span><br><span class="line"></span><br><span class="line"><span class="comment">#custom logging levels</span></span><br><span class="line">log4j.logger.org.apache.hadoop.hive.ql.parse.SemanticAnalyzer=INFO</span><br><span class="line">log4j.logger.org.apache.hadoop.hive.ql.Driver=INFO</span><br><span class="line">log4j.logger.org.apache.hadoop.hive.ql.exec.mr.ExecDriver=INFO</span><br><span class="line">log4j.logger.org.apache.hadoop.hive.ql.exec.mr.MapRedTask=INFO</span><br><span class="line">log4j.logger.org.apache.hadoop.hive.ql.exec.mr.MapredLocalTask=INFO</span><br><span class="line">log4j.logger.org.apache.hadoop.hive.ql.exec.Task=INFO</span><br><span class="line">log4j.logger.org.apache.hadoop.hive.ql.session.SessionState=INFO</span><br><span class="line">[hadoop@bigdata01 conf]$</span><br></pre></td></tr></table></figure>
+<p>hive.log.dir=${java.io.tmpdir}/${<a href="http://user.name" target="_blank" rel="noopener">user.name</a>}为Hive的日志目录<br>
+{java.io.tmpdir}为 /tmp 目录<br>
+hive.log.file=hive.log 为Hive的log日志文件</p>
+<h4 id="hive配置属性">Hive配置属性</h4>
+<p>全局：$HIVE_HOME/hive-site.xml中<br>
+临时/当前session：仅对当前session生效</p>
+<ul>
+<li>查看当前的属性：set key;</li>
+<li>修改当前的属性：set key=value;</li>
+<li>hive -hiveconf hive.cli.print.current.db=true</li>
+</ul>
+<p><strong>Hive中交互式命令</strong><br>
+	-e：不需要进入hive命令后，就可以跟上sql语句查询<br>
+	-f：执行指定文件（内容是SQL语句）</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Mysql/MySQL分组求TopN/" data-toggle="tooltip" data-placement="top" title="MySQL 分组求 Top N 问题">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#hive-概述"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Hive &#x6982;&#x8FF0;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#基于hadoop处理大数据的弊端"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">&#x57FA;&#x4E8E;Hadoop&#x5904;&#x7406;&#x5927;&#x6570;&#x636E;&#x7684;&#x5F0A;&#x7AEF;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive的优缺点"><span class="toc-nav-number">1.2.</span> <span class="toc-nav-text">Hive&#x7684;&#x4F18;&#x7F3A;&#x70B9;&#xFF1A;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#hive-的架构"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Hive &#x7684;&#x67B6;&#x6784;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive和传统关系型数据库的区别"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">Hive&#x548C;&#x4F20;&#x7EDF;&#x5173;&#x7CFB;&#x578B;&#x6570;&#x636E;&#x5E93;&#x7684;&#x533A;&#x522B;&#xFF1F;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#hive的部署"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Hive&#x7684;&#x90E8;&#x7F72;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive日志查看"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">Hive&#x65E5;&#x5FD7;&#x67E5;&#x770B;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive中的命令"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">Hive&#x4E2D;&#x7684;&#x547D;&#x4EE4;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive配置属性"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">Hive&#x914D;&#x7F6E;&#x5C5E;&#x6027;</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Hive" title="Hive">Hive</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jackson 2019 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

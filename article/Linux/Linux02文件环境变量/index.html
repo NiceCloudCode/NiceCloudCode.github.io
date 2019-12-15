@@ -14,7 +14,7 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Linux 文件、环境变量 - BigData@Jackson | Blog
+          Linux 文件、环境变量、别名、history - BigData@Jackson | Blog
         
     </title>
 
@@ -91,7 +91,7 @@
                               <a class="tag" href="/tags/#Linux" title="Linux">Linux</a>
                             
                         </div>
-                        <h1>Linux 文件、环境变量</h1>
+                        <h1>Linux 文件、环境变量、别名、history</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Jackson on
@@ -219,7 +219,10 @@
 <h4 id="3jdk安装">3.jdk安装：</h4>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">首先：mkdir -p /usr/java</span><br><span class="line">	然后：修正所属的用户和用户组 chown -R root:root /usr/java/*</span><br><span class="line">	配置全局jdk环境变量：</span><br><span class="line">		<span class="built_in">export</span> JAVA_HOME=/usr/java/jdk1.8.0.121</span><br><span class="line">		<span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>:<span class="variable">$PATH</span></span><br><span class="line">		<span class="built_in">source</span> /etc/profile</span><br><span class="line">	上面的意思是将环境变零暴露出来，再将JAVA_HOME追加到系统的环境变量当中</span><br><span class="line"></span><br><span class="line">总结：</span><br><span class="line">	1.出现<span class="built_in">command</span> not found 时候可能的原因是：我们没有部署安装包，或者部署了没有配置环境变量</span><br><span class="line">	2.习惯性的，我们部署一个软件之后，bin目录的可执行文件配置到环境变量当中然后<span class="built_in">source</span>，之后习惯性的<span class="built_in">which</span> xxx，比如<span class="built_in">which</span> java</span><br></pre></td></tr></table></figure>
 <h4 id="4别名alias">4.别名：alias</h4>
+<p><strong>查看主机中已经存在的别名</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 ~]<span class="comment"># alias</span></span><br><span class="line">	<span class="built_in">alias</span> cp=<span class="string">'cp -i'</span></span><br><span class="line">	<span class="built_in">alias</span> egrep=<span class="string">'egrep --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> fgrep=<span class="string">'fgrep --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> grep=<span class="string">'grep --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> l.=<span class="string">'ls -d .* --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> ll=<span class="string">'ls -l --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> ls=<span class="string">'ls --color=auto'</span></span><br><span class="line">	<span class="built_in">alias</span> mv=<span class="string">'mv -i'</span></span><br><span class="line">	<span class="built_in">alias</span> rm=<span class="string">'rm -i'</span></span><br><span class="line">	<span class="built_in">alias</span> <span class="built_in">which</span>=<span class="string">'alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'</span></span><br></pre></td></tr></table></figure>
+<p>永久配置别名：</p>
+<p>配置在环境变量中 /etc/profile ，~/.bashrc，~/.bash_profile中，即永久配置别名</p>
 <p>使用别名可以简化我们的操作，节省时间偷懒</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alias</span> j=<span class="string">'cd /home/jepson'</span></span><br><span class="line">.bash_profile   ssh bug</span><br><span class="line">.bashrc         个人环境变量文件  优先</span><br><span class="line">以上两者的区别，当我们进行ssh的时候回自动加载.bashrc 文件，但是不会自动加载.bash_profile 文件</span><br></pre></td></tr></table></figure>
 <p><strong>使用案例：</strong></p>
@@ -227,6 +230,8 @@
 <h4 id="5history">5.history</h4>
 <p><strong>history 命令用来查看以前执行的命令</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 ~]<span class="comment"># history</span></span><br><span class="line">1  <span class="built_in">history</span></span><br><span class="line">2  ll</span><br><span class="line">3  ls</span><br><span class="line">4  <span class="built_in">which</span></span><br><span class="line">5  <span class="built_in">history</span></span><br><span class="line">可以使用!2 来执行历史指定的命令</span><br></pre></td></tr></table></figure>
+<p>查看最近10条执行过的命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop01 ~]<span class="comment"># history | head -10</span></span><br><span class="line">    1  passwd </span><br><span class="line">    2  ls</span><br><span class="line">    3  cat /etc/hosts</span><br><span class="line">    4  yum install redis</span><br><span class="line">    5  yum install epel-release</span><br><span class="line">    6  yum install redis</span><br><span class="line">    7  df -hT</span><br><span class="line">    8  service redis start</span><br><span class="line">    9  service redis stop</span><br><span class="line">   10  service redis status</span><br></pre></td></tr></table></figure>
 <h4 id="6总结创建文件的操作">6.总结创建文件的操作</h4>
 <p><strong>文件：</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">touch  xxx.log</span><br><span class="line">cat /dev/null &gt; xxx.log</span><br><span class="line">vi  xxx.log</span><br></pre></td></tr></table></figure>
@@ -234,6 +239,8 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir 	mkdir -p</span><br></pre></td></tr></table></figure>
 <p><strong>删除操作：</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rm -f ：直接删除文件</span><br><span class="line">rm -rf 直接删除文件夹</span><br><span class="line">在shell脚本中执行删除命令的时候一定要先判断被删除的内容是否存在</span><br></pre></td></tr></table></figure>
+<p>shell脚本中，定义变量k = “” 然后rm -rf $k 会默认指定根目录下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">K=<span class="string">""</span>    rm -rf <span class="variable">$K</span> 实际上是rm -rf /</span><br></pre></td></tr></table></figure>
 
                 
 

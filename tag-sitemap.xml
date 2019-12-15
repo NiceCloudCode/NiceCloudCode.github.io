@@ -24,7 +24,14 @@
 
     <url>
         <loc>http://www.ruozedata.com/tags/Linux/</loc>
-        <lastmod>2019-12-14T03:23:27.772Z</lastmod>
+        <lastmod>2019-12-14T03:38:22.861Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/tags/Hive/</loc>
+        <lastmod>2019-12-15T04:30:29.284Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
