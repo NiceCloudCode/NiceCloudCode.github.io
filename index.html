@@ -134,6 +134,13 @@
 
                         
                         <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
                             <a href="/about/">About</a>
                         </li>
                         
@@ -142,13 +149,6 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -208,6 +208,38 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/">
+        <h2 class="post-title">
+                                 
+            Hive DML、DDL、Load Data
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            DDL
+首先要创建表才能对Hive中的数据进行操作。
+创建一个外部表：
+12345678910CREATE EXTERNAL TABLE emp(empno int,ename string,job string,mgr int,hiredate string,sal double,comm double,deptno int) ROW FORMAT DELIMITED FIELDS TER......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-09-04
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hive" title="Hive">Hive</a>
+            
+        </div>
+    
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -530,39 +562,6 @@ jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/article/Hadoop/hadoop02Yarn部署和使用/">
-        <h2 class="post-title">
-                                 
-            Hadoop 之 Yarn部署和使用
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1.Yarn 伪分布式 单点部署 主从架构
-Yarn的单点部署文档：https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html
-1.1 Configure parameters as follows
-etc/hadoop/mapred-site.xml:
-123456&......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-14
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -620,7 +619,7 @@ etc/hadoop/mapred-site.xml:
             
         
             
-            <a href="/tags/#Hive" title="Hive" rel="1">Hive</a>
+            <a href="/tags/#Hive" title="Hive" rel="2">Hive</a>
             
         
     </div>
@@ -676,6 +675,10 @@ etc/hadoop/mapred-site.xml:
     <ul>
       
         <li>
+          <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/">Hive DML、DDL、Load Data</a>
+        </li>
+      
+        <li>
           <a href="/article/Hive/Hive 架构、部署、配置/">Hive架构、部署、配置</a>
         </li>
       
@@ -689,10 +692,6 @@ etc/hadoop/mapred-site.xml:
       
         <li>
           <a href="/article/Hadoop/Hadoop之MapReduce/">MR on Yarn、文件格式、文件压缩</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hadoop/hadoop04HDFS副本、读写/">HDFS 副本存放策略、文件读写流程</a>
         </li>
       
     </ul>
@@ -715,7 +714,7 @@ etc/hadoop/mapred-site.xml:
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>
