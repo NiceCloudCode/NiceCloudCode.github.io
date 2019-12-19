@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Hive Join、复杂数据类型操作 - BigData@Jackson | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/Hive/Hive Join、multi data type/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Hive" title="Hive">Hive</a>
+                            
+                        </div>
+                        <h1>Hive Join、复杂数据类型操作</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Jackson on
+                            2017-09-06
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jackson | @Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="hive-中的join操作">Hive 中的Join操作</h3>
+<p><strong>Inner Join</strong></p>
+<p>inner join：只返回连接条件匹配上的数据</p>
+<p>Left Join ：左外连接，以左表的全部数据和右边关联的数据，缺失补NULL</p>
+<p>Right Join：右外连接，以右表的全部数据和左边关联的数据，缺失补NULL</p>
+<p>Full Join：   全外连接，返回全部的关联数据，缺失补NULL</p>
+<h3 id="hiveserver2">hiveserver2</h3>
+<p>启动HiveServer2 服务端，使用beeline进行连接</p>
+<p><strong>注意</strong>：进入到Hive的bin目录执行beeline，因为Spark中也有beeline，当都配置到环境变量中的时候，后面的会覆盖前面的导致进错客户端</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./beeline -u jdbc:hive2://bigdata01:10000/bigdata_hive -n hadoop</span><br></pre></td></tr></table></figure>
+<p><strong>查看HiveServer2 的命令帮助</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 bin]$ hiveserver2 --<span class="built_in">help</span></span><br><span class="line">19/12/19 20:21:18 WARN util.NativeCodeLoader: Unable to load native-hadoop library <span class="keyword">for</span> your platform... using <span class="built_in">builtin</span>-java classes <span class="built_in">where</span> applicable</span><br><span class="line">usage: hiveserver2</span><br><span class="line">    --deregister &lt;versionNumber&gt;   Deregister all instances of given</span><br><span class="line">                                   version from dynamic service discovery</span><br><span class="line"> -H,--<span class="built_in">help</span>                         Print <span class="built_in">help</span> information</span><br><span class="line">    --hiveconf &lt;property=value&gt;    Use value <span class="keyword">for</span> given property</span><br></pre></td></tr></table></figure>
+<p><strong>hiveserver修改默认的端口号</strong></p>
+<p>在命令行中临时修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hiveserver2 --hiveconf hive.server2.thrift.port=10066</span><br></pre></td></tr></table></figure>
+<p>在hive的配置文件<code>hive-site.xml</code>中进行修改</p>
+<p>hive.server2.thrift.port<br>
+Default Value: 10000<br>
+Added In: Hive 0.11.0 with HIVE-2935</p>
+<h3 id="hive的复杂数据类型">Hive的复杂数据类型</h3>
+<h4 id="array类型">Array类型</h4>
+<p><strong>数据</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pk	beijing,shanghai,tianjin,hangzhou</span><br><span class="line">jepson	changchu,chengdu,wuhan,beijing</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> hive_array(</span><br><span class="line"><span class="keyword">name</span> <span class="keyword">string</span>, </span><br><span class="line">loaction <span class="built_in">array</span>&lt;<span class="keyword">string</span>&gt;) </span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span>  <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span> COLLECTION ITEMS <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">','</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/home/hadoop/data/hive_array.txt'</span> overwrite <span class="keyword">into</span> <span class="keyword">table</span> hive_array;</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> hive_array</span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">------------------+----------------------------------------------+--+</span></span><br><span class="line">| hive_array.name  |             hive_array.loaction              |</span><br><span class="line">+<span class="comment">------------------+----------------------------------------------+--+</span></span><br><span class="line">| pk               | [<span class="string">"beijing"</span>,<span class="string">"shanghai"</span>,<span class="string">"tianjin"</span>,<span class="string">"hangzhou"</span>]  |</span><br><span class="line">| jepson           | [<span class="string">"changchun"</span>,<span class="string">"chengdu"</span>,<span class="string">"wuhan"</span>,<span class="string">"beijing"</span>]     |</span><br><span class="line">+<span class="comment">------------------+----------------------------------------------+--+</span></span><br><span class="line"></span><br><span class="line"><span class="number">0</span>: jdbc:hive2://bigdata01:<span class="number">10000</span>/bigdata_hive&gt; <span class="keyword">desc</span> hive_array;</span><br><span class="line">+<span class="comment">-----------+----------------+----------+--+</span></span><br><span class="line">| col_name  |   data_type    | <span class="keyword">comment</span>  |</span><br><span class="line">+<span class="comment">-----------+----------------+----------+--+</span></span><br><span class="line">| <span class="keyword">name</span>      | <span class="keyword">string</span>         |          |</span><br><span class="line">| loaction  | <span class="built_in">array</span>&lt;<span class="keyword">string</span>&gt;  |          |</span><br><span class="line">+<span class="comment">-----------+----------------+----------+--+</span></span><br></pre></td></tr></table></figure>
+<p><strong>求每个员工的第一个工作地点</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>,location[<span class="number">0</span>] <span class="keyword">from</span> hive_array;</span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">---------+-----------+--+</span></span><br><span class="line">|  name   |    _c1    |</span><br><span class="line">+<span class="comment">---------+-----------+--+</span></span><br><span class="line">| pk      | beijing   |</span><br><span class="line">| jepson  | changchun  |</span><br><span class="line">+<span class="comment">---------+-----------+--+</span></span><br></pre></td></tr></table></figure>
+<p><strong>求每个员工的工作地点有几个</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span> ,<span class="keyword">size</span>(loaction) <span class="keyword">from</span> hive_array;</span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">---------+------+--+</span></span><br><span class="line">|  name   | _c1  |</span><br><span class="line">+<span class="comment">---------+------+--+</span></span><br><span class="line">| pk      | 4    |</span><br><span class="line">| jepson  | 4    |</span><br><span class="line">+<span class="comment">---------+------+--+</span></span><br></pre></td></tr></table></figure>
+<p><strong>求在天津上班的员工</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> hive_array <span class="keyword">where</span> array_contains(loaction,<span class="string">'tianjin'</span>);</span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">------------------+----------------------------------------------+--+</span></span><br><span class="line">| hive_array.name  |             hive_array.loaction              |</span><br><span class="line">+<span class="comment">------------------+----------------------------------------------+--+</span></span><br><span class="line">| pk               | ["beijing","shanghai","tianjin","hangzhou"]  |</span><br><span class="line">+<span class="comment">------------------+----------------------------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<h4 id="map类型">Map类型</h4>
+<p><strong>数据</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1,zhangsan,father:xiaoming#mother:xiaohuang#brother:xiaoxu,28</span><br><span class="line">2,lisi,father:mayun#mother:huangyi#brother:guanyu,22</span><br><span class="line">3,wangwu,father:wangjianlin#mother:ruhua#sister:jingtian,29</span><br><span class="line">4,mayun,father:mayongzhen#mother:angelababy,26</span><br></pre></td></tr></table></figure>
+<p>建表语句：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> hive_map(</span><br><span class="line"><span class="keyword">id</span> <span class="built_in">int</span>,</span><br><span class="line"><span class="keyword">name</span> <span class="keyword">string</span>,</span><br><span class="line">members <span class="keyword">map</span>&lt;<span class="keyword">string</span>,<span class="keyword">string</span>&gt;,</span><br><span class="line">age <span class="built_in">int</span></span><br><span class="line">) <span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">','</span> </span><br><span class="line">collection items <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'#'</span> </span><br><span class="line"><span class="keyword">map</span> <span class="keyword">keys</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">':'</span>;</span><br></pre></td></tr></table></figure>
+<p>加载数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/home/hadoop/data/hive_map.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> hive_map;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">--------------+----------------+--------------------------------------------------------------------+---------------+</span></span><br><span class="line">| hive_map.id  | hive_map.name  |                  hive_map.members                                  | hive_map.age  |</span><br><span class="line">+<span class="comment">--------------+----------------+--------------------------------------------------------------------+---------------+</span></span><br><span class="line">| 1            | zhangsan       | &#123;"father":"xiaoming","mother":"xiaohuang","brother":"xiaoxu"&#125;      | 28            |</span><br><span class="line">| 2            | lisi           | &#123;"father":"mayun","mother":"huangyi","brother":"guanyu"&#125;           | 22            |</span><br><span class="line">| 3            | wangwu         | &#123;"father":"wangjianlin","mother":"ruhua","sister":"jingtian"&#125;      | 29            |</span><br><span class="line">| 4            | mayun          | &#123;"father":"mayongzhen","mother":"angelababy"&#125;                      | 26            |</span><br><span class="line">+<span class="comment">--------------+----------------+--------------------------------------------------------------------+---------------+</span></span><br></pre></td></tr></table></figure>
+<p><strong>需求：求每个人的父母</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>,members[<span class="string">'father'</span>] <span class="keyword">as</span> father,members[<span class="string">'mother'</span>] <span class="keyword">as</span> mother <span class="keyword">from</span> hive_map;</span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">-----------+--------------+-------------+--+</span></span><br><span class="line">|   name    |    father    |   mother    |</span><br><span class="line">+<span class="comment">-----------+--------------+-------------+--+</span></span><br><span class="line">| zhangsan  | xiaoming     | xiaohuang   |</span><br><span class="line">| lisi      | mayun        | huangyi     |</span><br><span class="line">| wangwu    | wangjianlin  | ruhua       |</span><br><span class="line">| mayun     | mayongzhen   | angelababy  |</span><br><span class="line">+<span class="comment">-----------+--------------+-------------+--+</span></span><br></pre></td></tr></table></figure>
+<p><strong>求每个人的亲属关系即map的key</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span>,map_keys(members) <span class="keyword">as</span> members <span class="keyword">from</span> hive_map;</span><br><span class="line"></span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">-----+-----------+--------------------------------+--+</span></span><br><span class="line">| id  |   name    |            members             |</span><br><span class="line">+<span class="comment">-----+-----------+--------------------------------+--+</span></span><br><span class="line">| 1   | zhangsan  | ["father","mother","brother"]  |</span><br><span class="line">| 2   | lisi      | ["father","mother","brother"]  |</span><br><span class="line">| 3   | wangwu    | ["father","mother","sister"]   |</span><br><span class="line">| 4   | mayun     | ["father","mother"]            |</span><br><span class="line">+<span class="comment">-----+-----------+--------------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<p><strong>求每个人 亲属关系的姓名即取所有的values</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span>,map_values(members) <span class="keyword">as</span> members <span class="keyword">from</span> hive_map;</span><br><span class="line"></span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">-----+-----------+-------------------------------------+--+</span></span><br><span class="line">| id  |   name    |               members               |</span><br><span class="line">+<span class="comment">-----+-----------+-------------------------------------+--+</span></span><br><span class="line">| 1   | zhangsan  | ["xiaoming","xiaohuang","xiaoxu"]   |</span><br><span class="line">| 2   | lisi      | ["mayun","huangyi","guanyu"]        |</span><br><span class="line">| 3   | wangwu    | ["wangjianlin","ruhua","jingtian"]  |</span><br><span class="line">| 4   | mayun     | ["mayongzhen","angelababy"]         |</span><br><span class="line">+<span class="comment">-----+-----------+-------------------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<p><strong>求每个人的关系有几个</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span>,<span class="keyword">size</span>(members) <span class="keyword">from</span> hive_map;</span><br><span class="line"></span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">-----+-----------+------+--+</span></span><br><span class="line">| id  |   name    | _c2  |</span><br><span class="line">+<span class="comment">-----+-----------+------+--+</span></span><br><span class="line">| 1   | zhangsan  | 3    |</span><br><span class="line">| 2   | lisi      | 3    |</span><br><span class="line">| 3   | wangwu    | 3    |</span><br><span class="line">| 4   | mayun     | 2    |</span><br><span class="line">+<span class="comment">-----+-----------+------+--+</span></span><br></pre></td></tr></table></figure>
+<p><strong>查询出有兄弟的人，以及他的兄弟是谁？</strong></p>
+<p>运用数组里面的array_contains，先将其转换成为数组，在对数组类型进行操作</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span>,members[<span class="string">'brother'</span>] brother <span class="keyword">from</span> hive_map <span class="keyword">where</span> array_contains(map_keys(members),<span class="string">'brother'</span>);</span><br><span class="line">+<span class="comment">-----+-----------+----------+--+</span></span><br><span class="line">| id  |   name    | brother  |</span><br><span class="line">+<span class="comment">-----+-----------+----------+--+</span></span><br><span class="line">| 1   | zhangsan  | xiaoxu   |</span><br><span class="line">| 2   | lisi      | guanyu   |</span><br><span class="line">+<span class="comment">-----+-----------+----------+--+</span></span><br></pre></td></tr></table></figure>
+<h4 id="结构体">结构体</h4>
+<p>结构体内部的数据类型可以不同</p>
+<p>structs: STRUCT&lt;col_name : data_type [COMMENT col_comment], …&gt;</p>
+<p><strong>数据：</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@bigdata01 data]# cat hive_struct.txt </span><br><span class="line">192.168.1.1#zhangsan:40</span><br><span class="line">192.168.1.2#lisi:50</span><br><span class="line">192.168.1.3#wangwu:60</span><br><span class="line">192.168.1.4#zhaoliu:70</span><br></pre></td></tr></table></figure>
+<p>建表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> hive_struct(</span><br><span class="line"><span class="keyword">id</span> <span class="keyword">string</span>,</span><br><span class="line">info <span class="keyword">struct</span>&lt;<span class="keyword">name</span>:<span class="keyword">string</span>,age:<span class="built_in">int</span>&gt;</span><br><span class="line">) <span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'#'</span> </span><br><span class="line">collection items <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">':'</span> ;</span><br></pre></td></tr></table></figure>
+<p>加载数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/home/hadoop/data/hive_struct.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> hive_struct;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">-----------------+-------------------------------+--+</span></span><br><span class="line">| hive_struct.id  |       hive_struct.info        |</span><br><span class="line">+<span class="comment">-----------------+-------------------------------+--+</span></span><br><span class="line">| 192.168.1.1     | &#123;"name":"zhangsan","age":40&#125;  |</span><br><span class="line">| 192.168.1.2     | &#123;"name":"lisi","age":50&#125;      |</span><br><span class="line">| 192.168.1.3     | &#123;"name":"wangwu","age":60&#125;    |</span><br><span class="line">| 192.168.1.4     | &#123;"name":"zhaoliu","age":70&#125;   |</span><br><span class="line">+<span class="comment">-----------------+-------------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<p><strong>取数据：</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,info.name,info.age <span class="keyword">from</span> hive_struct;</span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">--------------+-----------+------+--+</span></span><br><span class="line">|      id      |   name    | age  |</span><br><span class="line">+<span class="comment">--------------+-----------+------+--+</span></span><br><span class="line">| 192.168.1.1  | zhangsan  | 40   |</span><br><span class="line">| 192.168.1.2  | lisi      | 50   |</span><br><span class="line">| 192.168.1.3  | wangwu    | 60   |</span><br><span class="line">| 192.168.1.4  | zhaoliu   | 70   |</span><br><span class="line">+<span class="comment">--------------+-----------+------+--+</span></span><br></pre></td></tr></table></figure>
+<p>click_log数据情况：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> click_log(</span><br><span class="line">cookie_id <span class="keyword">string</span>,</span><br><span class="line">ad_id <span class="keyword">string</span>,</span><br><span class="line"><span class="keyword">time</span> <span class="keyword">string</span></span><br><span class="line">) <span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br></pre></td></tr></table></figure>
+<p>加载数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/home/hadoop/data/click_log.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> click_log;</span><br><span class="line"></span><br><span class="line">+<span class="comment">----------------------+------------------+-----------------------------+--+</span></span><br><span class="line">| click_log.cookie_id  | click_log.ad_id  |       click_log.time        |</span><br><span class="line">+<span class="comment">----------------------+------------------+-----------------------------+--+</span></span><br><span class="line">| 11                   | ad_101           | 2014-05-01 06:01:12.334+01  |</span><br><span class="line">| 22                   | ad_102           | 2014-05-01 07:28:12.342+01  |</span><br><span class="line">| 33                   | ad_103           | 2014-05-01 07:50:12.33+01   |</span><br><span class="line">| 11                   | ad_104           | 2014-05-01 09:27:12.33+01   |</span><br><span class="line">| 22                   | ad_103           | 2014-05-01 09:03:12.324+01  |</span><br><span class="line">| 33                   | ad_102           | 2014-05-02 19:10:12.343+01  |</span><br><span class="line">| 11                   | ad_101           | 2014-05-02 09:07:12.344+01  |</span><br><span class="line">| 35                   | ad_105           | 2014-05-03 11:07:12.339+01  |</span><br><span class="line">| 22                   | ad_104           | 2014-05-03 12:59:12.743+01  |</span><br><span class="line">| 77                   | ad_103           | 2014-05-03 18:04:12.355+01  |</span><br><span class="line">| 99                   | ad_102           | 2014-05-04 00:36:39.713+01  |</span><br><span class="line">| 33                   | ad_101           | 2014-05-04 19:10:12.343+01  |</span><br><span class="line">| 11                   | ad_101           | 2014-05-05 09:07:12.344+01  |</span><br><span class="line">| 35                   | ad_102           | 2014-05-05 11:07:12.339+01  |</span><br><span class="line">| 22                   | ad_103           | 2014-05-05 12:59:12.743+01  |</span><br><span class="line">| 77                   | ad_104           | 2014-05-05 18:04:12.355+01  |</span><br><span class="line">| 99                   | ad_105           | 2014-05-05 20:36:39.713+01  |</span><br><span class="line">+<span class="comment">----------------------+------------------+-----------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<p>ad_list表数据情况：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span>  ad_list(</span><br><span class="line">ad_id <span class="keyword">string</span>,</span><br><span class="line"><span class="keyword">url</span> <span class="keyword">string</span>,</span><br><span class="line">catalogs <span class="keyword">string</span></span><br><span class="line">) <span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br></pre></td></tr></table></figure>
+<p>加载数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/home/hadoop/data/ad_list.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> ad_list;</span><br><span class="line"></span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">----------------+------------------------+--------------------------------------+--+</span></span><br><span class="line">| ad_list.ad_id  |      ad_list.url       |           ad_list.catalogs           |</span><br><span class="line">+<span class="comment">----------------+------------------------+--------------------------------------+--+</span></span><br><span class="line">| ad_101         | http://www.google.com  | catalog8|catalog1                    |</span><br><span class="line">| ad_102         | http://www.sohu.com    | catalog6|catalog3                    |</span><br><span class="line">| ad_103         | http://www.baidu.com   | catalog7                             |</span><br><span class="line">| ad_104         | http://www.qq.com      | catalog5|catalog1|catalog4|catalog9  |</span><br><span class="line">| ad_105         | http://sina.com        | NULL                                 |</span><br><span class="line">+<span class="comment">----------------+------------------------+--------------------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<p><strong>用clicklog 和adlist进行分析</strong></p>
+<p><strong>求每一个人所访问的ad_id 去重</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> cookie_id,collect_set(ad_id) <span class="keyword">from</span> click_log <span class="keyword">group</span> <span class="keyword">by</span> cookie_id;</span><br><span class="line"></span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">------------+-------------------------------+--+</span></span><br><span class="line">| cookie_id  |              _c1              |</span><br><span class="line">+<span class="comment">------------+-------------------------------+--+</span></span><br><span class="line">| 11         | ["ad_101","ad_104"]           |</span><br><span class="line">| 22         | ["ad_102","ad_103","ad_104"]  |</span><br><span class="line">| 33         | ["ad_103","ad_102","ad_101"]  |</span><br><span class="line">| 35         | ["ad_105","ad_102"]           |</span><br><span class="line">| 77         | ["ad_103","ad_104"]           |</span><br><span class="line">| 99         | ["ad_102","ad_105"]           |</span><br><span class="line">+<span class="comment">------------+-------------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<p>不用去重操作可以用 collect_list()函数</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> cookie_id,collect_list(ad_id) <span class="keyword">from</span> click_log <span class="keyword">group</span> <span class="keyword">by</span> cookie_id;</span><br><span class="line"></span><br><span class="line">+<span class="comment">------------+----------------------------------------+--+</span></span><br><span class="line">| cookie_id  |                  _c1                   |</span><br><span class="line">+<span class="comment">------------+----------------------------------------+--+</span></span><br><span class="line">| 11         | ["ad_101","ad_104","ad_101","ad_101"]  |</span><br><span class="line">| 22         | ["ad_102","ad_103","ad_104","ad_103"]  |</span><br><span class="line">| 33         | ["ad_103","ad_102","ad_101"]           |</span><br><span class="line">| 35         | ["ad_105","ad_102"]                    |</span><br><span class="line">| 77         | ["ad_103","ad_104"]                    |</span><br><span class="line">| 99         | ["ad_102","ad_105"]                    |</span><br><span class="line">+<span class="comment">------------+----------------------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<p>统计每个人对于每个广告的访问量</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> cookie_id,ad_id ,<span class="keyword">count</span>(<span class="number">1</span>) <span class="keyword">from</span> click_log <span class="keyword">group</span> <span class="keyword">by</span>  cookie_id,ad_id;</span><br><span class="line"></span><br><span class="line">+<span class="comment">------------+---------+------+--+</span></span><br><span class="line">| cookie_id  |  ad_id  | _c2  |</span><br><span class="line">+<span class="comment">------------+---------+------+--+</span></span><br><span class="line">| 11         | ad_101  | 3    |</span><br><span class="line">| 11         | ad_104  | 1    |</span><br><span class="line">| 22         | ad_102  | 1    |</span><br><span class="line">| 22         | ad_103  | 2    |</span><br><span class="line">| 22         | ad_104  | 1    |</span><br><span class="line">| 33         | ad_101  | 1    |</span><br><span class="line">| 33         | ad_102  | 1    |</span><br><span class="line">| 33         | ad_103  | 1    |</span><br><span class="line">| 35         | ad_102  | 1    |</span><br><span class="line">| 35         | ad_105  | 1    |</span><br><span class="line">| 77         | ad_103  | 1    |</span><br><span class="line">| 77         | ad_104  | 1    |</span><br><span class="line">| 99         | ad_102  | 1    |</span><br><span class="line">| 99         | ad_105  | 1    |</span><br><span class="line">+<span class="comment">------------+---------+------+--+</span></span><br></pre></td></tr></table></figure>
+<p>在上述的基础上面添加类别，即将ad_id对应的类别取出来，去ad_list关联出</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> click.cookie_id,click.ad_id,click.amount,ad_list.catalogs</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">(<span class="keyword">select</span> cookie_id,ad_id ,<span class="keyword">count</span>(<span class="number">1</span>) amount <span class="keyword">from</span> click_log <span class="keyword">group</span> <span class="keyword">by</span>  cookie_id,ad_id) click </span><br><span class="line"><span class="keyword">join</span> ad_list </span><br><span class="line"><span class="keyword">on</span> ad_list.ad_id = click.ad_id;</span><br><span class="line"></span><br><span class="line">+<span class="comment">------------------+--------------+---------------+--------------------------------------+--+</span></span><br><span class="line">| click.cookie_id  | click.ad_id  | click.amount  |           ad_list.catalogs           |</span><br><span class="line">+<span class="comment">------------------+--------------+---------------+--------------------------------------+--+</span></span><br><span class="line">| 11               | ad_101       | 3             | catalog8|catalog1                    |</span><br><span class="line">| 11               | ad_104       | 1             | catalog5|catalog1|catalog4|catalog9  |</span><br><span class="line">| 22               | ad_102       | 1             | catalog6|catalog3                    |</span><br><span class="line">| 22               | ad_103       | 2             | catalog7                             |</span><br><span class="line">| 22               | ad_104       | 1             | catalog5|catalog1|catalog4|catalog9  |</span><br><span class="line">| 33               | ad_101       | 1             | catalog8|catalog1                    |</span><br><span class="line">| 33               | ad_102       | 1             | catalog6|catalog3                    |</span><br><span class="line">| 33               | ad_103       | 1             | catalog7                             |</span><br><span class="line">| 35               | ad_102       | 1             | catalog6|catalog3                    |</span><br><span class="line">| 35               | ad_105       | 1             | NULL                                 |</span><br><span class="line">| 77               | ad_103       | 1             | catalog7                             |</span><br><span class="line">| 77               | ad_104       | 1             | catalog5|catalog1|catalog4|catalog9  |</span><br><span class="line">| 99               | ad_102       | 1             | catalog6|catalog3                    |</span><br><span class="line">| 99               | ad_105       | 1             | NULL                                 |</span><br><span class="line">+<span class="comment">------------------+--------------+---------------+--------------------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<p>catalogs字段的列转行</p>
+<p>ad_101    | catalog8|catalog1   转换成为</p>
+<p>ad_101    |catalog1<br>
+ad_101    |catalog8</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> ad_id,<span class="keyword">catalog</span> <span class="keyword">from</span> ad_list lateral <span class="keyword">view</span> <span class="keyword">outer</span> explode(<span class="keyword">split</span>(catalogs,<span class="string">'\\|'</span>)) t <span class="keyword">as</span> <span class="keyword">catalog</span>;</span><br><span class="line">+<span class="comment">---------+-----------+--+</span></span><br><span class="line">|  ad_id  |  catalog  |</span><br><span class="line">+<span class="comment">---------+-----------+--+</span></span><br><span class="line">| ad_101  | catalog8  |</span><br><span class="line">| ad_101  | catalog1  |</span><br><span class="line">| ad_102  | catalog6  |</span><br><span class="line">| ad_102  | catalog3  |</span><br><span class="line">| ad_103  | catalog7  |</span><br><span class="line">| ad_104  | catalog5  |</span><br><span class="line">| ad_104  | catalog1  |</span><br><span class="line">| ad_104  | catalog4  |</span><br><span class="line">| ad_104  | catalog9  |</span><br><span class="line">| ad_105  | NULL      |</span><br><span class="line">+<span class="comment">---------+-----------+--+</span></span><br></pre></td></tr></table></figure>
+<p>将上述的outer去掉最后的NULL也就去掉了。</p>
+<p><strong>需求：将下面的catalogs列中的进行排序</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">---------+--------------------------------------+--+</span></span><br><span class="line">|  ad_id  |               catalogs               |</span><br><span class="line">+<span class="comment">---------+--------------------------------------+--+</span></span><br><span class="line">| ad_101  | catalog8|catalog1                    |</span><br><span class="line">| ad_102  | catalog6|catalog3                    |</span><br><span class="line">| ad_103  | catalog7                             |</span><br><span class="line">| ad_104  | catalog5|catalog1|catalog4|catalog9  |</span><br><span class="line">| ad_105  | NULL                                 |</span><br><span class="line">+<span class="comment">---------+--------------------------------------+--</span></span><br></pre></td></tr></table></figure>
+<p>转换为数组进行排序<br>
+将表加载成为数组：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> ad_list_2(ad_id <span class="keyword">string</span>,<span class="keyword">url</span> <span class="keyword">string</span>,catalogs <span class="built_in">array</span>&lt;<span class="keyword">string</span>&gt;)<span class="keyword">row</span> <span class="keyword">format</span> </span><br><span class="line"><span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span> COLLECTION ITEMS <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">'|'</span>;</span><br></pre></td></tr></table></figure>
+<p>加载数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/home/hadoop/data/ad_list.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> ad_list_2;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">+<span class="comment">------------------+------------------------+------------------------------------------------+--+</span></span><br><span class="line">| ad_list_2.ad_id  |     ad_list_2.url      |               ad_list_2.catalogs               |</span><br><span class="line">+<span class="comment">------------------+------------------------+------------------------------------------------+--+</span></span><br><span class="line">| ad_101           | http://www.google.com  | ["catalog8","catalog1"]                        |</span><br><span class="line">| ad_102           | http://www.sohu.com    | ["catalog6","catalog3"]                        |</span><br><span class="line">| ad_103           | http://www.baidu.com   | ["catalog7"]                                   |</span><br><span class="line">| ad_104           | http://www.qq.com      | ["catalog5","catalog1","catalog4","catalog9"]  |</span><br><span class="line">| ad_105           | http://sina.com        | NULL                                           |</span><br><span class="line">+<span class="comment">------------------+------------------------+------------------------------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<p><strong>结果：</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> ad_id,<span class="keyword">url</span>,sort_array(catalogs) <span class="keyword">from</span> ad_list_2;</span><br><span class="line">INFO  : OK</span><br><span class="line">+<span class="comment">---------+------------------------+------------------------------------------------+--+</span></span><br><span class="line">|  ad_id  |          url           |                      _c2                       |</span><br><span class="line">+<span class="comment">---------+------------------------+------------------------------------------------+--+</span></span><br><span class="line">| ad_101  | http://www.google.com  | ["catalog1","catalog8"]                        |</span><br><span class="line">| ad_102  | http://www.sohu.com    | ["catalog3","catalog6"]                        |</span><br><span class="line">| ad_103  | http://www.baidu.com   | ["catalog7"]                                   |</span><br><span class="line">| ad_104  | http://www.qq.com      | ["catalog1","catalog4","catalog5","catalog9"]  |</span><br><span class="line">| ad_105  | http://sina.com        | NULL                                           |</span><br><span class="line">+<span class="comment">---------+------------------------+------------------------------------------------+--+</span></span><br></pre></td></tr></table></figure>
+<p>一小时23分钟整</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/" data-toggle="tooltip" data-placement="top" title="Hive DML、DDL、Load Data">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#hive-中的join操作"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Hive &#x4E2D;&#x7684;Join&#x64CD;&#x4F5C;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#hiveserver2"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">hiveserver2</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#hive的复杂数据类型"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Hive&#x7684;&#x590D;&#x6742;&#x6570;&#x636E;&#x7C7B;&#x578B;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#array类型"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">Array&#x7C7B;&#x578B;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#map类型"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">Map&#x7C7B;&#x578B;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#结构体"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">&#x7ED3;&#x6784;&#x4F53;</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Hive" title="Hive">Hive</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jackson 2019 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
