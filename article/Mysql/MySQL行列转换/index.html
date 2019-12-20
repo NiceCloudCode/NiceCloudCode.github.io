@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          MySQL列转行、行转列 - BigData@Jackson | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/Mysql/MySQL行列转换/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
+                            
+                        </div>
+                        <h1>MySQL列转行、行转列</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Jackson on
+                            2017-09-07
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jackson | @Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h3 id="准备数据">准备数据</h3>
+<p>创建表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> tb_score;</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tb_score(</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">INT</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> auto_increment,</span><br><span class="line">    userid <span class="built_in">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'用户id'</span>,</span><br><span class="line">    subject <span class="built_in">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">COMMENT</span> <span class="string">'科目'</span>,</span><br><span class="line">    score <span class="keyword">DOUBLE</span> <span class="keyword">COMMENT</span> <span class="string">'成绩'</span>,</span><br><span class="line">    PRIMARY <span class="keyword">KEY</span>(<span class="keyword">id</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span> = <span class="keyword">INNODB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span> = utf8;</span><br></pre></td></tr></table></figure>
+<p>插入数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score(userid,subject,score) <span class="keyword">VALUES</span> (<span class="string">'001'</span>,<span class="string">'语文'</span>,<span class="number">90</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score(userid,subject,score) <span class="keyword">VALUES</span> (<span class="string">'001'</span>,<span class="string">'数学'</span>,<span class="number">92</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score(userid,subject,score) <span class="keyword">VALUES</span> (<span class="string">'001'</span>,<span class="string">'英语'</span>,<span class="number">80</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score(userid,subject,score) <span class="keyword">VALUES</span> (<span class="string">'002'</span>,<span class="string">'语文'</span>,<span class="number">88</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score(userid,subject,score) <span class="keyword">VALUES</span> (<span class="string">'002'</span>,<span class="string">'数学'</span>,<span class="number">90</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score(userid,subject,score) <span class="keyword">VALUES</span> (<span class="string">'002'</span>,<span class="string">'英语'</span>,<span class="number">75.5</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score(userid,subject,score) <span class="keyword">VALUES</span> (<span class="string">'003'</span>,<span class="string">'语文'</span>,<span class="number">70</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score(userid,subject,score) <span class="keyword">VALUES</span> (<span class="string">'003'</span>,<span class="string">'数学'</span>,<span class="number">85</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score(userid,subject,score) <span class="keyword">VALUES</span> (<span class="string">'003'</span>,<span class="string">'英语'</span>,<span class="number">90</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score(userid,subject,score) <span class="keyword">VALUES</span> (<span class="string">'003'</span>,<span class="string">'政治'</span>,<span class="number">82</span>);</span><br></pre></td></tr></table></figure>
+<p>SELECT * FROM tb_score<br>
+<img src="https://img-blog.csdnimg.cn/20191220144025719.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDgxODQy,size_16,color_FFFFFF,t_70" alt="建表"></p>
+<h3 id="with-rollup-的用法">WITH ROLLUP 的用法</h3>
+<p>1.WITH ROLLUP：在group分组字段的基础上再进行统计数据。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> userid,<span class="keyword">IFNULL</span>(<span class="string">`subject`</span>,<span class="string">'total'</span>) <span class="keyword">AS</span> <span class="string">`subject`</span>,<span class="keyword">SUM</span>(score) <span class="keyword">AS</span> score</span><br><span class="line"><span class="keyword">FROM</span> tb_score</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> userid,<span class="string">`subject`</span></span><br><span class="line"><span class="keyword">WITH</span> <span class="keyword">ROLLUP</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20191220144412902.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDgxODQy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>
+上面的结果第是为每个userid进行的统计，最后的一列是对所有的total进行的统计</p>
+<h3 id="mysql行转列">MySQL行转列</h3>
+<p><img src="https://img-blog.csdnimg.cn/20191220144025719.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDgxODQy,size_16,color_FFFFFF,t_70" alt="建表"><br>
+要将上面的数据转换成为下面的格式<br>
+<img src="https://img-blog.csdnimg.cn/2019122014503323.png" alt="在这里插入图片描述"></p>
+<h4 id="1-使用casewhenthen-进行行转列">1、使用case…when…then 进行行转列</h4>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> userid,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">CASE</span> <span class="string">`subject`</span> <span class="keyword">WHEN</span> <span class="string">'语文'</span> <span class="keyword">THEN</span> score <span class="keyword">ELSE</span> <span class="number">0</span> <span class="keyword">END</span>) <span class="keyword">as</span> <span class="string">'语文'</span>,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">CASE</span> <span class="string">`subject`</span> <span class="keyword">WHEN</span> <span class="string">'数学'</span> <span class="keyword">THEN</span> score <span class="keyword">ELSE</span> <span class="number">0</span> <span class="keyword">END</span>) <span class="keyword">as</span> <span class="string">'数学'</span>,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">CASE</span> <span class="string">`subject`</span> <span class="keyword">WHEN</span> <span class="string">'英语'</span> <span class="keyword">THEN</span> score <span class="keyword">ELSE</span> <span class="number">0</span> <span class="keyword">END</span>) <span class="keyword">as</span> <span class="string">'英语'</span>,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">CASE</span> <span class="string">`subject`</span> <span class="keyword">WHEN</span> <span class="string">'政治'</span> <span class="keyword">THEN</span> score <span class="keyword">ELSE</span> <span class="number">0</span> <span class="keyword">END</span>) <span class="keyword">as</span> <span class="string">'政治'</span> </span><br><span class="line"><span class="keyword">FROM</span> tb_score  <span class="keyword">GROUP</span> <span class="keyword">BY</span> userid</span><br></pre></td></tr></table></figure>
+<h4 id="2-使用if-进行行转列">2、使用IF() 进行行转列：</h4>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> userid,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">IF</span>(<span class="string">`subject`</span>=<span class="string">'语文'</span>,score,<span class="number">0</span>)) <span class="keyword">as</span> <span class="string">'语文'</span>,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">IF</span>(<span class="string">`subject`</span>=<span class="string">'数学'</span>,score,<span class="number">0</span>)) <span class="keyword">as</span> <span class="string">'数学'</span>,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">IF</span>(<span class="string">`subject`</span>=<span class="string">'英语'</span>,score,<span class="number">0</span>)) <span class="keyword">as</span> <span class="string">'英语'</span>,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">IF</span>(<span class="string">`subject`</span>=<span class="string">'政治'</span>,score,<span class="number">0</span>)) <span class="keyword">as</span> <span class="string">'政治'</span> </span><br><span class="line"><span class="keyword">FROM</span> tb_score  <span class="keyword">GROUP</span> <span class="keyword">BY</span> userid</span><br></pre></td></tr></table></figure>
+<p><strong>注意点：</strong></p>
+<p>（1）SUM() 是为了能够使用GROUP BY根据userid进行分组，因为每一个userid对应的subject=&quot;语文&quot;的记录只有一条，所以SUM() 的值就等于对应那一条记录的score的值。</p>
+<p>假如userid =‘001’ and subject=‘语文’ 的记录有两条，则此时SUM() 的值将会是这两条记录的和，同理，使用Max()的值将会是这两条记录里面值最大的一个。但是正常情况下，一个user对应一个subject只有一个分数，因此可以使用SUM()、MAX()、MIN()、AVG()等聚合函数都可以达到行转列的效果。</p>
+<p>（2）IF(<code>subject</code>=‘语文’,score,0) 作为条件，即对所有subject='语文’的记录的score字段进行SUM()、MAX()、MIN()、AVG()操作，如果score没有值则默认为0。</p>
+<h4 id="3-利用sumif-生成列-with-rollup-生成汇总行">3、利用SUM(IF()) 生成列 + WITH ROLLUP 生成汇总行</h4>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">IFNULL</span>(userid,<span class="string">'total'</span>) <span class="keyword">AS</span> userid,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">IF</span>(<span class="string">`subject`</span>=<span class="string">'语文'</span>,score,<span class="number">0</span>)) <span class="keyword">AS</span> 语文,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">IF</span>(<span class="string">`subject`</span>=<span class="string">'数学'</span>,score,<span class="number">0</span>)) <span class="keyword">AS</span> 数学,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">IF</span>(<span class="string">`subject`</span>=<span class="string">'英语'</span>,score,<span class="number">0</span>)) <span class="keyword">AS</span> 英语,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">IF</span>(<span class="string">`subject`</span>=<span class="string">'政治'</span>,score,<span class="number">0</span>)) <span class="keyword">AS</span> 政治,</span><br><span class="line"><span class="keyword">SUM</span>(<span class="keyword">IF</span>(<span class="string">`subject`</span>=<span class="string">'total'</span>,score,<span class="number">0</span>)) <span class="keyword">AS</span> total</span><br><span class="line"><span class="keyword">FROM</span>(</span><br><span class="line">    <span class="keyword">SELECT</span> userid,<span class="keyword">IFNULL</span>(<span class="string">`subject`</span>,<span class="string">'total'</span>) <span class="keyword">AS</span> <span class="string">`subject`</span>,<span class="keyword">SUM</span>(score) <span class="keyword">AS</span> score</span><br><span class="line">    <span class="keyword">FROM</span> tb_score</span><br><span class="line">    <span class="keyword">GROUP</span> <span class="keyword">BY</span> userid,<span class="string">`subject`</span></span><br><span class="line">    <span class="keyword">WITH</span> <span class="keyword">ROLLUP</span></span><br><span class="line">    <span class="keyword">HAVING</span> userid <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span></span><br><span class="line">)<span class="keyword">AS</span> A </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> userid <span class="keyword">WITH</span> <span class="keyword">ROLLUP</span>;</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20191220145811253.png" alt="在这里插入图片描述"></p>
+<h3 id="mysql列转行">MySQL列转行</h3>
+<p>创建表：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> tb_score1(</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">INT</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> auto_increment,</span><br><span class="line">    userid <span class="built_in">VARCHAR</span>(<span class="number">20</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">'用户id'</span>,</span><br><span class="line">    cn_score <span class="keyword">DOUBLE</span> <span class="keyword">COMMENT</span> <span class="string">'语文成绩'</span>,</span><br><span class="line">    math_score <span class="keyword">DOUBLE</span> <span class="keyword">COMMENT</span> <span class="string">'数学成绩'</span>,</span><br><span class="line">    en_score <span class="keyword">DOUBLE</span> <span class="keyword">COMMENT</span> <span class="string">'英语成绩'</span>,</span><br><span class="line">    po_score <span class="keyword">DOUBLE</span> <span class="keyword">COMMENT</span> <span class="string">'政治成绩'</span>,</span><br><span class="line">    PRIMARY <span class="keyword">KEY</span>(<span class="keyword">id</span>)</span><br><span class="line">)<span class="keyword">ENGINE</span> = <span class="keyword">INNODB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span> = utf8;</span><br></pre></td></tr></table></figure>
+<p>插入数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score1(userid,cn_score,math_score,en_score,po_score) <span class="keyword">VALUES</span> (<span class="string">'001'</span>,<span class="number">90</span>,<span class="number">92</span>,<span class="number">80</span>,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score1(userid,cn_score,math_score,en_score,po_score) <span class="keyword">VALUES</span> (<span class="string">'002'</span>,<span class="number">88</span>,<span class="number">90</span>,<span class="number">75.5</span>,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> tb_score1(userid,cn_score,math_score,en_score,po_score) <span class="keyword">VALUES</span> (<span class="string">'003'</span>,<span class="number">70</span>,<span class="number">85</span>,<span class="number">90</span>,<span class="number">82</span>);</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20191220151135258.png" alt="在这里插入图片描述"><br>
+结果如下：<br>
+<img src="https://img-blog.csdnimg.cn/2019122015123830.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMDgxODQy,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>
+本质是将userid的每个科目分数分散成一条记录显示出来。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> userid,<span class="string">'语文'</span> <span class="keyword">AS</span> course,cn_score <span class="keyword">AS</span> score <span class="keyword">FROM</span> tb_score1</span><br><span class="line"><span class="keyword">UNION</span> ALL</span><br><span class="line"><span class="keyword">SELECT</span> userid,<span class="string">'数学'</span> <span class="keyword">AS</span> course,math_score <span class="keyword">AS</span> score <span class="keyword">FROM</span> tb_score1</span><br><span class="line"><span class="keyword">UNION</span> ALL</span><br><span class="line"><span class="keyword">SELECT</span> userid,<span class="string">'英语'</span> <span class="keyword">AS</span> course,en_score <span class="keyword">AS</span> score <span class="keyword">FROM</span> tb_score1</span><br><span class="line"><span class="keyword">UNION</span> ALL</span><br><span class="line"><span class="keyword">SELECT</span> userid,<span class="string">'政治'</span> <span class="keyword">AS</span> course,po_score <span class="keyword">AS</span> score <span class="keyword">FROM</span> tb_score1</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> userid</span><br></pre></td></tr></table></figure>
+<p>UNION与UNION ALL的区别：</p>
+<p>1.对重复结果的处理：UNION会去掉重复记录，UNION ALL不会；</p>
+<p>2.对排序的处理：UNION会排序，UNION ALL只是简单地将两个结果集合并；</p>
+<p>3.效率方面的区别：因为UNION 会做去重和排序处理，因此效率比UNION ALL慢很多；</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Hive/Hive Join、multi data type/" data-toggle="tooltip" data-placement="top" title="Hive Join、复杂数据类型操作">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#准备数据"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x51C6;&#x5907;&#x6570;&#x636E;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#with-rollup-的用法"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">WITH ROLLUP &#x7684;&#x7528;&#x6CD5;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#mysql行转列"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">MySQL&#x884C;&#x8F6C;&#x5217;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1-使用casewhenthen-进行行转列"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">1&#x3001;&#x4F7F;&#x7528;case&#x2026;when&#x2026;then &#x8FDB;&#x884C;&#x884C;&#x8F6C;&#x5217;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-使用if-进行行转列"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">2&#x3001;&#x4F7F;&#x7528;IF() &#x8FDB;&#x884C;&#x884C;&#x8F6C;&#x5217;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3-利用sumif-生成列-with-rollup-生成汇总行"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">3&#x3001;&#x5229;&#x7528;SUM(IF()) &#x751F;&#x6210;&#x5217; + WITH ROLLUP &#x751F;&#x6210;&#x6C47;&#x603B;&#x884C;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#mysql列转行"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">MySQL&#x5217;&#x8F6C;&#x884C;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jackson 2019 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
