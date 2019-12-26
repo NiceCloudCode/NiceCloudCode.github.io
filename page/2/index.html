@@ -18,7 +18,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/archives/3/">
+    <link rel="canonical" href="http://www.ruozedata.com/page/2/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -134,14 +134,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -211,40 +211,39 @@
 
 <div class="post-preview">
 
-    <a href="/article/Linux/Linux05crontab、软连接、后台执行/">
+    <a href="/article/Error/Link/">
         <h2 class="post-title">
                                  
-            Linux crontab、软连接、后台执行
+            相关连接地址
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            1.调度工具的选择
-
-airflow
-azkaban		用的比较多
-rundeck		用的比较多
-crontab 	定时脚本（Linux自带）
-
-sh脚本文件：
-开头：#!/bin/bash ===&gt;解释器
-命名：xxx.sh
-没有开头和后缀命名的时候，使用sh命令也可以执行
-脚本需要执行的权限
-2.crontab的使用
-查看命令帮助
-1234567891011121314151617......
+            1.block自动修复:
+2.Linux-Memory:
+3.mysql安装：
+4.window部署dbeaver海狸
+5.cloudera组件下载地址
+6.hadoop版本变动地址：
+7.Apache Hadoop文档
+8.Cloudera Hadoop文档
+9.ssh信任关系
+10.ssh信任关系多台：
+11.Linux两个机制 oom  clean
+...
         </div>
     </a>
     
         <p class="post-meta" style="margin: 10px 0;">
             Posted by Jackson on
-            2017-07-15
+            2017-08-20
         </p>
         <div class="tags">
             
-              <a href="/tags/#Linux" title="Linux">Linux</a>
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+              <a href="/tags/#BigData" title="BigData">BigData</a>
             
         </div>
     
@@ -254,30 +253,32 @@ sh脚本文件：
 
 <div class="post-preview">
 
-    <a href="/article/Linux/Linux04Vi、磁盘、内存、进程/">
+    <a href="/article/Hadoop/hadoop03架构、小文件、Block块/">
         <h2 class="post-title">
                                  
-            Linux Vi、磁盘、内存、进程
+            Hadoop 架构、小文件、Block块
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            1.vi命令的使用
-1.1 黏贴的时候需要在编辑模式下才能不丢失数据
-1.2找ERROR
-123找ERROR 时候cat xxx.log | grep -C 10 ERROR &gt;error.log 意思是将出现ERROR的前后各10行的内容输入到error.log 文件中查找时候在尾行模式下 输入:/keyword 回车键自动匹配 按N键寻找下一个cat	more tail
-1.3 设......
+            block块、 副本数 、小文件、hdfs架构、NN、SNN
+1.block块
+在hdfs-site.xml查看查看：https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml
+dfs.blocksize 134217728   128M   block块大小默认128M
+df......
         </div>
     </a>
     
         <p class="post-meta" style="margin: 10px 0;">
             Posted by Jackson on
-            2017-07-12
+            2017-08-18
         </p>
         <div class="tags">
             
-              <a href="/tags/#Linux" title="Linux">Linux</a>
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+              <a href="/tags/#BigData" title="BigData">BigData</a>
             
         </div>
     
@@ -287,29 +288,30 @@ sh脚本文件：
 
 <div class="post-preview">
 
-    <a href="/article/Linux/Linux02文件环境变量/">
+    <a href="/article/Hadoop/hadoop03jps正确姿势/">
         <h2 class="post-title">
                                  
-            Linux 文件、环境变量、别名、history
+            Jps的正确使用姿势
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            1.echo 打印
-123echo "hello hadoop"echo $PATH	打印环境变量输入命令的时候默认去PATH里面去找，找到第一个就进行返回可以使用which ls这种的命令进行查看
-2.环境变量
-123456环境变量指的是以key=value的形式展现出来的东西K=V 之间不能有空格	使用的时候加$K全局环境变量：/etc/profile		所有人都可以使用个人环境变量：~......
+            Hadoop 的 jps 命令
+jps的主要功能是查看java接口的进程号
+jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查看当前所有java进程PID的命令，缺点是只支持当前用户的Java进程，要显示其他用户还是只能够 用ps命令
+
+1.jps命令类似于Linux的ps命令 ，直接运行jps命令，显示的是java程序的......
         </div>
     </a>
     
         <p class="post-meta" style="margin: 10px 0;">
             Posted by Jackson on
-            2017-07-11
+            2017-08-17
         </p>
         <div class="tags">
             
-              <a href="/tags/#Linux" title="Linux">Linux</a>
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
             
         </div>
     
@@ -319,31 +321,29 @@ sh脚本文件：
 
 <div class="post-preview">
 
-    <a href="/article/Linux/Linux03用户、权限、搜索/">
+    <a href="/article/Mysql/MYSQL timestamp和datetime区别/">
         <h2 class="post-title">
                                  
-            Linux 用户、权限、搜索
+            MySQL 中 datetime 和 timestamp 的区别
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            1.用户和用户组的查看
-用户命令：ll /usr/sbin/user*
-1234useradduserdelusermodusernetctl
-用户组命令： ll /usr/sbin/group*
-1234groupadd	groupdel	groupmod	groupmems
-123456789101112[root@localhost sbin]# ll /usr/sbin/user*-......
+            占用空间
+12datetime	8 字节	yyyy-mm-dd hh:mm:sstimestamp	4 字节	yyyy-mm-dd hh:mm:ss
+表示范围
+12datetime	'1000-01-01 00:00:00.000000' to '9999-12-31 23:59:59.999999'timestamp	'1970-01-01 00:00:01.000000' to '203......
         </div>
     </a>
     
         <p class="post-meta" style="margin: 10px 0;">
             Posted by Jackson on
-            2017-07-10
+            2017-08-16
         </p>
         <div class="tags">
             
-              <a href="/tags/#Linux" title="Linux">Linux</a>
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
             
         </div>
     
@@ -353,31 +353,192 @@ sh脚本文件：
 
 <div class="post-preview">
 
-    <a href="/article/Linux/linux01入门基础/">
+    <a href="/article/Error/HDFS NameNode启动不了的ERROR/">
         <h2 class="post-title">
                                  
-            Linux 入门基础
+            Hadoop NameNode 启动不了
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            1.[root@hadoop001 ~]# 的含义
-用户  机器名称  家目录
-2.退回家目录的三种方式
-1234cd /homecd ~cd /rootcd - 退回上一次的目录
-3.查看当前光标所在的文件目录
-12345ls				ls -l   ==ll	查看当前目录下的文件ls -al			查看当前目录下的文件+隐藏文件(以.开头)ll -h			查看当前目录下的文件显示文件大小ll......
+            报错信息为：
+1234567891011121314org.apache.hadoop.hdfs.server.namenode.FSNamesystem: Encountered exception loading fsimageorg.apache.hadoop.hdfs.server.common.InconsistentFSStateException: Directory /hom......
         </div>
     </a>
     
         <p class="post-meta" style="margin: 10px 0;">
             Posted by Jackson on
-            2017-07-08
+            2017-08-15
         </p>
         <div class="tags">
             
-              <a href="/tags/#Linux" title="Linux">Linux</a>
+              <a href="/tags/#ERROR" title="ERROR">ERROR</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Hadoop/hadoop02Yarn部署和使用/">
+        <h2 class="post-title">
+                                 
+            Hadoop 之 Yarn部署和使用
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.Yarn 伪分布式 单点部署 主从架构
+Yarn的单点部署文档：https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html
+1.1 Configure parameters as follows
+etc/hadoop/mapred-site.xml:
+123456&......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-14
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Hadoop/hadoop01Hadoop 安装和部署/">
+        <h2 class="post-title">
+                                 
+            Hadoop 之HDFS部署测试
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.hadoop
+Apache   Hadoop 地址：https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html
+Cloudera Hadoop 地址：http://archive.cloudera.com/cdh5/cdh/5/
+					  http://arch......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-13
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Mysql/Mysql01/">
+        <h2 class="post-title">
+                                 
+            MySQL 建表剖析
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            创建数据库
+核心三条：
+123create database bigdata;grant all privileges on *.* to jspon@'%' identified by '123456';flush privileges;
+在登录mysql的时候 mysql -urooot -p   -和p之间不能有空格
+show processlist
+12345678mysql&gt;......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-13
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Mysql/MysqlInstall/">
+        <h2 class="post-title">
+                                 
+            MySQL 的安装和配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Mysql安装和配置
+注意：在安装时候要注意命令是在哪个用户，哪个目录下面执行的
+1.上传压缩包
+上传压缩包到/usr/local tar-zxvf mysql-5.6.23-linux-glibc2.5-x86_64.tar.gz 解压
+2.检查以前是否有安装
+123ps -ef |grep mysqld rpm -qa |grep -i mysql
+3.建立软连接
+12cd /usr/l......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-12
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Error/HDFS Block 损坏恢复/">
+        <h2 class="post-title">
+                                 
+            HDFS Block损坏恢复
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            校验HDFS的健康状态
+12345678910111213141516171819202122-bash-4.2$ hdfs fsck /Connecting to namenode via http://yws76:50070/fsck?ugi=hdfs&amp;path=%2FFSCK started by hdfs (auth:SIMPLE) from /192.168.0.76 fo......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-11
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
             
         </div>
     
@@ -392,9 +553,13 @@ sh脚本文件：
 <ul class="pager">
     
         <li class="previous">
-            <a href="/archives/2/">&larr; Newer Posts</a>
+            <a href="/">&larr; Newer Posts</a>
         </li>
     
+    
+        <li class="next">
+            <a href="/page/3/">Older Posts &rarr;</a>
+        </li>
     
 </ul>
 
@@ -430,11 +595,11 @@ sh脚本文件：
             
         
             
-            <a href="/tags/#BigData" title="BigData" rel="3">BigData</a>
+            <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
             
         
             
-            <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
+            <a href="/tags/#BigData" title="BigData" rel="3">BigData</a>
             
         
             
@@ -447,6 +612,10 @@ sh脚本文件：
         
             
             <a href="/tags/#MySQL" title="MySQL" rel="5">MySQL</a>
+            
+        
+            
+            <a href="/tags/#Sqoop" title="Sqoop" rel="1">Sqoop</a>
             
         
     </div>
@@ -502,6 +671,10 @@ sh脚本文件：
     <ul>
       
         <li>
+          <a href="/article/Sqoop/Sqoop安装及使用/">Sqoop 安装使用及问题解决</a>
+        </li>
+      
+        <li>
           <a href="/article/Hive/hive四种by/">Hive Order By、Sort By、Distribute By、Cluster By</a>
         </li>
       
@@ -515,10 +688,6 @@ sh脚本文件：
       
         <li>
           <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/">Hive DML、DDL、Load Data</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hive/Hive 架构、部署、配置/">Hive架构、部署、配置</a>
         </li>
       
     </ul>
@@ -541,7 +710,7 @@ sh脚本文件：
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>
