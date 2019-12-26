@@ -18,7 +18,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/404.html">
+    <link rel="canonical" href="http://www.ruozedata.com/archives/3/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -71,8 +71,8 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('/img/header_img/404.png')
-            /*page*/
+            background-image: url('/img/header_img/header2.jpg') 
+            /*config*/
         
     }
     
@@ -88,7 +88,7 @@
                     <div class="site-heading">
                         <h1>Jackson | @Blog</h1>
                         <!--<hr class="small">-->
-                        <span class="subheading">你来到了没有知识的荒原</span>
+                        <span class="subheading"></span>
                     </div>
                 
 
@@ -191,25 +191,366 @@
 
 
     <!-- Main Content -->
-    
-<!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/header_img/404.png')">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>404</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading">你来到了没有知识的荒原</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+    <!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
 
-<script>
-    document.body.classList.add('page-fullscreen');
-</script>
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+            
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/article/Linux/Linux05crontab、软连接、后台执行/">
+        <h2 class="post-title">
+                                 
+            Linux crontab、软连接、后台执行
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.调度工具的选择
+
+airflow
+azkaban		用的比较多
+rundeck		用的比较多
+crontab 	定时脚本（Linux自带）
+
+sh脚本文件：
+开头：#!/bin/bash ===&gt;解释器
+命名：xxx.sh
+没有开头和后缀命名的时候，使用sh命令也可以执行
+脚本需要执行的权限
+2.crontab的使用
+查看命令帮助
+1234567891011121314151617......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-07-15
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Linux" title="Linux">Linux</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Linux/Linux04Vi、磁盘、内存、进程/">
+        <h2 class="post-title">
+                                 
+            Linux Vi、磁盘、内存、进程
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.vi命令的使用
+1.1 黏贴的时候需要在编辑模式下才能不丢失数据
+1.2找ERROR
+123找ERROR 时候cat xxx.log | grep -C 10 ERROR &gt;error.log 意思是将出现ERROR的前后各10行的内容输入到error.log 文件中查找时候在尾行模式下 输入:/keyword 回车键自动匹配 按N键寻找下一个cat	more tail
+1.3 设......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-07-12
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Linux" title="Linux">Linux</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Linux/Linux02文件环境变量/">
+        <h2 class="post-title">
+                                 
+            Linux 文件、环境变量、别名、history
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.echo 打印
+123echo "hello hadoop"echo $PATH	打印环境变量输入命令的时候默认去PATH里面去找，找到第一个就进行返回可以使用which ls这种的命令进行查看
+2.环境变量
+123456环境变量指的是以key=value的形式展现出来的东西K=V 之间不能有空格	使用的时候加$K全局环境变量：/etc/profile		所有人都可以使用个人环境变量：~......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-07-11
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Linux" title="Linux">Linux</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Linux/Linux03用户、权限、搜索/">
+        <h2 class="post-title">
+                                 
+            Linux 用户、权限、搜索
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.用户和用户组的查看
+用户命令：ll /usr/sbin/user*
+1234useradduserdelusermodusernetctl
+用户组命令： ll /usr/sbin/group*
+1234groupadd	groupdel	groupmod	groupmems
+123456789101112[root@localhost sbin]# ll /usr/sbin/user*-......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-07-10
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Linux" title="Linux">Linux</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Linux/linux01入门基础/">
+        <h2 class="post-title">
+                                 
+            Linux 入门基础
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.[root@hadoop001 ~]# 的含义
+用户  机器名称  家目录
+2.退回家目录的三种方式
+1234cd /homecd ~cd /rootcd - 退回上一次的目录
+3.查看当前光标所在的文件目录
+12345ls				ls -l   ==ll	查看当前目录下的文件ls -al			查看当前目录下的文件+隐藏文件(以.开头)ll -h			查看当前目录下的文件显示文件大小ll......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-07-08
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Linux" title="Linux">Linux</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+        <li class="previous">
+            <a href="/archives/2/">&larr; Newer Posts</a>
+        </li>
+    
+    
+</ul>
+
+
+
+                <br>
+
+                <!-- require APlayer -->
+                
+
+                <!-- 如果开启评论功能 -->
+                
+            </div>
+
+          <!-- Sidebar Container -->
+<div class="
+    col-lg-3 col-lg-offset-0
+    col-md-3 col-md-offset-0
+    col-sm-12
+    col-xs-12
+    sidebar-container
+">
+    
+        <!-- Featured Tags -->
+
+<section>
+    <!-- no hr -->
+    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+    <div class="tags">
+        
+            
+            <a href="/tags/#Hadoop" title="Hadoop" rel="9">Hadoop</a>
+            
+        
+            
+            <a href="/tags/#BigData" title="BigData" rel="3">BigData</a>
+            
+        
+            
+            <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
+            
+        
+            
+            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
+            
+        
+            
+            <a href="/tags/#Hive" title="Hive" rel="4">Hive</a>
+            
+        
+            
+            <a href="/tags/#MySQL" title="MySQL" rel="5">MySQL</a>
+            
+        
+    </div>
+</section>
+
+        <hr>
+    
+        <!-- Short About -->
+<section class="visible-md visible-lg">
+    <h5><a href="/about/">ABOUT ME</a></h5>
+    <div class="short-about">
+
+        
+            <img id = "avatar_pic" src="/img/avatar/Jepson.jpg" />
+        
+
+        
+            <p>Do not stop if you have a dream</p>
+        
+
+        <!-- SNS Link -->
+        <ul class="list-inline">
+            
+            
+            
+
+            
+
+            
+
+            
+                <li>
+                    <a target="_blank"  href="https://github.com/NiceCloudCode">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                </li>
+            
+            
+            
+            
+        </ul>
+    </div>
+</section>
+
+        <hr>
+    
+        
+  <h5>RECENT POSTS</h3>
+  <div class="widget">
+    <ul>
+      
+        <li>
+          <a href="/article/Hive/hive四种by/">Hive Order By、Sort By、Distribute By、Cluster By</a>
+        </li>
+      
+        <li>
+          <a href="/article/Mysql/MySQL行列转换/">MySQL列转行、行转列</a>
+        </li>
+      
+        <li>
+          <a href="/article/Hive/Hive Join、multi data type/">Hive Join、复杂数据类型操作</a>
+        </li>
+      
+        <li>
+          <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/">Hive DML、DDL、Load Data</a>
+        </li>
+      
+        <li>
+          <a href="/article/Hive/Hive 架构、部署、配置/">Hive架构、部署、配置</a>
+        </li>
+      
+    </ul>
+  </div>
+
+        <hr>
+    
+        <!-- Friends Blog -->
+
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+
+    
+        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+    
+</ul>
+
+        <hr>
+    
+        
+    <h5>ARCHIVES</h5>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+
+        <hr>
+    
+</div>
+
+        
+    </div>
+</div>
 
 
     <!-- Footer -->

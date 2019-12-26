@@ -134,14 +134,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -208,6 +208,41 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/article/Hive/hive四种by/">
+        <h2 class="post-title">
+                                 
+            Hive Order By、Sort By、Distribute By、Cluster By
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Hive 中的order by、sort by、distribut by、cluster by
+Order By
+order by 是全局排序，只能够有一个reduce作业来完成，多个reduce时候保证不了全局有序
+通过参数 hive.mapred.mode 进行查看当前的模式
+非严格模式下：order by 后面不需要加limit
+严格模式下：
+普通表：order by 需要加上limi......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-09-09
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hive" title="Hive">Hive</a>
+            
+        </div>
+    
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -529,41 +564,6 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/article/Hadoop/hadoop03架构、小文件、Block块/">
-        <h2 class="post-title">
-                                 
-            Hadoop 架构、小文件、Block块
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            block块、 副本数 、小文件、hdfs架构、NN、SNN
-1.block块
-在hdfs-site.xml查看查看：https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml
-dfs.blocksize 134217728   128M   block块大小默认128M
-df......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-18
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-              <a href="/tags/#BigData" title="BigData">BigData</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -572,7 +572,7 @@ df......
     
     
         <li class="next">
-            <a href="/page/2/">Older Posts &rarr;</a>
+            <a href="/archives/2/">Older Posts &rarr;</a>
         </li>
     
 </ul>
@@ -621,11 +621,11 @@ df......
             
         
             
-            <a href="/tags/#MySQL" title="MySQL" rel="5">MySQL</a>
+            <a href="/tags/#Hive" title="Hive" rel="4">Hive</a>
             
         
             
-            <a href="/tags/#Hive" title="Hive" rel="3">Hive</a>
+            <a href="/tags/#MySQL" title="MySQL" rel="5">MySQL</a>
             
         
     </div>
@@ -681,6 +681,10 @@ df......
     <ul>
       
         <li>
+          <a href="/article/Hive/hive四种by/">Hive Order By、Sort By、Distribute By、Cluster By</a>
+        </li>
+      
+        <li>
           <a href="/article/Mysql/MySQL行列转换/">MySQL列转行、行转列</a>
         </li>
       
@@ -694,10 +698,6 @@ df......
       
         <li>
           <a href="/article/Hive/Hive 架构、部署、配置/">Hive架构、部署、配置</a>
-        </li>
-      
-        <li>
-          <a href="/article/Mysql/MySQL分组求TopN/">MySQL 分组求 Top N 问题</a>
         </li>
       
     </ul>
@@ -720,7 +720,7 @@ df......
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>

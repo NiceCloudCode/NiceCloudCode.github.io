@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          BigData@Jackson | Blog
+          Hive Order By、Sort By、Distribute By、Cluster By - BigData@Jackson | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/page/3/">
+    <link rel="canonical" href="http://www.ruozedata.com/article/Hive/hive四种by/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -71,8 +71,8 @@
 <style type="text/css">
     header.intro-header{
         
-            background-image: url('/img/header_img/header2.jpg') 
-            /*config*/
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
         
     }
     
@@ -85,10 +85,18 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 
-                    <div class="site-heading">
-                        <h1>Jackson | @Blog</h1>
-                        <!--<hr class="small">-->
-                        <span class="subheading"></span>
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Hive" title="Hive">Hive</a>
+                            
+                        </div>
+                        <h1>Hive Order By、Sort By、Distribute By、Cluster By</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Jackson on
+                            2017-09-09
+                        </span>
                     </div>
                 
 
@@ -134,14 +142,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -191,323 +199,211 @@
 
 
     <!-- Main Content -->
-    <!-- Main Content -->
-<div class="container">
-    <div class="row">
-        
+    <!-- Modify by Yu-Hsuan Yen -->
 
-<!-- USE SIDEBAR -->
-    <!-- Post Container -->
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
             <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
-            
-                <!-- Main Content -->
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
 
-
-<div class="post-preview">
-
-    <a href="/article/Linux/Linux04Vi、磁盘、内存、进程/">
-        <h2 class="post-title">
-                                 
-            Linux Vi、磁盘、内存、进程
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1.vi命令的使用
-1.1 黏贴的时候需要在编辑模式下才能不丢失数据
-1.2找ERROR
-123找ERROR 时候cat xxx.log | grep -C 10 ERROR &gt;error.log 意思是将出现ERROR的前后各10行的内容输入到error.log 文件中查找时候在尾行模式下 输入:/keyword 回车键自动匹配 按N键寻找下一个cat	more tail
-1.3 设......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-07-12
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Linux" title="Linux">Linux</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Linux/Linux02文件环境变量/">
-        <h2 class="post-title">
-                                 
-            Linux 文件、环境变量、别名、history
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1.echo 打印
-123echo "hello hadoop"echo $PATH	打印环境变量输入命令的时候默认去PATH里面去找，找到第一个就进行返回可以使用which ls这种的命令进行查看
-2.环境变量
-123456环境变量指的是以key=value的形式展现出来的东西K=V 之间不能有空格	使用的时候加$K全局环境变量：/etc/profile		所有人都可以使用个人环境变量：~......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-07-11
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Linux" title="Linux">Linux</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Linux/Linux03用户、权限、搜索/">
-        <h2 class="post-title">
-                                 
-            Linux 用户、权限、搜索
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1.用户和用户组的查看
-用户命令：ll /usr/sbin/user*
-1234useradduserdelusermodusernetctl
-用户组命令： ll /usr/sbin/group*
-1234groupadd	groupdel	groupmod	groupmems
-123456789101112[root@localhost sbin]# ll /usr/sbin/user*-......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-07-10
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Linux" title="Linux">Linux</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Linux/linux01入门基础/">
-        <h2 class="post-title">
-                                 
-            Linux 入门基础
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1.[root@hadoop001 ~]# 的含义
-用户  机器名称  家目录
-2.退回家目录的三种方式
-1234cd /homecd ~cd /rootcd - 退回上一次的目录
-3.查看当前光标所在的文件目录
-12345ls				ls -l   ==ll	查看当前目录下的文件ls -al			查看当前目录下的文件+隐藏文件(以.开头)ll -h			查看当前目录下的文件显示文件大小ll......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-07-08
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Linux" title="Linux">Linux</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-
-
-<!-- Pager -->
-
-<ul class="pager">
-    
-        <li class="previous">
-            <a href="/page/2/">&larr; Newer Posts</a>
-        </li>
-    
-    
+                <p><strong>Hive 中的order by、sort by、distribut by、cluster by</strong></p>
+<h3 id="order-by">Order By</h3>
+<p>order by 是全局排序，只能够有一个reduce作业来完成，多个reduce时候保证不了全局有序</p>
+<p>通过参数 hive.mapred.mode 进行查看当前的模式</p>
+<p>非严格模式下：order by 后面不需要加limit</p>
+<p>严格模式下：<br>
+普通表：order by 需要加上limit<br>
+分区表：需要加上分区字段，然后进行order by + limit</p>
+<p>严格模式下面order by 加limit 的原因？</p>
+<p>当使用order by 的时候需要将数据发送到同一个reduce中去，如果数据量特别大，会导致该reduce的执行时间特别长，所以要加上limit进行限制，默认的排序规则是按照升序进行排列。<br>
+需要慎用</p>
+<h3 id="sort-by">Sort By</h3>
+<p>能保证每个分区有序：每个redcue的输出结果是有序的，不受严格模式影响<br>
+sort by 的字段可以是多个<br>
+sort by 是分数据类型的<br>
+数值类型	按照数字顺序进行排序<br>
+字符串类型	按照字典顺序进行排序</p>
+<h3 id="distribute-by">Distribute By</h3>
+<p>作用：distribute by 只是做数据的分发，将distribute by 指定的字段的数据发送到不同的reduce上面去，<br>
+相当于MapReduce中的Partition操作，通常和sort by 连用，按照col分发数据，将不同的reduce中的数据进行排序</p>
+<h3 id="cluster-by">Cluster By</h3>
+<p>cluster by is a short-cut for both Distribute By and Sort By.<br>
+当sort by 和distribute by 的字段相同的时候可以简写为Cluster By</p>
+<h3 id="by-总结">By 总结</h3>
+<ul>
+<li>order by 全局  一个reduce 大数据量下 效率低</li>
+<li>sort by 每个reduce内有序，不能保证全局有序</li>
+<li>distribute by 是按照指定字段进行数据分发，常与sort by连用，确保每个reduce内有序</li>
+<li>cluster by = distribute by + sort by</li>
 </ul>
+<p>补充：MR中有多少个reduce作业就对应多少个输出文件<br>
+	  Spark 中有多少个task就有多少个输出文件</p>
 
+                
 
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Mysql/MySQL行列转换/" data-toggle="tooltip" data-placement="top" title="MySQL列转行、行转列">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
 
                 <br>
 
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
                 <!-- require APlayer -->
                 
 
-                <!-- 如果开启评论功能 -->
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#order-by"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Order By</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#sort-by"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Sort By</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#distribute-by"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Distribute By</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#cluster-by"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Cluster By</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#by-总结"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">By &#x603B;&#x7ED3;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Hive" title="Hive">Hive</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
                 
             </div>
-
-          <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-        <!-- Featured Tags -->
-
-<section>
-    <!-- no hr -->
-    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-    <div class="tags">
-        
-            
-            <a href="/tags/#Hadoop" title="Hadoop" rel="9">Hadoop</a>
-            
-        
-            
-            <a href="/tags/#BigData" title="BigData" rel="3">BigData</a>
-            
-        
-            
-            <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
-            
-        
-            
-            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
-            
-        
-            
-            <a href="/tags/#MySQL" title="MySQL" rel="5">MySQL</a>
-            
-        
-            
-            <a href="/tags/#Hive" title="Hive" rel="3">Hive</a>
-            
-        
+        </div>
     </div>
-</section>
+</article>
 
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-    <h5><a href="/about/">ABOUT ME</a></h5>
-    <div class="short-about">
 
-        
-            <img id = "avatar_pic" src="/img/avatar/Jepson.jpg" />
-        
 
-        
-            <p>Do not stop if you have a dream</p>
-        
 
-        <!-- SNS Link -->
-        <ul class="list-inline">
-            
-            
-            
 
-            
 
-            
 
-            
-                <li>
-                    <a target="_blank"  href="https://github.com/NiceCloudCode">
-                        <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                        </span>
-                    </a>
-                </li>
-            
-            
-            
-            
-        </ul>
-    </div>
-</section>
 
-        <hr>
-    
-        
-  <h5>RECENT POSTS</h3>
-  <div class="widget">
-    <ul>
-      
-        <li>
-          <a href="/article/Mysql/MySQL行列转换/">MySQL列转行、行转列</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hive/Hive Join、multi data type/">Hive Join、复杂数据类型操作</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/">Hive DML、DDL、Load Data</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hive/Hive 架构、部署、配置/">Hive架构、部署、配置</a>
-        </li>
-      
-        <li>
-          <a href="/article/Mysql/MySQL分组求TopN/">MySQL 分组求 Top N 问题</a>
-        </li>
-      
-    </ul>
-  </div>
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
 
-        <hr>
-    
-        <!-- Friends Blog -->
 
-<h5>FRIENDS</h5>
-<ul class="list-inline">
-
-    
-        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
-    
-</ul>
-
-        <hr>
-    
-        
-    <h5>ARCHIVES</h5>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
-    </div>
-
-        <hr>
-    
-</div>
-
-        
-    </div>
-</div>
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
 
 
     <!-- Footer -->
