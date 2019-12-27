@@ -149,14 +149,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -267,6 +267,66 @@ CREATE TABLE emp3 as select * from emp; 表结构和表数据都复制</p>
 <p>静态分区和动态分区的区别在于加载数据时候分区字段的指定，静态分区加载直接指定分区字段，动态分区加载数据时候，是指定的分区的列。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">hive (bigdata_hive)&gt; CREATE TABLE emp_dynamic_partition(</span><br><span class="line">                   &gt; empno int,</span><br><span class="line">                   &gt; ename string,</span><br><span class="line">                   &gt; job string,</span><br><span class="line">                   &gt; mgr int,</span><br><span class="line">                   &gt; hiredate string,</span><br><span class="line">                   &gt; sal double,</span><br><span class="line">                   &gt; comm double</span><br><span class="line">                   &gt; ) </span><br><span class="line">                   &gt; PARTITIONED BY (deptno int)</span><br><span class="line">                   &gt; ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';</span><br><span class="line">OK</span><br><span class="line">Time taken: 0.092 seconds</span><br><span class="line">hive (bigdata_hive)&gt; INSERT OVERWRITE TABLE emp_dynamic_partition PARTITION (deptno) select empno,ename,job,mgr,hiredate,sal,comm,deptno from emp;</span><br><span class="line">FAILED: SemanticException [Error 10096]: Dynamic partition strict mode requires at least one static partition column. To turn this off <span class="keyword">set</span> hive.exec.dynamic.partition.mode=nonstrict</span><br><span class="line">hive (bigdata_hive)&gt; <span class="keyword">set</span> hive.exec.dynamic.partition.mode=nonstrict;</span><br></pre></td></tr></table></figure>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">hive (bigdata_hive)&gt; show partitions emp_dynamic_partition;</span><br><span class="line">OK</span><br><span class="line">partition</span><br><span class="line">deptno=10</span><br><span class="line">deptno=20</span><br><span class="line">deptno=30</span><br><span class="line">deptno=__HIVE_DEFAULT_PARTITION__</span><br><span class="line">Time taken: 0.08 seconds, Fetched: 4 row(s)</span><br><span class="line">hive (bigdata_hive)&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="hive-分桶表">Hive 分桶表</h4>
+<p><strong>概念：</strong></p>
+<p>分区提供一个隔离数据和优化查询的便利方式。不过，并非所有的数据集都可形成合理的分区。对于一张表或者分区，Hive 可以进一步组织成桶，也就是更为细粒度的数据范围划分。</p>
+<p>分桶是将数据集分解成更容易管理的若干部分的另一个技术。</p>
+<p>分区针对的是数据的存储路径；分桶针对的是数据文件。</p>
+<p><strong>分桶规则</strong>：对分桶字段值进行哈希，哈希值除以桶的个数求余，余数决定了该条记录在哪个桶中，也就是余数相同的在一个桶中。</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>提高join查询效率</li>
+<li>提高抽样效率</li>
+</ul>
+<p><strong>创建一个分桶表</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE bucket_table(</span><br><span class="line">id int,</span><br><span class="line">name string,</span><br><span class="line">age string</span><br><span class="line">)</span><br><span class="line">clustered by (id) sorted by (id) into 4 buckets</span><br><span class="line">ROW format delimited fields terminated by <span class="string">','</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">load data <span class="built_in">local</span> inpath <span class="string">'/home/hadoop/data/bucket.txt'</span> into table bucket_table</span><br></pre></td></tr></table></figure>
+<p>select * from emp tablesample (bucket 1 out of 2);</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>age</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>tom2</td>
+<td>23</td>
+</tr>
+<tr>
+<td>4</td>
+<td>tom4</td>
+<td>24</td>
+</tr>
+<tr>
+<td>6</td>
+<td>tom6</td>
+<td>26</td>
+</tr>
+<tr>
+<td>8</td>
+<td>tom8</td>
+<td>28</td>
+</tr>
+</tbody>
+</table>
+<p>可以用sorted by (id)  来设置有序分桶表</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE bucket_sort(</span><br><span class="line">id int,</span><br><span class="line">name string,</span><br><span class="line">age string</span><br><span class="line">)</span><br><span class="line">clustered by (id) sorted by (id) into 4 buckets</span><br><span class="line">ROW format delimited fields terminated by <span class="string">','</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>分桶抽样查询</strong></p>
+<p>对于非常大的数据集，有时用户需要使用的是一个具有代表性的查询结果而不是全部结果。Hive可以通过对表进行抽样来满足这个需求。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from <span class="built_in">test</span> tablesample (bucket 1 out of 2 on id);</span><br></pre></td></tr></table></figure>
+<p>分桶表后面可以不带on 字段名，不带时默认的是按分桶字段,也可以带，而没有分桶的表则必须带<br>
+按分桶字段取样时，因为分桶表是直接去对应的桶中拿数据，在表比较大时会提高取样效率</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tablesample (bucket x out of y on id);</span><br></pre></td></tr></table></figure>
+<p>x表示从哪个桶开始，y代表分几个桶，也可以理解分x为分子，y为分母，及将表分为y份（桶），取第x份（桶）</p>
+<p>所以这时对于分桶表是有要求的，y为桶数的倍数或因子，</p>
+<p>x=1,y=2，取2(4/y)个bucket的数据，分别桶1和桶3(1+y)</p>
+<p>x=1,y=4, 取1(4/y)个bucket的数据，即桶1</p>
+<p>x=2,y=8, 取1/2(4/y)个bucket的数据，即桶1的一半</p>
+<p>x的值必须小于等于y的值</p>
 <h4 id="加载数据">加载数据</h4>
 <p><code>LOAD DATA LOCAL INPATH '/home/hadoop/data/order_created.txt' [OVERWRITE] INTO TABLE</code> <code>order_mulit_partition PARTITION (event_month='2014-05',step='1');</code></p>
 <p>LOAD DATA : 加载数据<br>
@@ -363,7 +423,7 @@ OVERWRITE：数据覆盖  没有的话就是追加</p>
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#ddl"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">DDL</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#dml"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">DML</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#简单语法"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">&#x7B80;&#x5355;&#x8BED;&#x6CD5;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#详细建表语法"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">&#x8BE6;&#x7EC6;&#x5EFA;&#x8868;&#x8BED;&#x6CD5;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#修改内部表为外部表"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">&#x4FEE;&#x6539;&#x5185;&#x90E8;&#x8868;&#x4E3A;&#x5916;&#x90E8;&#x8868;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#内部表和外部表的区别"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">&#x5185;&#x90E8;&#x8868;&#x548C;&#x5916;&#x90E8;&#x8868;&#x7684;&#x533A;&#x522B;&#xFF1F;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#分区表"><span class="toc-nav-number">2.5.</span> <span class="toc-nav-text">&#x5206;&#x533A;&#x8868;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#多分区"><span class="toc-nav-number">2.6.</span> <span class="toc-nav-text">&#x591A;&#x5206;&#x533A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#静态分区"><span class="toc-nav-number">2.7.</span> <span class="toc-nav-text">&#x9759;&#x6001;&#x5206;&#x533A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#动态分区"><span class="toc-nav-number">2.8.</span> <span class="toc-nav-text">&#x52A8;&#x6001;&#x5206;&#x533A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#加载数据"><span class="toc-nav-number">2.9.</span> <span class="toc-nav-text">&#x52A0;&#x8F7D;&#x6570;&#x636E;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#fetch"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Fetch</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#hive元数据信息查看"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Hive&#x5143;&#x6570;&#x636E;&#x4FE1;&#x606F;&#x67E5;&#x770B;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安全模式报错处理及解决"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x5B89;&#x5168;&#x6A21;&#x5F0F;&#x62A5;&#x9519;&#x5904;&#x7406;&#x53CA;&#x89E3;&#x51B3;</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#ddl"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">DDL</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#dml"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">DML</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#简单语法"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">&#x7B80;&#x5355;&#x8BED;&#x6CD5;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#详细建表语法"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">&#x8BE6;&#x7EC6;&#x5EFA;&#x8868;&#x8BED;&#x6CD5;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#修改内部表为外部表"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">&#x4FEE;&#x6539;&#x5185;&#x90E8;&#x8868;&#x4E3A;&#x5916;&#x90E8;&#x8868;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#内部表和外部表的区别"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">&#x5185;&#x90E8;&#x8868;&#x548C;&#x5916;&#x90E8;&#x8868;&#x7684;&#x533A;&#x522B;&#xFF1F;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#分区表"><span class="toc-nav-number">2.5.</span> <span class="toc-nav-text">&#x5206;&#x533A;&#x8868;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#多分区"><span class="toc-nav-number">2.6.</span> <span class="toc-nav-text">&#x591A;&#x5206;&#x533A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#静态分区"><span class="toc-nav-number">2.7.</span> <span class="toc-nav-text">&#x9759;&#x6001;&#x5206;&#x533A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#动态分区"><span class="toc-nav-number">2.8.</span> <span class="toc-nav-text">&#x52A8;&#x6001;&#x5206;&#x533A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive-分桶表"><span class="toc-nav-number">2.9.</span> <span class="toc-nav-text">Hive &#x5206;&#x6876;&#x8868;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#加载数据"><span class="toc-nav-number">2.10.</span> <span class="toc-nav-text">&#x52A0;&#x8F7D;&#x6570;&#x636E;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#fetch"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Fetch</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#hive元数据信息查看"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Hive&#x5143;&#x6570;&#x636E;&#x4FE1;&#x606F;&#x67E5;&#x770B;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#安全模式报错处理及解决"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x5B89;&#x5168;&#x6A21;&#x5F0F;&#x62A5;&#x9519;&#x5904;&#x7406;&#x53CA;&#x89E3;&#x51B3;</span></a></li></ol>
         
         </div>
       </aside>
