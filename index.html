@@ -141,14 +141,14 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -208,6 +208,101 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/article/Spark/SparkContext、SparkConf/">
+        <h2 class="post-title">
+                                 
+            SparkContext 、SparkConf 、Spark-Shell
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            SparkContext 、SparkConf 、Spark-Shell
+Spark 官网：http://spark.apache.org/docs/2.2.0/rdd-programming-guide.html
+Spark Download：https://archive.apache.org/dist/spark/
+The first thing a Spark program mus......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-10-14
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Spark" title="Spark">Spark</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Spark/RDD 创建/">
+        <h2 class="post-title">
+                                 
+            Spark RDD 的创建
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Rdd 的创建
+官方文档：http://spark.apache.org/docs/2.2.0/rdd-programming-guide.html#resilient-distributed-datasets-rdds
+There are two ways to create RDDs: parallelizing an existing collection in your driver......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-10-13
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Spark" title="Spark">Spark</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Spark/Rdd/">
+        <h2 class="post-title">
+                                 
+            Spark RDD概念、特性、源码体现
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Spark RDD概念、特性、源码体现
+RDD 的GitHub地址：
+https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/rdd/RDD.scala
+12345678910111213141516171819202122232425262728/** * A Resilient Di......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-10-13
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Spark" title="Spark">Spark</a>
+            
+        </div>
+    
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -441,123 +536,6 @@ The Apache Hive ™ data warehouse software facilitates reading, writing, and ma
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/article/Hadoop/Yarn资源调优、调度器/">
-        <h2 class="post-title">
-                                 
-            Yarn 资源调优、Yarn 三种调度器
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-Yarn 资源调优、Yarn 三种调度器
-
-Yarn的资源调优
-环境：服务器内存128G 、16物理core  资源调优如下：
-
-
-一般情况下装完CentOS，消耗内存1G
-
-
-系统预留15%-20%内存(包含装CentOS的部分)，以防全部使用导致系统夯住 和 oom-kill事件，或者给未来部署组件预留部分空间(128*20%=25.6G==26G)
-
-
-假设该节点只有NN和DN进程，......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-26
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Hadoop/Hadoop之MapReduce/">
-        <h2 class="post-title">
-                                 
-            MR on Yarn、文件格式、文件压缩
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            ResourceManager：
-application Manager		应用程序管理器
-resource schedule		资源调度器
-container
-MR on Yarn 的流程
-1.用户向Yarn提交应用程序(job、application)，jar包、sql等其中包含了applicationMaster程序、启动application Master的命令等。
-2.RM为该jo......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-24
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Hadoop/hadoop04HDFS副本、读写/">
-        <h2 class="post-title">
-                                 
-            HDFS 副本存放策略、文件读写流程
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            HDFS 副本存放策略、文件读写流程、PID、常规命令、磁盘检查、数据均衡
-
-HDFS 副本存放策略
-HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.replication
-第一个副本:
-假如上传节点为DN节点，优先放置本节点；
-否则就随机挑选一台磁盘不太慢、CPU不太繁忙的节点存储副本
-第二个副本:
-放置在于第一个副本的不同的机架的一个节点上
-第三个副本:......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-20
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-              <a href="/tags/#BigData" title="BigData">BigData</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -566,7 +544,7 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
     
     
         <li class="next">
-            <a href="/page/2/">Older Posts &rarr;</a>
+            <a href="/archives/2/">Older Posts &rarr;</a>
         </li>
     
 </ul>
@@ -599,6 +577,10 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
     <div class="tags">
         
             
+            <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
+            
+        
+            
             <a href="/tags/#Hadoop" title="Hadoop" rel="9">Hadoop</a>
             
         
@@ -611,15 +593,15 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
             
         
             
-            <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
-            
-        
-            
             <a href="/tags/#Hive" title="Hive" rel="4">Hive</a>
             
         
             
             <a href="/tags/#MySQL" title="MySQL" rel="5">MySQL</a>
+            
+        
+            
+            <a href="/tags/#Spark" title="Spark" rel="3">Spark</a>
             
         
             
@@ -679,23 +661,23 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
     <ul>
       
         <li>
+          <a href="/article/Spark/SparkContext、SparkConf/">SparkContext 、SparkConf 、Spark-Shell</a>
+        </li>
+      
+        <li>
+          <a href="/article/Spark/RDD 创建/">Spark RDD 的创建</a>
+        </li>
+      
+        <li>
+          <a href="/article/Spark/Rdd/">Spark RDD概念、特性、源码体现</a>
+        </li>
+      
+        <li>
           <a href="/article/Sqoop/Sqoop安装及使用/">Sqoop 安装使用及问题解决</a>
         </li>
       
         <li>
           <a href="/article/Hive/hive四种by/">Hive Order By、Sort By、Distribute By、Cluster By</a>
-        </li>
-      
-        <li>
-          <a href="/article/Mysql/MySQL行列转换/">MySQL列转行、行转列</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hive/Hive Join、multi data type/">Hive Join、复杂数据类型操作</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/">Hive DML、DDL、Load Data</a>
         </li>
       
     </ul>
@@ -718,7 +700,7 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>

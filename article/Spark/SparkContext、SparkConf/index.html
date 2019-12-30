@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          HDFS Block损坏恢复 - BigData@Jackson | Blog
+          SparkContext 、SparkConf 、Spark-Shell - BigData@Jackson | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/article/Error/HDFS Block 损坏恢复/">
+    <link rel="canonical" href="http://www.ruozedata.com/article/Spark/SparkContext、SparkConf/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+                              <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
                             
                         </div>
-                        <h1>HDFS Block损坏恢复</h1>
+                        <h1>SparkContext 、SparkConf 、Spark-Shell</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Jackson on
-                            2017-08-11
+                            2017-10-14
                         </span>
                     </div>
                 
@@ -212,35 +212,115 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <h4 id="校验hdfs的健康状态">校验HDFS的健康状态</h4>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">-bash-4.2$ hdfs fsck /</span><br><span class="line">Connecting to namenode via http://yws76:50070/fsck?ugi=hdfs&amp;path=%2F</span><br><span class="line">FSCK started by hdfs (auth:SIMPLE) from /192.168.0.76 <span class="keyword">for</span> path / at Sun Mar 03 14:44:44 CST 2019</span><br><span class="line">...............................................................................Status: HEALTHY</span><br><span class="line"> Total size:    50194618424 B</span><br><span class="line"> Total <span class="built_in">dirs</span>:    354</span><br><span class="line"> Total files:   1079</span><br><span class="line"> Total symlinks:                0</span><br><span class="line"> Total blocks (validated):      992 (avg. block size 50599413 B)</span><br><span class="line"> Minimally replicated blocks:   992 (100.0 %)</span><br><span class="line"> Over-replicated blocks:        0 (0.0 %)</span><br><span class="line"> Under-replicated blocks:       0 (0.0 %)</span><br><span class="line"> Mis-replicated blocks:         0 (0.0 %)</span><br><span class="line"> Default replication factor:    3</span><br><span class="line"> Average block replication:     3.0</span><br><span class="line"> Corrupt blocks:                0</span><br><span class="line"> Missing replicas:              0 (0.0 %)</span><br><span class="line"> Number of data-nodes:          3</span><br><span class="line"> Number of racks:               1</span><br><span class="line">FSCK ended at Sun Mar 03 14:44:45 CST 2019 <span class="keyword">in</span> 76 milliseconds</span><br><span class="line"></span><br><span class="line">The filesystem under path <span class="string">'/'</span> is HEALTHY</span><br></pre></td></tr></table></figure>
-<h4 id="直接dn节点上删除文件一个block的一个副本3副本">直接DN节点上删除文件一个block的一个副本(3副本)</h4>
-<p><strong>删除块和meta文件:</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@yws87 subdir135]<span class="comment"># rm -rf blk_1075808214 blk_1075808214_2068515.meta</span></span><br></pre></td></tr></table></figure>
-<p><strong>直接重启HDFS，直接模拟损坏效果，然后fsck检查:</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">-bash-4.2$ hdfs fsck /</span><br><span class="line">Connecting to namenode via http://yws77:50070/fsck?ugi=hdfs&amp;path=%2F</span><br><span class="line">FSCK started by hdfs (auth:SIMPLE) from /192.168.0.76 <span class="keyword">for</span> path / at Sun Mar 03 16:02:04 CST 2019</span><br><span class="line">.</span><br><span class="line">/blockrecover/ruozedata.md:  Under replicated BP-1513979236-192.168.0.76-1514982530341:blk_1075808214_2068515. Target Replicas is 3 but found 2 live replica(s), 0 decommissioned replica(s), 0 decommissioning replica(s).</span><br><span class="line">...............................................................................Status: HEALTHY</span><br><span class="line"> Total size:    50194618424 B</span><br><span class="line"> Total <span class="built_in">dirs</span>:    354</span><br><span class="line"> Total files:   1079</span><br><span class="line"> Total symlinks:                0</span><br><span class="line"> Total blocks (validated):      992 (avg. block size 50599413 B)</span><br><span class="line"> Minimally replicated blocks:   992 (100.0 %)</span><br><span class="line"> Over-replicated blocks:        0 (0.0 %)</span><br><span class="line"> Under-replicated blocks:       1 (0.10080645 %)</span><br><span class="line"> Mis-replicated blocks:         0 (0.0 %)</span><br><span class="line"> Default replication factor:    3</span><br><span class="line"> Average block replication:     2.998992</span><br><span class="line"> Corrupt blocks:                0</span><br><span class="line"> Missing replicas:              1 (0.033602152 %)</span><br><span class="line"> Number of data-nodes:          3</span><br><span class="line"> Number of racks:               1</span><br><span class="line">FSCK ended at Sun Mar 03 16:02:04 CST 2019 <span class="keyword">in</span> 148 milliseconds</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">The filesystem under path <span class="string">'/'</span> is HEALTHY</span><br><span class="line">-bash-4.2$</span><br></pre></td></tr></table></figure>
-<p><strong>手动修复hdfs debug</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-bash-4.2$ hdfs |grep debug</span><br></pre></td></tr></table></figure>
-<p>没有输出debug参数的任何信息结果！<br>
-故hdfs命令帮助是没有debug的，但是确实有hdfs debug这个组合命令，切记。</p>
-<p><strong>修复命令:</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-bash-4.2$ hdfs debug  recoverLease  -path /blockrecover/ruozedata.md -retries 10</span><br><span class="line">recoverLease SUCCEEDED on /blockrecover/ruozedata.md</span><br><span class="line">-bash-4.2$</span><br></pre></td></tr></table></figure>
-<p><strong>直接DN节点查看，block文件和meta文件恢复:</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root@yws87 subdir135]<span class="comment"># ll</span></span><br><span class="line">total 8</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 56 Mar  3 14:28 blk_1075808202</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 11 Mar  3 14:28 blk_1075808202_2068503.meta</span><br><span class="line">[root@yws87 subdir135]<span class="comment"># ll</span></span><br><span class="line">total 24</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 56 Mar  3 14:28 blk_1075808202</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 11 Mar  3 14:28 blk_1075808202_2068503.meta</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 18 Mar  3 15:23 blk_1075808214</span><br><span class="line">-rw-r--r-- 1 hdfs hdfs 11 Mar  3 15:23 blk_1075808214_2068515.meta</span><br></pre></td></tr></table></figure>
-<p><strong>自动修复</strong></p>
-<p>当数据块损坏后，DN节点执行directoryscan操作之前，都不会发现损坏；<br>
-也就是directoryscan操作是间隔6h</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dfs.datanode.directoryscan.interval : 21600</span><br></pre></td></tr></table></figure>
-<p>在DN向NN进行blockreport前，都不会恢复数据块;<br>
-也就是blockreport操作是间隔6h</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dfs.blockreport.intervalMsec : 21600000</span><br></pre></td></tr></table></figure>
-<p>当NN收到blockreport才会进行恢复操作。</p>
-<p>具体参考生产上HDFS（CDH5.12.0）对应的版本的文档参数:<code>http://archive.cloudera.com/cdh5/cdh/5/hadoop-2.6.0-cdh5.12.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml</code></p>
-<p><strong>总结</strong><br>
-生产上本人一般倾向于使用 手动修复方式，但是前提要手动删除损坏的block块。</p>
-<p>切记，是删除损坏block文件和meta文件，而不是删除hdfs文件。</p>
-<p>当然还可以先把文件get下载，然后hdfs删除，再对应上传。</p>
-<p>切记删除不要执行: hdfs fsck / -delete 这是删除损坏的文件， 那么数据不就丢了嘛；除非无所谓丢数据，或者有信心从其他地方可以补数据到hdfs！</p>
+                <p>SparkContext 、SparkConf 、Spark-Shell</p>
+<p><strong>Spark 官网</strong>：<a href="http://spark.apache.org/docs/2.2.0/rdd-programming-guide.html" target="_blank" rel="noopener">http://spark.apache.org/docs/2.2.0/rdd-programming-guide.html</a><br>
+<strong>Spark Download</strong>：<a href="https://archive.apache.org/dist/spark/" target="_blank" rel="noopener">https://archive.apache.org/dist/spark/</a></p>
+<p>The first thing a Spark program must do is to create a SparkContext object, which tells Spark how to access a cluster.<br>
+To create a SparkContext you first need to build a SparkConf object that contains information about your application.</p>
+<p>第一步就是创建一个SparkContext，如果你想要进行Spark的编程的话，SparkContext可以告诉Spark如何去链接到集群，<br>
+创建SparkContext前，你需要创建一个SparkConf，来存放应用程序的相关信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val conf = <span class="keyword">new</span> SparkConf().setAppName(appName).setMaster(master)</span><br><span class="line">val sc = <span class="keyword">new</span> SparkContext(conf)</span><br></pre></td></tr></table></figure>
+<p>Spark-Shell 参数讲解</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">可选参数</th>
+<th style="text-align:left">释义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">–master MASTER_URL</td>
+<td style="text-align:left">spark://host:port, mesos://host:port, yarn, or local.</td>
+</tr>
+<tr>
+<td style="text-align:left">–name NAME</td>
+<td style="text-align:left">A name of your application.</td>
+</tr>
+<tr>
+<td style="text-align:left">–jars JARS</td>
+<td style="text-align:left">Comma-separated list of local jars to include on the driver and executor classpaths.</td>
+</tr>
+<tr>
+<td style="text-align:left">–driver-memory MEM</td>
+<td style="text-align:left">Memory for driver (e.g. 1000M, 2G) (Default: 1024M).</td>
+</tr>
+<tr>
+<td style="text-align:left">–executor-memory MEM</td>
+<td style="text-align:left">Memory per executor (e.g. 1000M, 2G) (Default: 1G).</td>
+</tr>
+<tr>
+<td style="text-align:left">–executor-cores NUM</td>
+<td style="text-align:left">Number of cores per executor. (Default: 1 in YARN mode,or all available cores on the worker in standalone mode)</td>
+</tr>
+<tr>
+<td style="text-align:left">–driver-cores NUM</td>
+<td style="text-align:left">Number of cores used by the driver, only in cluster mode</td>
+</tr>
+<tr>
+<td style="text-align:left">–queue QUEUE_NAME</td>
+<td style="text-align:left">The YARN queue to submit to (Default: “default”).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Spark-shell启动过程的日志信息</strong>：</p>
+<p>Spark context Web UI available at <a href="http://ip:4040" target="_blank" rel="noopener">http://ip:4040</a><br>
+Spark context available as ‘sc’ (master = local[2], app id = local-1577503784325).<br>
+Spark session available as ‘spark’.</p>
+<p>在Spark-Master URL中启动过程的参数如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Master URL</th>
+<th style="text-align:left">Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">local</td>
+<td style="text-align:left">Run Spark locally with one worker thread (i.e. no parallelism at all).</td>
+</tr>
+<tr>
+<td style="text-align:left">local[K]</td>
+<td style="text-align:left">Run Spark locally with K worker threads (ideally, set this to the number of cores on your machine).</td>
+</tr>
+<tr>
+<td style="text-align:left">local[K,F]</td>
+<td style="text-align:left">Run Spark locally with K worker threads and F maxFailures (see spark.task.maxFailures for an explanation of this variable)</td>
+</tr>
+<tr>
+<td style="text-align:left">local[*]</td>
+<td style="text-align:left">Run Spark locally with as many worker threads as logical cores on your machine.</td>
+</tr>
+<tr>
+<td style="text-align:left">local[*,F]</td>
+<td style="text-align:left">Run Spark locally with as many worker threads as logical cores on your machine and F maxFailures.</td>
+</tr>
+<tr>
+<td style="text-align:left">spark://HOST:PORT</td>
+<td style="text-align:left">Connect to the given Spark standalone cluster master. The port must be whichever one your master is configured to use, which is 7077 by default.</td>
+</tr>
+<tr>
+<td style="text-align:left">spark://HOST1:PORT1,HOST2:PORT2</td>
+<td style="text-align:left">Connect to the given Spark standalone cluster with standby masters with Zookeeper. The list must have all the master hosts in the high availability cluster set up with Zookeeper. The port must be whichever each master is configured to use, which is 7077 by default.</td>
+</tr>
+<tr>
+<td style="text-align:left">mesos://HOST:PORT</td>
+<td style="text-align:left">Connect to the given Mesos cluster. The port must be whichever one your is configured to use, which is 5050 by default. Or, for a Mesos cluster using ZooKeeper, use mesos://zk://… To submit with --deploy-mode cluster, the HOST:PORT should be configured to connect to the MesosClusterDispatcher.</td>
+</tr>
+<tr>
+<td style="text-align:left">yarn</td>
+<td style="text-align:left">Connect to a YARN cluster in client or cluster mode depending on the value of --deploy-mode. The cluster location will be found based on the HADOOP_CONF_DIR or YARN_CONF_DIR variable.</td>
+</tr>
+</tbody>
+</table>
+<p>在Spark WebUI界面可以查看Spark的相关信息<br>
+Spark2.x 当中Saprk的Jars单独放置的，在1.x中是达成一个单独的包，此处存在调优点，<br>
+如果采用Spark on Yarn 的方式进行提交，这些jar包需要上传，对于资源的开销是非常大的。</p>
+<p>在Spark-Shell中自己创建的SparkContext是不能够使用的。</p>
+<p><a href="http://1.spark.app.name" target="_blank" rel="noopener">1.spark.app.name</a>	Spark shell 的来源 ===&gt; 底层也是采用的spark-submit 来进行提交作业的。<br>
+<a href="http://2.spark.app.id" target="_blank" rel="noopener">2.spark.app.id</a>	local-1577503784325 的来源<br>
+3.java.io.tmpdir	的位置是系统的/tmp</p>
 
                 
 
@@ -248,13 +328,9 @@
                 <!-- Pager -->
                 <ul class="pager">
                     
-                        <li class="previous">
-                            <a href="/article/Mysql/MysqlInstall/" data-toggle="tooltip" data-placement="top" title="MySQL 的安装和配置">&larr; Previous Post</a>
-                        </li>
-                    
                     
                         <li class="next">
-                            <a href="/article/Error/Linux  oom-kill 和 clean机制/" data-toggle="tooltip" data-placement="top" title="Linux 的Oom-Kill 机制和 Clean机制">Next Post &rarr;</a>
+                            <a href="/article/Spark/RDD 创建/" data-toggle="tooltip" data-placement="top" title="Spark RDD 的创建">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -304,7 +380,7 @@
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#校验hdfs的健康状态"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x6821;&#x9A8C;HDFS&#x7684;&#x5065;&#x5EB7;&#x72B6;&#x6001;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#直接dn节点上删除文件一个block的一个副本3副本"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x76F4;&#x63A5;DN&#x8282;&#x70B9;&#x4E0A;&#x5220;&#x9664;&#x6587;&#x4EF6;&#x4E00;&#x4E2A;block&#x7684;&#x4E00;&#x4E2A;&#x526F;&#x672C;(3&#x526F;&#x672C;)</span></a></li></ol>
+          <ol class="nav">none</ol>
         
         </div>
       </aside>
@@ -324,7 +400,7 @@
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+                          <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
                         
                     </div>
                 </section>

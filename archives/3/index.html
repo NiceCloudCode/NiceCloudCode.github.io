@@ -18,7 +18,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/page/3/">
+    <link rel="canonical" href="http://www.ruozedata.com/archives/3/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -141,14 +141,14 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
+                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archives</a>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -208,6 +208,106 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/article/Mysql/Mysql01/">
+        <h2 class="post-title">
+                                 
+            MySQL 建表剖析
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            创建数据库
+核心三条：
+123create database bigdata;grant all privileges on *.* to jspon@'%' identified by '123456';flush privileges;
+在登录mysql的时候 mysql -urooot -p   -和p之间不能有空格
+show processlist
+12345678mysql&gt;......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-13
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Mysql/MysqlInstall/">
+        <h2 class="post-title">
+                                 
+            MySQL 的安装和配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Mysql安装和配置
+注意：在安装时候要注意命令是在哪个用户，哪个目录下面执行的
+1.上传压缩包
+上传压缩包到/usr/local tar-zxvf mysql-5.6.23-linux-glibc2.5-x86_64.tar.gz 解压
+2.检查以前是否有安装
+123ps -ef |grep mysqld rpm -qa |grep -i mysql
+3.建立软连接
+12cd /usr/l......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-12
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Error/HDFS Block 损坏恢复/">
+        <h2 class="post-title">
+                                 
+            HDFS Block损坏恢复
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            校验HDFS的健康状态
+12345678910111213141516171819202122-bash-4.2$ hdfs fsck /Connecting to namenode via http://yws76:50070/fsck?ugi=hdfs&amp;path=%2FFSCK started by hdfs (auth:SIMPLE) from /192.168.0.76 fo......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-11
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+        </div>
+    
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -426,7 +526,7 @@ sh脚本文件：
 <ul class="pager">
     
         <li class="previous">
-            <a href="/page/2/">&larr; Newer Posts</a>
+            <a href="/archives/2/">&larr; Newer Posts</a>
         </li>
     
     
@@ -460,6 +560,10 @@ sh脚本文件：
     <div class="tags">
         
             
+            <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
+            
+        
+            
             <a href="/tags/#Hadoop" title="Hadoop" rel="9">Hadoop</a>
             
         
@@ -472,15 +576,15 @@ sh脚本文件：
             
         
             
-            <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
-            
-        
-            
             <a href="/tags/#Hive" title="Hive" rel="4">Hive</a>
             
         
             
             <a href="/tags/#MySQL" title="MySQL" rel="5">MySQL</a>
+            
+        
+            
+            <a href="/tags/#Spark" title="Spark" rel="3">Spark</a>
             
         
             
@@ -540,23 +644,23 @@ sh脚本文件：
     <ul>
       
         <li>
+          <a href="/article/Spark/SparkContext、SparkConf/">SparkContext 、SparkConf 、Spark-Shell</a>
+        </li>
+      
+        <li>
+          <a href="/article/Spark/RDD 创建/">Spark RDD 的创建</a>
+        </li>
+      
+        <li>
+          <a href="/article/Spark/Rdd/">Spark RDD概念、特性、源码体现</a>
+        </li>
+      
+        <li>
           <a href="/article/Sqoop/Sqoop安装及使用/">Sqoop 安装使用及问题解决</a>
         </li>
       
         <li>
           <a href="/article/Hive/hive四种by/">Hive Order By、Sort By、Distribute By、Cluster By</a>
-        </li>
-      
-        <li>
-          <a href="/article/Mysql/MySQL行列转换/">MySQL列转行、行转列</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hive/Hive Join、multi data type/">Hive Join、复杂数据类型操作</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/">Hive DML、DDL、Load Data</a>
         </li>
       
     </ul>
@@ -579,7 +683,7 @@ sh脚本文件：
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>

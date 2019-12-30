@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Spark RDD概念、特性、源码体现 - BigData@Jackson | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/Spark/Rdd/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
+                            
+                        </div>
+                        <h1>Spark RDD概念、特性、源码体现</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Jackson on
+                            2017-10-13
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jackson | @Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>Spark RDD概念、特性、源码体现</p>
+<p><strong>RDD 的GitHub地址</strong>：</p>
+<p><a href="https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/rdd/RDD.scala" target="_blank" rel="noopener">https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/rdd/RDD.scala</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * A Resilient Distributed Dataset (RDD), the basic abstraction <span class="keyword">in</span> Spark. Represents an immutable,</span><br><span class="line"> * partitioned collection of elements that can be operated on <span class="keyword">in</span> parallel. This class contains the</span><br><span class="line"> * basic operations available on all RDDs, such as `map`, `filter`, and `persist`. In addition,</span><br><span class="line"> * [[org.apache.spark.rdd.PairRDDFunctions]] contains operations available only on RDDs of key-value</span><br><span class="line"> * pairs, such as `groupByKey` and `join`;</span><br><span class="line"> * [[org.apache.spark.rdd.DoubleRDDFunctions]] contains operations available only on RDDs of</span><br><span class="line"> * Doubles; and</span><br><span class="line"> * [[org.apache.spark.rdd.SequenceFileRDDFunctions]] contains operations available on RDDs that</span><br><span class="line"> * can be saved as SequenceFiles.</span><br><span class="line"> * All operations are automatically available on any RDD of the right <span class="built_in">type</span> (e.g. RDD[(Int, Int)])</span><br><span class="line"> * through implicit.</span><br><span class="line"> *</span><br><span class="line"> * Internally, each RDD is characterized by five main properties:</span><br><span class="line"> *</span><br><span class="line"> *  - A list of partitions</span><br><span class="line"> *  - A <span class="keyword">function</span> <span class="keyword">for</span> computing each split</span><br><span class="line"> *  - A list of dependencies on other RDDs</span><br><span class="line"> *  - Optionally, a Partitioner <span class="keyword">for</span> key-value RDDs (e.g. to say that the RDD is <span class="built_in">hash</span>-partitioned)</span><br><span class="line"> *  - Optionally, a list of preferred locations to compute each split on (e.g. block locations <span class="keyword">for</span></span><br><span class="line"> *    an HDFS file)</span><br><span class="line"> *</span><br><span class="line"> * All of the scheduling and execution <span class="keyword">in</span> Spark is <span class="keyword">done</span> based on these methods, allowing each RDD</span><br><span class="line"> * to implement its own way of computing itself. Indeed, users can implement custom RDDs (e.g. <span class="keyword">for</span></span><br><span class="line"> * reading data from a new storage system) by overriding these <span class="built_in">functions</span>. Please refer to the</span><br><span class="line"> * &lt;a href=<span class="string">"http://people.csail.mit.edu/matei/papers/2012/nsdi_spark.pdf"</span>&gt;Spark paper&lt;/a&gt;</span><br><span class="line"> * <span class="keyword">for</span> more details on RDD internals.</span><br><span class="line"> */</span><br></pre></td></tr></table></figure>
+<p>A Resilient Distributed Dataset (RDD), the basic abstraction in Spark. 		弹性分布式数据集</p>
+<p><strong>弹性</strong>：体现在计算上面，分布式计算中可以容错，某个节点挂了，或者某个数据计算丢失了。<br>
+<strong>分布式</strong>：分布式存储，数据跨节点存储在不同的机器上面，代码可以运行在多个节点上面</p>
+<p><strong>Represents an immutable</strong>		不可变的，RDD一旦产生就不可变，通过操作生成其他的RDD为新的RDD<br>
+<strong>partitioned collection of elements</strong> 		以分区的形式存储元素，类似于HDFS上面的Block<br>
+<strong>that can be operated on in parallel.</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">RDDA：(1,2,3,4,5,6,7,8,9)		operate + 1</span><br><span class="line">	PartitionA:(1,2,3)			+ 1</span><br><span class="line">	PartitionB:(4,5,6)			+ 1</span><br><span class="line">	PartitionC:(7,8,9)			+ 1</span><br></pre></td></tr></table></figure>
+<p>RDD的定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">abstract class RDD[T: ClassTag](</span><br><span class="line">    <span class="meta">@transient</span> <span class="keyword">private</span> var _sc: SparkContext,</span><br><span class="line">    <span class="meta">@transient</span> <span class="keyword">private</span> var deps: Seq[Dependency[_]]</span><br><span class="line">  ) extends Serializable with Logging</span><br></pre></td></tr></table></figure>
+<ul>
+<li>抽象类			RDD必然是有实现类的，使用的时候直接使用其子类</li>
+<li>可序列化			序列化性能</li>
+<li>T 泛型			RDD存储的数据类型是多种的</li>
+<li>SparkContext</li>
+<li>@transient</li>
+</ul>
+<p><strong>RDD的五大特点</strong>：</p>
+<p>Internally, each RDD is characterized by five main properties:</p>
+<ul>
+<li>A list of partitions		一个RDD由很多的分区构成</li>
+<li>A function for computing each split		对RDD的操作实际上是对RDD里面所有的分区做的操作</li>
+<li>A list of dependencies on other RDDs		RDD与RDD之间是由依赖关系的 RDDA==&gt; RDDB ==&gt;RDDC ==&gt;RDDE</li>
+<li>Optionally, a Partitioner for key-value RDDs (e.g. to say that the RDD is hash-partitioned)</li>
+<li>Optionally, a list of preferred locations to compute each split on (e.g. block locations for<br>
+an HDFS file)		数据本地性</li>
+</ul>
+<p>A Resilient Distributed Dataset (RDD) 体现的五大特性</p>
+<p><strong>RDD五大特点在源码中的对应关系</strong></p>
+<p>1.def compute(split: Partition, context: TaskContext): Iterator[T]<br>
+对RDD做计算其实是对RDD里面的分区做计算，计算方法出入的参数是Partition和Context上下文<br>
+对应于RDD特点的第二点</p>
+<p>2.protected def getPartitions: Array[Partition] 一个RDD是由一系列的分区构成，返回的类型是数组，里面的泛型是Partition<br>
+这个对应于RDD特点里面的第一条</p>
+<p>3.protected def getDependencies: Seq[Dependency[_]] = deps 获取依赖关系<br>
+RDD里面是有转换操作的，这个对应于RDD里面的第三个特点</p>
+<p>4.protected def getPreferredLocations(split: Partition): Seq[String] = Nil<br>
+获取最佳的位置，即数据本地性，对应于RDD特点里面的第四条</p>
+<p>5.@transient val partitioner: Option[Partitioner] = None</p>
+<p>补充：在Spark中有多少Partition 就有多少Task来执行</p>
+<p><img src="data:image/png;base64,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" alt="avatar"></p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/Spark/RDD 创建/" data-toggle="tooltip" data-placement="top" title="Spark RDD 的创建">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Sqoop/Sqoop安装及使用/" data-toggle="tooltip" data-placement="top" title="Sqoop 安装使用及问题解决">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="nav">none</ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jackson 2019 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
