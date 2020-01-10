@@ -18,7 +18,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/archives/2/">
+    <link rel="canonical" href="http://www.ruozedata.com/page/2/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -208,6 +208,167 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/article/Mysql/MySQL行列转换/">
+        <h2 class="post-title">
+                                 
+            MySQL列转行、行转列
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            准备数据
+创建表：
+123456789DROP TABLE IF EXISTS tb_score;CREATE TABLE tb_score(    id INT(11) NOT NULL auto_increment,    userid VARCHAR(20) NOT NULL COMMENT '用户id',    subject VARCHAR(20) COMMENT '科目',   ......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-09-07
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Hive/Hive Join、multi data type/">
+        <h2 class="post-title">
+                                 
+            Hive Join、复杂数据类型操作
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Hive 中的Join操作
+Inner Join
+inner join：只返回连接条件匹配上的数据
+Left Join ：左外连接，以左表的全部数据和右边关联的数据，缺失补NULL
+Right Join：右外连接，以右表的全部数据和左边关联的数据，缺失补NULL
+Full Join：   全外连接，返回全部的关联数据，缺失补NULL
+hiveserver2
+启动HiveServer2 服务端......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-09-06
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hive" title="Hive">Hive</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/">
+        <h2 class="post-title">
+                                 
+            Hive DML、DDL、Load Data
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            DDL
+首先要创建表才能对Hive中的数据进行操作。
+创建一个外部表：
+12345678910CREATE EXTERNAL TABLE emp(empno int,ename string,job string,mgr int,hiredate string,sal double,comm double,deptno int) ROW FORMAT DELIMITED FIELDS TER......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-09-04
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hive" title="Hive">Hive</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Hive/Hive 架构、部署、配置/">
+        <h2 class="post-title">
+                                 
+            Hive架构、部署、配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Hive 概述
+Hive 官网 https://hive.apache.org/
+The Apache Hive ™ data warehouse software facilitates reading, writing, and managing large datasets residing in distributed storage using SQL. Structure can......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-09-02
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hive" title="Hive">Hive</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Mysql/MySQL分组求TopN/">
+        <h2 class="post-title">
+                                 
+            MySQL 分组求 Top N 问题
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            数据表及字段信息：
+12345CREATE TABLE `lesson` (  `sno` varchar(100) DEFAULT NULL,  `course` varchar(100) DEFAULT NULL,  `score` int(11) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1
+第一列no为学号，第二列course为......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-28
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -403,166 +564,6 @@ df......
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/article/Hadoop/hadoop03jps正确姿势/">
-        <h2 class="post-title">
-                                 
-            Jps的正确使用姿势
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Hadoop 的 jps 命令
-jps的主要功能是查看java接口的进程号
-jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查看当前所有java进程PID的命令，缺点是只支持当前用户的Java进程，要显示其他用户还是只能够 用ps命令
-
-1.jps命令类似于Linux的ps命令 ，直接运行jps命令，显示的是java程序的......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-17
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Mysql/MYSQL timestamp和datetime区别/">
-        <h2 class="post-title">
-                                 
-            MySQL 中 datetime 和 timestamp 的区别
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            占用空间
-12datetime	8 字节	yyyy-mm-dd hh:mm:sstimestamp	4 字节	yyyy-mm-dd hh:mm:ss
-表示范围
-12datetime	'1000-01-01 00:00:00.000000' to '9999-12-31 23:59:59.999999'timestamp	'1970-01-01 00:00:01.000000' to '203......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-16
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Error/HDFS NameNode启动不了的ERROR/">
-        <h2 class="post-title">
-                                 
-            Hadoop NameNode 启动不了
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            报错信息为：
-1234567891011121314org.apache.hadoop.hdfs.server.namenode.FSNamesystem: Encountered exception loading fsimageorg.apache.hadoop.hdfs.server.common.InconsistentFSStateException: Directory /hom......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-15
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#ERROR" title="ERROR">ERROR</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Hadoop/hadoop02Yarn部署和使用/">
-        <h2 class="post-title">
-                                 
-            Hadoop 之 Yarn部署和使用
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1.Yarn 伪分布式 单点部署 主从架构
-Yarn的单点部署文档：https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html
-1.1 Configure parameters as follows
-etc/hadoop/mapred-site.xml:
-123456&......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-14
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Hadoop/hadoop01Hadoop 安装和部署/">
-        <h2 class="post-title">
-                                 
-            Hadoop 之HDFS部署测试
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1.hadoop
-Apache   Hadoop 地址：https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html
-Cloudera Hadoop 地址：http://archive.cloudera.com/cdh5/cdh/5/
-					  http://arch......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-13
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -575,7 +576,7 @@ Cloudera Hadoop 地址：http://archive.cloudera.com/cdh5/cdh/5/
     
     
         <li class="next">
-            <a href="/archives/3/">Older Posts &rarr;</a>
+            <a href="/page/3/">Older Posts &rarr;</a>
         </li>
     
 </ul>
@@ -608,7 +609,11 @@ Cloudera Hadoop 地址：http://archive.cloudera.com/cdh5/cdh/5/
     <div class="tags">
         
             
-            <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
+            <a href="/tags/#Schedul" title="Schedul" rel="1">Schedul</a>
+            
+        
+            
+            <a href="/tags/#DataView" title="DataView" rel="1">DataView</a>
             
         
             
@@ -616,11 +621,19 @@ Cloudera Hadoop 地址：http://archive.cloudera.com/cdh5/cdh/5/
             
         
             
-            <a href="/tags/#BigData" title="BigData" rel="3">BigData</a>
+            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
             
         
             
-            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
+            <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
+            
+        
+            
+            <a href="/tags/#DataWareHouse" title="DataWareHouse" rel="1">DataWareHouse</a>
+            
+        
+            
+            <a href="/tags/#BigData" title="BigData" rel="3">BigData</a>
             
         
             
@@ -632,7 +645,7 @@ Cloudera Hadoop 地址：http://archive.cloudera.com/cdh5/cdh/5/
             
         
             
-            <a href="/tags/#Spark" title="Spark" rel="3">Spark</a>
+            <a href="/tags/#Spark" title="Spark" rel="5">Spark</a>
             
         
             
@@ -692,6 +705,14 @@ Cloudera Hadoop 地址：http://archive.cloudera.com/cdh5/cdh/5/
     <ul>
       
         <li>
+          <a href="/article/Spark/Spark action算子操作/">Spark RDD 的 Action操作</a>
+        </li>
+      
+        <li>
+          <a href="/article/Spark/Spark的transformation算子操作/">Spark RDD 的Transformation 操作</a>
+        </li>
+      
+        <li>
           <a href="/article/Spark/SparkContext、SparkConf/">SparkContext 、SparkConf 、Spark-Shell</a>
         </li>
       
@@ -701,14 +722,6 @@ Cloudera Hadoop 地址：http://archive.cloudera.com/cdh5/cdh/5/
       
         <li>
           <a href="/article/Spark/Rdd/">Spark RDD概念、特性、源码体现</a>
-        </li>
-      
-        <li>
-          <a href="/article/Sqoop/Sqoop安装及使用/">Sqoop 安装使用及问题解决</a>
-        </li>
-      
-        <li>
-          <a href="/article/Hive/hive四种by/">Hive Order By、Sort By、Distribute By、Cluster By</a>
         </li>
       
     </ul>
@@ -731,7 +744,7 @@ Cloudera Hadoop 地址：http://archive.cloudera.com/cdh5/cdh/5/
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>
@@ -773,7 +786,7 @@ Cloudera Hadoop 地址：http://archive.cloudera.com/cdh5/cdh/5/
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Jackson 2019 
+                    Copyright &copy; Jackson 2020 
                     By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
                     <iframe
                         style="margin-left: 2px; margin-bottom:-5px;"

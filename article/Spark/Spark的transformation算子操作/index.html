@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Spark RDD 的Transformation 操作 - BigData@Jackson | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/Spark/Spark的transformation算子操作/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
+                            
+                        </div>
+                        <h1>Spark RDD 的Transformation 操作</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Jackson on
+                            2017-10-16
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jackson | @Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <hr>
+<p>@[toc]<br>
+<strong>算子的学习思想：查看源码，主要看输入的是什么类型，需要什么类型的输出，然后给出合适的函数来执行操作。</strong></p>
+<p>RDD 的操作</p>
+<p>总体上来说RDD的操作有三大类：transformation、action、cache</p>
+<p><strong>1)transformations</strong></p>
+<p>RDDA ===&gt; RDDB ===&gt; RDDC</p>
+<p>All transformations in Spark are lazy, in that they do not compute their results right away. Instead, they just remember the transformations applied to some base dataset (e.g. a file). The transformations are only computed when an action requires a result to be returned to the driver program. This design enables Spark to run more efficiently. For example, we can realize that a dataset created through map will be used in a reduce and return only the result of the reduce to the driver, rather than the larger mapped dataset.</p>
+<p>在Spark中所有的transformation操作并不会直接计算transformation的结果，相反的：transformation仅仅只记录操作数据集的转换，只有当action需要结果返回到driver端<br>
+的时候transformation才会被真正的执行。</p>
+<p><strong>例如</strong>：RDDA.map().filter().map().filter()这些transformation操作并不会直接执行，而是执行action操作的时候才真正的执行</p>
+<p><strong>2）action</strong></p>
+<p>This design enables Spark to run more efficiently<br>
+rdda.map().reduce(<em>+</em>)</p>
+<p><strong>3) cache</strong></p>
+<p>By default, each transformed RDD may be recomputed each time you run an action on it. However, you may also persist an RDD in memory using the persist (or cache) method, in which case Spark will keep the elements around on the cluster for much faster access the next time you query it. There is also support for persisting RDDs on disk, or replicated across multiple nodes.</p>
+<p>默认情况下，每当你调用一次action操作的时候，之前已经被计算过的RDD都会再重新被计算一次。你也可以使用persist or cache 操作来在内存中缓存RDD，这样下次再需要<br>
+的时候就可以不用重新从头计算，可以更方便的获取到，Spark也支持在磁盘上面进行持久化RDD，或者在多个节点上面备份RDD。</p>
+<h4 id="1mapfunc">1.map(func)</h4>
+<p>返回一个新的RDD，该RDD由每一个输入元素经过func函数转换后组成<br>
+Map算子是对于输入的数据进行定义函数的操作，可以返回其他类型的参数，Map操作应用于传入的每一个数据。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; var source  = sc.parallelize(<span class="number">1</span> to <span class="number">10</span>)</span><br><span class="line">source: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">8</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; source.collect()</span><br><span class="line">res7: Array[Int] = Array(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; val mapadd = source.map(_ * <span class="number">2</span>)</span><br><span class="line">mapadd: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[<span class="number">9</span>] at map at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; mapadd.collect()</span><br><span class="line">res8: Array[Int] = Array(<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>, <span class="number">10</span>, <span class="number">12</span>, <span class="number">14</span>, <span class="number">16</span>, <span class="number">18</span>, <span class="number">20</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="2-mappartitionsfunc-尽量使用mappartitions">2. mapPartitions(func) 尽量使用mapPartitions</h4>
+<p><strong>要求输入是一个迭代器的类型，返回的也是一个迭代器的类型</strong><br>
+类似于map，但独立地在RDD的每一个分片上运行，因此在类型为T的RDD上运行时，func的函数类型必须是<strong>Iterator[T] =&gt; Iterator[U]</strong>。假设有N个元素，有M个分区，那么map的函数的将被调用N次,而mapPartitions被调用M次,一个函数一次处理所有分区</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(List((<span class="string">"kpop"</span>,<span class="string">"female"</span>),(<span class="string">"zorro"</span>,<span class="string">"male"</span>),(<span class="string">"mobin"</span>,<span class="string">"male"</span>),(<span class="string">"lucy"</span>,<span class="string">"female"</span>)))</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[(String, String)] = ParallelCollectionRDD[<span class="number">16</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; :paste</span><br><span class="line">// Entering paste mode (ctrl-D to finish)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">partitionsFun</span><span class="params">(iter : Iterator[<span class="params">(String,String)</span>])</span> :</span> Iterator[String] = &#123;</span><br><span class="line">  var woman = List[String]()</span><br><span class="line">  <span class="keyword">while</span> (iter.hasNext)&#123;</span><br><span class="line">    val next = iter.next()</span><br><span class="line">    next match &#123;</span><br><span class="line">       case (_,"female") =&gt; woman = next._1 :: woman</span><br><span class="line">       case _ =&gt;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  woman.iterator</span><br><span class="line">&#125;</span><br><span class="line">// Exiting paste mode, now interpreting.</span><br><span class="line"></span><br><span class="line">partitionsFun: (iter: Iterator[(String, String)])Iterator[String]</span><br><span class="line"></span><br><span class="line">scala&gt; val result = rdd.mapPartitions(partitionsFun)</span><br><span class="line">result: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[<span class="number">17</span>] at mapPartitions at &lt;console&gt;:<span class="number">28</span></span><br><span class="line"></span><br><span class="line">scala&gt; result.collect()</span><br><span class="line">res13: Array[String] = Array(kpop, lucy)</span><br></pre></td></tr></table></figure>
+<h4 id="3glom">3.glom</h4>
+<p>将每一个分区形成一个数组，形成新的RDD类型时RDD[Array[T]]</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(<span class="number">1</span> to <span class="number">16</span>,<span class="number">4</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">65</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.glom().collect()</span><br><span class="line">res25: Array[Array[Int]] = Array(Array(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>), Array(<span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>), Array(<span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>), Array(<span class="number">13</span>, <span class="number">14</span>, <span class="number">15</span>, <span class="number">16</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="4-flatmapfunc-map后再扁平化">4. flatMap(func) map后再扁平化</h4>
+<p>类似于map，但是每一个输入元素可以被映射为0或多个输出元素（所以func应该返回一个序列，而不是单一元素）</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val sourceFlat = sc.parallelize(<span class="number">1</span> to <span class="number">5</span>)</span><br><span class="line">sourceFlat: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">12</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; sourceFlat.collect()</span><br><span class="line">res11: Array[Int] = Array(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; val flatMap = sourceFlat.flatMap(<span class="number">1</span> to _)</span><br><span class="line">flatMap: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[<span class="number">13</span>] at flatMap at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; flatMap.collect()</span><br><span class="line">res12: Array[Int] = Array(<span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="5filterfunc">5.filter(func)</h4>
+<p>返回一个新的RDD，该RDD由经过func函数计算后返回值为true的输入元素组成</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; var sourceFilter = sc.parallelize(Array(<span class="string">"xiaoming"</span>,<span class="string">"xiaojiang"</span>,<span class="string">"xiaohe"</span>,<span class="string">"dazhi"</span>))</span><br><span class="line">sourceFilter: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[<span class="number">10</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val filter = sourceFilter.filter(_.contains(<span class="string">"xiao"</span>))</span><br><span class="line">filter: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[<span class="number">11</span>] at filter at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; sourceFilter.collect()</span><br><span class="line">res9: Array[String] = Array(xiaoming, xiaojiang, xiaohe, dazhi)</span><br><span class="line"></span><br><span class="line">scala&gt; filter.collect()</span><br><span class="line">res10: Array[String] = Array(xiaoming, xiaojiang, xiaohe)</span><br></pre></td></tr></table></figure>
+<h4 id="6mappartitionswithindexfunc">6.mapPartitionsWithIndex(func)</h4>
+<p>类似于mapPartitions，但func带有一个整数参数表示分片的索引值，因此在类型为T的RDD上运行时，func的函数类型必须是(Int, Interator[T]) =&gt; Iterator[U],里面的Int类型 的参数是分区号</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(List((<span class="string">"kpop"</span>,<span class="string">"female"</span>),(<span class="string">"zorro"</span>,<span class="string">"male"</span>),(<span class="string">"mobin"</span>,<span class="string">"male"</span>),(<span class="string">"lucy"</span>,<span class="string">"female"</span>)))</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[(String, String)] = ParallelCollectionRDD[<span class="number">18</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; :paste</span><br><span class="line">// Entering paste mode (ctrl-D to finish)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">partitionsFun</span><span class="params">(index : Int, iter : Iterator[<span class="params">(String,String)</span>])</span> :</span> Iterator[String] = &#123;</span><br><span class="line">  var woman = List[String]()</span><br><span class="line">  <span class="keyword">while</span> (iter.hasNext)&#123;</span><br><span class="line">    val next = iter.next()</span><br><span class="line">    next match &#123;</span><br><span class="line">       case (_,"female") =&gt; woman = "["+index+"]"+next._1 :: woman</span><br><span class="line">       case _ =&gt;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  woman.iterator</span><br><span class="line">&#125;</span><br><span class="line">// Exiting paste mode, now interpreting.</span><br><span class="line"></span><br><span class="line">partitionsFun: (index: Int, iter: Iterator[(String, String)])Iterator[String]</span><br><span class="line"></span><br><span class="line">scala&gt; val result = rdd.mapPartitionsWithIndex(partitionsFun)</span><br><span class="line">result: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[<span class="number">19</span>] at mapPartitionsWithIndex at &lt;console&gt;:<span class="number">28</span></span><br><span class="line"></span><br><span class="line">scala&gt; result.collect()</span><br><span class="line">res14: Array[String] = Array([<span class="number">0</span>]kpop, [<span class="number">3</span>]lucy)</span><br></pre></td></tr></table></figure>
+<h4 id="7samplewithreplacement-fraction-seed">7.sample(withReplacement, fraction, seed)</h4>
+<p>以指定的随机种子随机抽样出数量为fraction的数据，withReplacement表示是抽出的数据是否放回，true为有放回的抽样，false为无放回的抽样，seed用于指定随机数生成器种子。例子从RDD中随机且有放回的抽出50%的数据，随机种子值为3（即可能以1 2 3的其中一个起始值）</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(<span class="number">1</span> to <span class="number">10</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">20</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.collect()</span><br><span class="line">res15: Array[Int] = Array(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; var sample1 = rdd.sample(true,<span class="number">0.4</span>,<span class="number">2</span>)</span><br><span class="line">sample1: org.apache.spark.rdd.RDD[Int] = PartitionwiseSampledRDD[<span class="number">21</span>] at sample at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; sample1.collect()</span><br><span class="line">res16: Array[Int] = Array(<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">7</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; var sample2 = rdd.sample(false,<span class="number">0.2</span>,<span class="number">3</span>)</span><br><span class="line">sample2: org.apache.spark.rdd.RDD[Int] = PartitionwiseSampledRDD[<span class="number">22</span>] at sample at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; sample2.collect()</span><br><span class="line">res17: Array[Int] = Array(<span class="number">1</span>, <span class="number">9</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="8distinctnumtasks">8.distinct([numTasks]))</h4>
+<p>对源RDD进行去重后返回一个新的RDD. 默认情况下，只有8个并行任务来操作，但是可以传入一个可选的numTasks参数改变它。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val distinctRdd = sc.parallelize(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span>,<span class="number">5</span>,<span class="number">2</span>,<span class="number">9</span>,<span class="number">6</span>,<span class="number">1</span>))</span><br><span class="line">distinctRdd: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">34</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val unionRDD = distinctRdd.distinct()</span><br><span class="line">unionRDD: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[<span class="number">37</span>] at distinct at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; unionRDD.collect()</span><br><span class="line">[Stage 16:&gt; (0 + 4) [Stage 16:=============================&gt;                            (2 + 2)                                                                             res20: Array[Int] = Array(1, 9, 5, 6, 2)</span><br><span class="line"></span><br><span class="line">scala&gt; val unionRDD = distinctRdd.distinct(<span class="number">2</span>)</span><br><span class="line">unionRDD: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[<span class="number">40</span>] at distinct at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; unionRDD.collect()</span><br><span class="line">res21: Array[Int] = Array(<span class="number">6</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">9</span>, <span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="9partitionby">9.partitionBy</h4>
+<p>对RDD进行分区操作，如果原有的partionRDD和现有的partionRDD是一致的话就不进行分区， 否则会生成ShuffleRDD。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(Array((<span class="number">1</span>,<span class="string">"aaa"</span>),(<span class="number">2</span>,<span class="string">"bbb"</span>),(<span class="number">3</span>,<span class="string">"ccc"</span>),(<span class="number">4</span>,<span class="string">"ddd"</span>)),<span class="number">4</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[(Int, String)] = ParallelCollectionRDD[<span class="number">44</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.partitions.size</span><br><span class="line">res24: Int = <span class="number">4</span></span><br><span class="line"></span><br><span class="line">scala&gt; var rdd2 = rdd.partitionBy(new org.apache.spark.HashPartitioner(<span class="number">2</span>))</span><br><span class="line">rdd2: org.apache.spark.rdd.RDD[(Int, String)] = ShuffledRDD[<span class="number">45</span>] at partitionBy at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd2.partitions.size</span><br><span class="line">res25: Int = <span class="number">2</span></span><br></pre></td></tr></table></figure>
+<h4 id="10coalescenumpartitions">10.coalesce(numPartitions)</h4>
+<p>与repartition的区别: repartition(numPartitions:Int):RDD[T]和coalesce(numPartitions:Int，shuffle:Boolean=false):RDD[T] repartition只是coalesce接口中shuffle为true的实现.<br>
+缩减分区数，用于大数据集过滤后，提高小数据集的执行效率。</p>
+<p><strong>shuffle ,当不用shuffle的时候在每个Executor内执行，shuffle是跨进程的通信</strong></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(<span class="number">1</span> to <span class="number">16</span>,<span class="number">4</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">54</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.partitions.size</span><br><span class="line">res20: Int = <span class="number">4</span></span><br><span class="line"></span><br><span class="line">scala&gt; val coalesceRDD = rdd.coalesce(<span class="number">3</span>)</span><br><span class="line">coalesceRDD: org.apache.spark.rdd.RDD[Int] = CoalescedRDD[<span class="number">55</span>] at coalesce at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; coalesceRDD.partitions.size</span><br><span class="line">res21: Int = <span class="number">3</span></span><br></pre></td></tr></table></figure>
+<h4 id="11-repartitionnumpartitions">11. repartition(numPartitions)</h4>
+<p>根据分区数，从新通过网络随机洗牌所有数据。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(<span class="number">1</span> to <span class="number">16</span>,<span class="number">4</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">56</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.partitions.size</span><br><span class="line">res22: Int = <span class="number">4</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rerdd = rdd.repartition(<span class="number">2</span>)</span><br><span class="line">rerdd: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[<span class="number">60</span>] at repartition at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; rerdd.partitions.size</span><br><span class="line">res23: Int = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rerdd = rdd.repartition(<span class="number">4</span>)</span><br><span class="line">rerdd: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[<span class="number">64</span>] at repartition at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; rerdd.partitions.size</span><br><span class="line">res24: Int = <span class="number">4</span></span><br></pre></td></tr></table></figure>
+<h4 id="12repartitionandsortwithinpartitionspartitioner">12.repartitionAndSortWithinPartitions(partitioner)</h4>
+<p>repartitionAndSortWithinPartitions函数是repartition函数的变种，与repartition函数不同的是，repartitionAndSortWithinPartitions在给定的partitioner内部进行排序，性能比repartition要高。</p>
+<h4 id="13sortbyfuncascending-numtasks">13.sortBy(func,[ascending], [numTasks])</h4>
+<p>用func先对数据进行处理，按照处理后的数据比较结果排序。<strong>底层调用的是SortByKey()</strong></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(List(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>))</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">21</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.sortBy(x =&gt; x).collect()</span><br><span class="line">res11: Array[Int] = Array(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; rdd.sortBy(x =&gt; x%3).collect()</span><br><span class="line">res12: Array[Int] = Array(<span class="number">3</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<hr>
+<hr>
+<p><strong>union(并)    substract(差)    intersection（交集）  cartesian（笛卡尔积）</strong><br>
+参数都是另外的一个数据集</p>
+<h4 id="14unionotherdataset">14.union(otherDataset)</h4>
+<p>对源RDD和参数RDD求并集后返回一个新的RDD  不去重</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd1 = sc.parallelize(<span class="number">1</span> to <span class="number">5</span>)</span><br><span class="line">rdd1: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">23</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rdd2 = sc.parallelize(<span class="number">5</span> to <span class="number">10</span>)</span><br><span class="line">rdd2: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">24</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rdd3 = rdd1.union(rdd2)</span><br><span class="line">rdd3: org.apache.spark.rdd.RDD[Int] = UnionRDD[<span class="number">25</span>] at union at &lt;console&gt;:<span class="number">28</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd3.collect()</span><br><span class="line">res18: Array[Int] = Array(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="15subtract-otherdataset">15.subtract (otherDataset)</h4>
+<p>计算差的一种函数，去除两个RDD中相同的元素，不同的RDD将保留下来</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(<span class="number">3</span> to <span class="number">8</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">70</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rdd1 = sc.parallelize(<span class="number">1</span> to <span class="number">5</span>)</span><br><span class="line">rdd1: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">71</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.subtract(rdd1).collect()</span><br><span class="line">res27: Array[Int] = Array(<span class="number">8</span>, <span class="number">6</span>, <span class="number">7</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="16intersectionotherdataset">16.intersection(otherDataset)</h4>
+<p>对源RDD和参数RDD求交集后返回一个新的RDD</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd1 = sc.parallelize(<span class="number">1</span> to <span class="number">7</span>)</span><br><span class="line">rdd1: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">26</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rdd2 = sc.parallelize(<span class="number">5</span> to <span class="number">10</span>)</span><br><span class="line">rdd2: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">27</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rdd3 = rdd1.intersection(rdd2)</span><br><span class="line">rdd3: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[<span class="number">33</span>] at intersection at &lt;console&gt;:<span class="number">28</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd3.collect()</span><br><span class="line">res19: Array[Int] = Array(<span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="17cartesianotherdataset">17.cartesian(otherDataset)</h4>
+<p>笛卡尔积</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd1 = sc.parallelize(<span class="number">1</span> to <span class="number">3</span>)</span><br><span class="line">rdd1: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">47</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rdd2 = sc.parallelize(<span class="number">2</span> to <span class="number">5</span>)</span><br><span class="line">rdd2: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[<span class="number">48</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd1.cartesian(rdd2).collect()</span><br><span class="line">res17: Array[(Int, Int)] = Array((<span class="number">1</span>,<span class="number">2</span>), (<span class="number">1</span>,<span class="number">3</span>), (<span class="number">1</span>,<span class="number">4</span>), (<span class="number">1</span>,<span class="number">5</span>), (<span class="number">2</span>,<span class="number">2</span>), (<span class="number">2</span>,<span class="number">3</span>), (<span class="number">2</span>,<span class="number">4</span>), (<span class="number">2</span>,<span class="number">5</span>), (<span class="number">3</span>,<span class="number">2</span>), (<span class="number">3</span>,<span class="number">3</span>), (<span class="number">3</span>,<span class="number">4</span>), (<span class="number">3</span>,<span class="number">5</span>))</span><br></pre></td></tr></table></figure>
+<hr>
+<hr>
+<h4 id="18pipecommand-envvars">18.pipe(command, [envVars])</h4>
+<p>管道，对于每个分区，都执行一个perl或者shell脚本，返回输出的RDD</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Shell脚本</span><br><span class="line"><span class="comment">#!/bin/sh</span></span><br><span class="line">echo <span class="string">"AA"</span></span><br><span class="line"><span class="keyword">while</span> read LINE; do</span><br><span class="line">   echo <span class="string">"&gt;&gt;&gt;"</span>$&#123;LINE&#125;</span><br><span class="line">done</span><br><span class="line">scala&gt; val rdd = sc.parallelize(List(<span class="string">"hi"</span>,<span class="string">"Hello"</span>,<span class="string">"how"</span>,<span class="string">"are"</span>,<span class="string">"you"</span>),<span class="number">1</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[<span class="number">50</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.pipe(<span class="string">"/home/bigdata/pipe.sh"</span>).collect()</span><br><span class="line">res18: Array[String] = Array(AA, &gt;&gt;&gt;hi, &gt;&gt;&gt;Hello, &gt;&gt;&gt;how, &gt;&gt;&gt;are, &gt;&gt;&gt;you)</span><br><span class="line"></span><br><span class="line">scala&gt; val rdd = sc.parallelize(List(<span class="string">"hi"</span>,<span class="string">"Hello"</span>,<span class="string">"how"</span>,<span class="string">"are"</span>,<span class="string">"you"</span>),<span class="number">2</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[<span class="number">52</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.pipe(<span class="string">"/home/bigdata/pipe.sh"</span>).collect()</span><br><span class="line">res19: Array[String] = Array(AA, &gt;&gt;&gt;hi, &gt;&gt;&gt;Hello, AA, &gt;&gt;&gt;how, &gt;&gt;&gt;are, &gt;&gt;&gt;you)</span><br><span class="line"></span><br><span class="line">pipe.sh:</span><br><span class="line"><span class="comment">#!/bin/sh</span></span><br><span class="line">echo <span class="string">"AA"</span></span><br><span class="line"><span class="keyword">while</span> read LINE; do</span><br><span class="line">   echo <span class="string">"&gt;&gt;&gt;"</span>$&#123;LINE&#125;</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<h4 id="19joinotherdataset-numtasks">19.join(otherDataset, [numTasks])</h4>
+<p>在类型为(K,V)和(K,W)的RDD上调用，返回一个<strong>相同key</strong>对应的所有元素对在一起的(K,(V,W))的RDD</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(Array((<span class="number">1</span>,<span class="string">"a"</span>),(<span class="number">2</span>,<span class="string">"b"</span>),(<span class="number">3</span>,<span class="string">"c"</span>)))</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[(Int, String)] = ParallelCollectionRDD[<span class="number">32</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rdd1 = sc.parallelize(Array((<span class="number">1</span>,<span class="number">4</span>),(<span class="number">2</span>,<span class="number">5</span>),(<span class="number">3</span>,<span class="number">6</span>)))</span><br><span class="line">rdd1: org.apache.spark.rdd.RDD[(Int, Int)] = ParallelCollectionRDD[<span class="number">33</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.join(rdd1).collect()</span><br><span class="line">res13: Array[(Int, (String, Int))] = Array((<span class="number">1</span>,(a,<span class="number">4</span>)), (<span class="number">2</span>,(b,<span class="number">5</span>)), (<span class="number">3</span>,(c,<span class="number">6</span>)))</span><br></pre></td></tr></table></figure>
+<h4 id="20cogroupotherdataset-numtasks">20.cogroup(otherDataset, [numTasks])</h4>
+<p>在类型为(K,V)和(K,W)的RDD上调用，返回一个(K,(Iterable<v>,Iterable<w>))类型的RDD</w></v></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(Array((<span class="number">1</span>,<span class="string">"a"</span>),(<span class="number">2</span>,<span class="string">"b"</span>),(<span class="number">3</span>,<span class="string">"c"</span>)))</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[(Int, String)] = ParallelCollectionRDD[<span class="number">37</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rdd1 = sc.parallelize(Array((<span class="number">1</span>,<span class="number">4</span>),(<span class="number">2</span>,<span class="number">5</span>),(<span class="number">3</span>,<span class="number">6</span>)))</span><br><span class="line">rdd1: org.apache.spark.rdd.RDD[(Int, Int)] = ParallelCollectionRDD[<span class="number">38</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.cogroup(rdd1).collect()</span><br><span class="line">res14: Array[(Int, (Iterable[String], Iterable[Int]))] = Array((<span class="number">1</span>,(CompactBuffer(a),CompactBuffer(<span class="number">4</span>))), (<span class="number">2</span>,(CompactBuffer(b),CompactBuffer(<span class="number">5</span>))), (<span class="number">3</span>,(CompactBuffer(c),CompactBuffer(<span class="number">6</span>))))</span><br><span class="line"></span><br><span class="line">scala&gt; val rdd2 = sc.parallelize(Array((<span class="number">4</span>,<span class="number">4</span>),(<span class="number">2</span>,<span class="number">5</span>),(<span class="number">3</span>,<span class="number">6</span>)))</span><br><span class="line">rdd2: org.apache.spark.rdd.RDD[(Int, Int)] = ParallelCollectionRDD[<span class="number">41</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.cogroup(rdd2).collect()</span><br><span class="line">res15: Array[(Int, (Iterable[String], Iterable[Int]))] = Array((<span class="number">4</span>,(CompactBuffer(),CompactBuffer(<span class="number">4</span>))), (<span class="number">1</span>,(CompactBuffer(a),CompactBuffer())), (<span class="number">2</span>,(CompactBuffer(b),CompactBuffer(<span class="number">5</span>))), (<span class="number">3</span>,(CompactBuffer(c),CompactBuffer(<span class="number">6</span>))))</span><br><span class="line"></span><br><span class="line">scala&gt; val rdd3 = sc.parallelize(Array((<span class="number">1</span>,<span class="string">"a"</span>),(<span class="number">1</span>,<span class="string">"d"</span>),(<span class="number">2</span>,<span class="string">"b"</span>),(<span class="number">3</span>,<span class="string">"c"</span>)))</span><br><span class="line">rdd3: org.apache.spark.rdd.RDD[(Int, String)] = ParallelCollectionRDD[<span class="number">44</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd3.cogroup(rdd2).collect()</span><br><span class="line">[Stage <span class="number">36</span>:&gt;                                                         (<span class="number">0</span> + <span class="number">0</span>)                                                                             res16: Array[(Int, (Iterable[String], Iterable[Int]))] = Array((<span class="number">4</span>,(CompactBuffer(),CompactBuffer(<span class="number">4</span>))), (<span class="number">1</span>,(CompactBuffer(d, a),CompactBuffer())), (<span class="number">2</span>,(CompactBuffer(b),CompactBuffer(<span class="number">5</span>))), (<span class="number">3</span>,(CompactBuffer(c),CompactBuffer(<span class="number">6</span>))))</span><br></pre></td></tr></table></figure>
+<h4 id="21reducebykeyfunc-numtasks">21.reduceByKey(func, [numTasks])</h4>
+<p>在一个(K,V)的RDD上调用，返回一个(K,V)的RDD，使用指定的reduce函数，将相同key的值聚合到一起，reduce任务的个数可以通过第二个可选的参数来设置。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(List((<span class="string">"female"</span>,<span class="number">1</span>),(<span class="string">"male"</span>,<span class="number">5</span>),(<span class="string">"female"</span>,<span class="number">5</span>),(<span class="string">"male"</span>,<span class="number">2</span>)))</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[(String, Int)] = ParallelCollectionRDD[<span class="number">46</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val reduce = rdd.reduceByKey((x,y) =&gt; x+y)</span><br><span class="line">reduce: org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[<span class="number">47</span>] at reduceByKey at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; reduce.collect()</span><br><span class="line">res29: Array[(String, Int)] = Array((female,<span class="number">6</span>), (male,<span class="number">7</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="22groupbykey">22.groupByKey</h4>
+<p>groupByKey也是对每个key进行操作，但只生成一个sequence。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val words = Array(<span class="string">"one"</span>, <span class="string">"two"</span>, <span class="string">"two"</span>, <span class="string">"three"</span>, <span class="string">"three"</span>, <span class="string">"three"</span>)</span><br><span class="line">words: Array[String] = Array(one, two, two, three, three, three)</span><br><span class="line"></span><br><span class="line">scala&gt; val wordPairsRDD = sc.parallelize(words).map(word =&gt; (word, 1))</span><br><span class="line">wordPairsRDD: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[<span class="number">4</span>] at map at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; val group = wordPairsRDD.groupByKey()</span><br><span class="line">group: org.apache.spark.rdd.RDD[(String, Iterable[Int])] = ShuffledRDD[<span class="number">5</span>] at groupByKey at &lt;console&gt;:<span class="number">28</span></span><br><span class="line"></span><br><span class="line">scala&gt; group.collect()</span><br><span class="line">res1: Array[(String, Iterable[Int])] = Array((two,CompactBuffer(<span class="number">1</span>, <span class="number">1</span>)), (one,CompactBuffer(<span class="number">1</span>)), (three,CompactBuffer(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>)))</span><br><span class="line"></span><br><span class="line">scala&gt; group.map(t =&gt; (t._1, t._2.sum))</span><br><span class="line">res2: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[<span class="number">6</span>] at map at &lt;console&gt;:<span class="number">31</span></span><br><span class="line"></span><br><span class="line">scala&gt; res2.collect()</span><br><span class="line">res3: Array[(String, Int)] = Array((two,<span class="number">2</span>), (one,<span class="number">1</span>), (three,<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">scala&gt; val map = group.map(t =&gt; (t._1, t._2.sum))</span><br><span class="line">map: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[<span class="number">7</span>] at map at &lt;console&gt;:<span class="number">30</span></span><br><span class="line"></span><br><span class="line">scala&gt; map.collect()</span><br><span class="line">res4: Array[(String, Int)] = Array((two,<span class="number">2</span>), (one,<span class="number">1</span>), (three,<span class="number">3</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="23combinebykeyc">23.combineByKey[C]</h4>
+<p>(  createCombiner: V =&gt; C,  mergeValue: (C, V) =&gt; C,  mergeCombiners: (C, C) =&gt; C)<br>
+对相同K，把V合并成一个集合。<br>
+createCombiner: combineByKey() 会遍历分区中的所有元素，因此每个元素的键要么还没有遇到过，要么就 和之前的某个元素的键相同。如果这是一个新的元素,combineByKey() 会使用一个叫作 createCombiner() 的函数来创建<br>
+那个键对应的累加器的初始值<br>
+mergeValue: 如果这是一个在处理当前分区之前已经遇到的键， 它会使用 mergeValue() 方法将该键的累加器对应的当前值与这个新的值进行合并<br>
+mergeCombiners: 由于每个分区都是独立处理的， 因此对于同一个键可以有多个累加器。如果有两个或者更多的分区都有对应同一个键的累加器， 就需要使用用户提供的 mergeCombiners() 方法将各个分区的结果进行合并。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val scores = Array((<span class="string">"Fred"</span>, <span class="number">88</span>), (<span class="string">"Fred"</span>, <span class="number">95</span>), (<span class="string">"Fred"</span>, <span class="number">91</span>), (<span class="string">"Wilma"</span>, <span class="number">93</span>), (<span class="string">"Wilma"</span>, <span class="number">95</span>), (<span class="string">"Wilma"</span>, <span class="number">98</span>))</span><br><span class="line">scores: Array[(String, Int)] = Array((Fred,<span class="number">88</span>), (Fred,<span class="number">95</span>), (Fred,<span class="number">91</span>), (Wilma,<span class="number">93</span>), (Wilma,<span class="number">95</span>), (Wilma,<span class="number">98</span>))</span><br><span class="line"></span><br><span class="line">scala&gt; val input = sc.parallelize(scores)</span><br><span class="line">input: org.apache.spark.rdd.RDD[(String, Int)] = ParallelCollectionRDD[<span class="number">52</span>] at parallelize at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; val combine = input.combineByKey(</span><br><span class="line">     |     (v)=&gt;(v,1),</span><br><span class="line">     |     (acc:(Int,Int),v)=&gt;(acc._1+v,acc._2+1),</span><br><span class="line">     |     (acc1:(Int,Int),acc2:(Int,Int))=&gt;(acc1._1+acc2._1,acc1._2+acc2._2))</span><br><span class="line">combine: org.apache.spark.rdd.RDD[(String, (Int, Int))] = ShuffledRDD[<span class="number">53</span>] at combineByKey at &lt;console&gt;:<span class="number">28</span></span><br><span class="line"></span><br><span class="line">scala&gt; val result = combine.map&#123;</span><br><span class="line">     |     case (key,value) =&gt; (key,value._1/value._2.toDouble)&#125;</span><br><span class="line">result: org.apache.spark.rdd.RDD[(String, Double)] = MapPartitionsRDD[<span class="number">54</span>] at map at &lt;console&gt;:<span class="number">30</span></span><br><span class="line"></span><br><span class="line">scala&gt; result.collect()</span><br><span class="line">res33: Array[(String, Double)] = Array((Wilma,<span class="number">95.33333333333333</span>), (Fred,<span class="number">91.33333333333333</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="24aggregatebykey">24.aggregateByKey</h4>
+<p>(zeroValue:U,[partitioner: Partitioner]) (seqOp: (U, V) =&gt; U,combOp: (U, U) =&gt; U)<br>
+在kv对的RDD中，，按key将value进行分组合并，合并时，将每个value和初始值作为seq函数的参数，进行计算，返回的结果作为一个新的kv对，然后再将结果按照key进行合并，最后将每个分组的value传递给combine函数进行计算（先将前两个value进行计算，将返回结果和下一个value传给combine函数，以此类推），将key与计算结果作为一个新的kv对输出。<br>
+seqOp函数用于在每一个分区中用初始值逐步迭代value，combOp函数用于合并每个分区中的结果。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(List((<span class="number">1</span>,<span class="number">3</span>),(<span class="number">1</span>,<span class="number">2</span>),(<span class="number">1</span>,<span class="number">4</span>),(<span class="number">2</span>,<span class="number">3</span>),(<span class="number">3</span>,<span class="number">6</span>),(<span class="number">3</span>,<span class="number">8</span>)),<span class="number">3</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[(Int, Int)] = ParallelCollectionRDD[<span class="number">12</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val agg = rdd.aggregateByKey(<span class="number">0</span>)(math.max(_,_),_+_)</span><br><span class="line">agg: org.apache.spark.rdd.RDD[(Int, Int)] = ShuffledRDD[<span class="number">13</span>] at aggregateByKey at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; agg.collect()</span><br><span class="line">res7: Array[(Int, Int)] = Array((<span class="number">3</span>,<span class="number">8</span>), (<span class="number">1</span>,<span class="number">7</span>), (<span class="number">2</span>,<span class="number">3</span>))</span><br><span class="line"></span><br><span class="line">scala&gt; agg.partitions.size</span><br><span class="line">res8: Int = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">scala&gt; val rdd = sc.parallelize(List((<span class="number">1</span>,<span class="number">3</span>),(<span class="number">1</span>,<span class="number">2</span>),(<span class="number">1</span>,<span class="number">4</span>),(<span class="number">2</span>,<span class="number">3</span>),(<span class="number">3</span>,<span class="number">6</span>),(<span class="number">3</span>,<span class="number">8</span>)),<span class="number">1</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[(Int, Int)] = ParallelCollectionRDD[<span class="number">10</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val agg = rdd.aggregateByKey(<span class="number">0</span>)(math.max(_,_),_+_).collect()</span><br><span class="line">agg: Array[(Int, Int)] = Array((<span class="number">1</span>,<span class="number">4</span>), (<span class="number">3</span>,<span class="number">8</span>), (<span class="number">2</span>,<span class="number">3</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="25foldbykey">25.foldByKey</h4>
+<p>(zeroValue: V)(func: (V, V) =&gt; V): RDD[(K, V)]<br>
+aggregateByKey的简化操作，seqop和combop相同</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(List((<span class="number">1</span>,<span class="number">3</span>),(<span class="number">1</span>,<span class="number">2</span>),(<span class="number">1</span>,<span class="number">4</span>),(<span class="number">2</span>,<span class="number">3</span>),(<span class="number">3</span>,<span class="number">6</span>),(<span class="number">3</span>,<span class="number">8</span>)),<span class="number">3</span>)</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[(Int, Int)] = ParallelCollectionRDD[<span class="number">91</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; val agg = rdd.foldByKey(<span class="number">0</span>)(_+_)</span><br><span class="line">agg: org.apache.spark.rdd.RDD[(Int, Int)] = ShuffledRDD[<span class="number">92</span>] at foldByKey at &lt;console&gt;:<span class="number">26</span></span><br><span class="line"></span><br><span class="line">scala&gt; agg.collect()</span><br><span class="line">res61: Array[(Int, Int)] = Array((<span class="number">3</span>,<span class="number">14</span>), (<span class="number">1</span>,<span class="number">9</span>), (<span class="number">2</span>,<span class="number">3</span>))</span><br></pre></td></tr></table></figure>
+<h4 id="26sortbykeyascending-numtasks">26.sortByKey([ascending], [numTasks])</h4>
+<p>在一个(K,V)的RDD上调用，K必须实现Ordered接口，返回一个按照key进行排序的(K,V)的RDD</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(Array((<span class="number">3</span>,<span class="string">"aa"</span>),(<span class="number">6</span>,<span class="string">"cc"</span>),(<span class="number">2</span>,<span class="string">"bb"</span>),(<span class="number">1</span>,<span class="string">"dd"</span>)))</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[(Int, String)] = ParallelCollectionRDD[<span class="number">14</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd.sortByKey(true).collect()</span><br><span class="line">res9: Array[(Int, String)] = Array((<span class="number">1</span>,dd), (<span class="number">2</span>,bb), (<span class="number">3</span>,aa), (<span class="number">6</span>,cc))</span><br><span class="line"></span><br><span class="line">scala&gt; rdd.sortByKey(false).collect()</span><br><span class="line">res10: Array[(Int, String)] = Array((<span class="number">6</span>,cc), (<span class="number">3</span>,aa), (<span class="number">2</span>,bb), (<span class="number">1</span>,dd))</span><br></pre></td></tr></table></figure>
+<h4 id="27-mapvalues">27. mapValues</h4>
+<p>针对于(K,V)形式的类型只对V进行操作</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd3 = sc.parallelize(Array((<span class="number">1</span>,<span class="string">"a"</span>),(<span class="number">1</span>,<span class="string">"d"</span>),(<span class="number">2</span>,<span class="string">"b"</span>),(<span class="number">3</span>,<span class="string">"c"</span>)))</span><br><span class="line">rdd3: org.apache.spark.rdd.RDD[(Int, String)] = ParallelCollectionRDD[<span class="number">67</span>] at parallelize at &lt;console&gt;:<span class="number">24</span></span><br><span class="line"></span><br><span class="line">scala&gt; rdd3.mapValues(_+<span class="string">"|||"</span>).collect()</span><br><span class="line">res26: Array[(Int, String)] = Array((<span class="number">1</span>,a|||), (<span class="number">1</span>,d|||), (<span class="number">2</span>,b|||), (<span class="number">3</span>,c|||))</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：下换线_ 的省略问题<br>
+下换线有如下两种的转换过程</p>
+<ul>
+<li>1.eta-conversion 简化操作</li>
+<li>2.eta-extension 扩展操作</li>
+</ul>
+<p>这里是根据括号有一个就近原则</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(_*2 + 1)  扩展之后的结果是x =&gt; x * 2 + 1</span><br><span class="line">(_*2)+1   扩展之后的结果是(x =&gt; x * 2) + 1</span><br></pre></td></tr></table></figure>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/Spark/Spark action算子操作/" data-toggle="tooltip" data-placement="top" title="Spark RDD 的 Action操作">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Spark/SparkContext、SparkConf/" data-toggle="tooltip" data-placement="top" title="SparkContext 、SparkConf 、Spark-Shell">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1mapfunc"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">1.map(func)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2-mappartitionsfunc-尽量使用mappartitions"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">2. mapPartitions(func) &#x5C3D;&#x91CF;&#x4F7F;&#x7528;mapPartitions</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3glom"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">3.glom</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4-flatmapfunc-map后再扁平化"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">4. flatMap(func) map&#x540E;&#x518D;&#x6241;&#x5E73;&#x5316;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#5filterfunc"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">5.filter(func)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#6mappartitionswithindexfunc"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">6.mapPartitionsWithIndex(func)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#7samplewithreplacement-fraction-seed"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">7.sample(withReplacement, fraction, seed)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#8distinctnumtasks"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">8.distinct([numTasks]))</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#9partitionby"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">9.partitionBy</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#10coalescenumpartitions"><span class="toc-nav-number">10.</span> <span class="toc-nav-text">10.coalesce(numPartitions)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#11-repartitionnumpartitions"><span class="toc-nav-number">11.</span> <span class="toc-nav-text">11. repartition(numPartitions)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#12repartitionandsortwithinpartitionspartitioner"><span class="toc-nav-number">12.</span> <span class="toc-nav-text">12.repartitionAndSortWithinPartitions(partitioner)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#13sortbyfuncascending-numtasks"><span class="toc-nav-number">13.</span> <span class="toc-nav-text">13.sortBy(func,[ascending], [numTasks])</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#14unionotherdataset"><span class="toc-nav-number">14.</span> <span class="toc-nav-text">14.union(otherDataset)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#15subtract-otherdataset"><span class="toc-nav-number">15.</span> <span class="toc-nav-text">15.subtract (otherDataset)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#16intersectionotherdataset"><span class="toc-nav-number">16.</span> <span class="toc-nav-text">16.intersection(otherDataset)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#17cartesianotherdataset"><span class="toc-nav-number">17.</span> <span class="toc-nav-text">17.cartesian(otherDataset)</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#18pipecommand-envvars"><span class="toc-nav-number">18.</span> <span class="toc-nav-text">18.pipe(command, [envVars])</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#19joinotherdataset-numtasks"><span class="toc-nav-number">19.</span> <span class="toc-nav-text">19.join(otherDataset, [numTasks])</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#20cogroupotherdataset-numtasks"><span class="toc-nav-number">20.</span> <span class="toc-nav-text">20.cogroup(otherDataset, [numTasks])</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#21reducebykeyfunc-numtasks"><span class="toc-nav-number">21.</span> <span class="toc-nav-text">21.reduceByKey(func, [numTasks])</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#22groupbykey"><span class="toc-nav-number">22.</span> <span class="toc-nav-text">22.groupByKey</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#23combinebykeyc"><span class="toc-nav-number">23.</span> <span class="toc-nav-text">23.combineByKey[C]</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#24aggregatebykey"><span class="toc-nav-number">24.</span> <span class="toc-nav-text">24.aggregateByKey</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#25foldbykey"><span class="toc-nav-number">25.</span> <span class="toc-nav-text">25.foldByKey</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#26sortbykeyascending-numtasks"><span class="toc-nav-number">26.</span> <span class="toc-nav-text">26.sortByKey([ascending], [numTasks])</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#27-mapvalues"><span class="toc-nav-number">27.</span> <span class="toc-nav-text">27. mapValues</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jackson 2020 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
