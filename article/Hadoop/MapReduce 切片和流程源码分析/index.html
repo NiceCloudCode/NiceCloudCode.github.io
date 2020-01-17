@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          数据仓库概念 - BigData@Jackson | Blog
+          MapReduce执行流程、切片源码分析 - BigData@Jackson | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/article/DataWareHouse/数据仓库基础概念/">
+    <link rel="canonical" href="http://www.ruozedata.com/article/Hadoop/MapReduce 切片和流程源码分析/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#DataWareHouse" title="DataWareHouse">DataWareHouse</a>
+                              <a class="tag" href="/tags/#源码分析" title="源码分析">源码分析</a>
                             
                         </div>
-                        <h1>数据仓库概念</h1>
+                        <h1>MapReduce执行流程、切片源码分析</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Jackson on
-                            2017-09-15
+                            2017-08-27
                         </span>
                     </div>
                 
@@ -212,112 +212,23 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p><strong>数据仓库的分层不是越多越好，合理的层次设计，以及计算成本 和人力成本的平衡，是一个好的数仓架构的表现</strong>。</p>
-<hr>
-<h3 id="数据仓库">数据仓库</h3>
-<p>数据仓库，英文名称为<strong>Data Warehouse</strong>，可简写为DW或DWH。</p>
-<p>数据仓库，是为企业所有级别的决策制定过程，提供所有类型数据支持的战略集合，它是单个数据存储，出于分析性报告和决策支持目的而创建，为需要业务智能的企业，提供指导业务流程改进、监视时间、成本、质量以及控制。</p>
-<p>数据分为log类型(insert) db关系型(insert update delete)两种类型</p>
-<p><strong>作用</strong>：挖掘有效价值 report(静态报表 动态报表 运营)、实时大屏、对其他业务系统提供指标计算(智能分单 包装方案智能推荐)、钉钉应用(IDSS)，提供企业决策。</p>
-<p>底层存储只需要：各仓库各个供应商每小时订单量</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">B01 供应商<span class="number">1</span> <span class="number">2017</span>-<span class="number">10</span>-<span class="number">01</span> <span class="number">00</span>   <span class="number">1000</span></span><br><span class="line">B02 供应商<span class="number">2</span> <span class="number">2017</span>-<span class="number">10</span>-<span class="number">01</span> <span class="number">00</span>   <span class="number">2000</span></span><br><span class="line">B01 供应商<span class="number">1</span> <span class="number">2017</span>-<span class="number">10</span>-<span class="number">01</span> <span class="number">01</span>   <span class="number">3000</span></span><br><span class="line">B01 供应商<span class="number">1</span> <span class="number">2017</span>-<span class="number">10</span>-<span class="number">02</span> <span class="number">00</span>   <span class="number">3000</span></span><br></pre></td></tr></table></figure>
-<p>一般存储 只存储最小粒度的多维汇总数据</p>
-<p>根据每小时的可以计算出每天，每月的数据量</p>
-<h3 id="数据集市">数据集市</h3>
-<p>数据集市(Data Mart) ，也叫数据市场，数据集市就是满足特定的部门或者用户的需求，按照多维的方式进行存储，包括定义维度、需要计算的指标、维度的层次等，生成面向决策分析需求的数据立方体。从范围上来说，数据是从企业范围的数据库、数据仓库，或者是更加专业的数据仓库中抽取出来的，在分析、内容、表现，以及易用方面。数据中心的用户希望数据是由他们熟悉的术语表现的。</p>
-<p>数据集市说白了就是数据仓库的一个子集</p>
-<p><strong>数据仓库和数据集市的区别</strong>：</p>
-<table>
-<thead>
-<tr>
-<th>数据仓库</th>
-<th>数据集市</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>企业级别</td>
-<td>部门级别</td>
-</tr>
-<tr>
-<td>大量的全的数据</td>
-<td>仅自己的数据</td>
-</tr>
-</tbody>
-</table>
-<h3 id="数仓分层">数仓分层</h3>
-<p>ODS(operation data store) 原始数据层 存放原始数据  不做任何的处理</p>
-<p>DWD/DWI(data warehouse detail) 结构和粒度与ODS层是一致的，只做对ODS层数据进行清洗(脏数据 空值)  拉链表  脱敏 手机号 银行卡 密码(mysql加密)</p>
-<p>DWS(data warehouse service) 以DWD层为基础 进行轻度汇总  宽表(join)</p>
-<p>ADS/APP/domain域表(application data store) 按主题提供统计数据(group计算  少量可能做join计算取决于宽表没有你想要的字段)</p>
-<h3 id="命名规范">命名规范</h3>
-<p>表的前缀: ods  dwd(fact dim)  dws  ads<br>
-对于同一个含义的字段名称 ，在dws层的各表设计为统一的<br>
-订单号orderno orderid id,统一为orderno<br>
-创建时间createtime cretime ctime create_time。。。不统一，可以统一命名为==&gt;createtime</p>
-<h3 id="为什么要分层">为什么要分层？</h3>
-<p><strong>复杂问题简单化</strong>: 将一个超级复杂的任务进行分解成多个步骤来完成，每一层只处理单一的步骤，比较简单，方便定位问题</p>
-<p><strong>减少重复开发</strong>：规范好数仓的分层，通过中间层的数据，能够减少重复计算，增加一次计算的复用。</p>
-<p><strong>隔离原始数据</strong>: 数据的敏感，使得真实的数据 和统计的数据 分离</p>
-<p>数据仓库的分层不是越多越好，合理的层次设计，以及计算成本 和人力成本的平衡，是一个好的数仓架构的表现。</p>
-<h3 id="主表明细表设计">主表明细表设计</h3>
-<p>订单全表</p>
-<p>订单主表+明细表</p>
-<p>订单主表+明细表+商品表 生产上 上游MySQL的设计</p>
-<p>mysql:      --&gt; hive ods层+dwd层 --》hive dws层<br>
-orderinfo        orderinfo           order<br>
-orderitems       orderitems</p>
-<h3 id="业务表建表规范">业务表建表规范</h3>
-<p>加上createtime字段<br>
-加上updatetime字段</p>
-<p>比如12-11 号需要抽取12-10号整天的数据<br>
-select * from t where createtime&gt;='2019-12-10 00:00:00’<br>
-and createtime&lt;‘2019-12-11 00:00:00’;</p>
-<p>里面的参数可以写成shell变量动态传入</p>
-<p>抽取的模式是抽取T + 1 天的数据，也就是今天抽取前一天的数据<br>
-我们增加的updatetime字段不会影响业务，这个是由数据库自己维护的，不需要变更上游</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">alter table xxxx</span><br><span class="line">add column updatetime timestamp not <span class="keyword">null</span> <span class="keyword">default</span> current_timestamp </span><br><span class="line">on update current_timestamp;</span><br></pre></td></tr></table></figure>
-<p><strong>修改表字段的方式</strong>：</p>
-<ol>
-<li>QA环境 ：主 第一层MySQL修改</li>
-<li>mysql单节点 主 写–》mysql 从节点 读----》mysql 从从节点加上updatetime</li>
-<li>cretaetime 每天 先把hive删除干净  全量</li>
-<li>binlog文件 --》canal、maxwell–》kafka–&gt;flume–&gt;hive/hdfs 伪实时<br>
-binlog文件 --》canal、maxwell–》kafka–&gt;spark/flink–&gt;hbase 实时</li>
-</ol>
-<h3 id="数据建模">数据建模</h3>
-<p>数据建模就是规划表结构，如果上游的表设计时候很规范，下游处理会相对轻松</p>
-<p>fact表(事实表): 事实产生的  比如订单表<br>
-dim表(维度表): 时间维表(数据不变化) 供应商商家维表 仓库维表(缓慢变化)</p>
-<h3 id="维度建模">维度建模</h3>
-<p><strong>1.星型模型</strong></p>
-<p>一个fact事实表，多个dim表<br>
-额外：变态版星型模型(head事实表 + item事实表–&gt;fact_depotitems)</p>
-<p>此种设计中数据是有冗余的。以存储空间为代价，降低维度表连接数，提高性能。<br>
-简单，高度并行化，join的操作效率是很低的。</p>
-<p>比如商品表，存在:<br>
-商品名称    第一类别  第二类别<br>
-A果         新鲜水果  热带鲜果<br>
-B果         新鲜水果  热带鲜果</p>
-<p><strong>2.雪花模型</strong></p>
-<p>一个fact事实表，多个dim表<br>
-是星型模型的扩展，不同的是维度表被规划化，进一步分解到附加表里<br>
-维度表设计符合3NF，规范化，有效降低数据冗余。<br>
-但是性能差。复杂，并行度低</p>
-<p>商品名称    类别ID<br>
-A果         25<br>
-B果         25</p>
-<p>子父表<br>
-类别ID  名称          父ID<br>
-25        热带鲜果      18<br>
-25        热带鲜果      18<br>
-18        新鲜水果      -1<br>
-18        新鲜水果      -1</p>
-<p><strong>3.星座模型</strong></p>
-<p>是星型模型延伸的， 是基于多个事实表，而且共享维度信息。</p>
-<p>参考星型模型，但是性能：<br>
-多个事实表，共享维度表，业务复杂，开发复杂，性能不高</p>
-<p>降维 ：商品+商品类别表—》商品表</p>
+                <h4 id="mapreduce源码分析">MapReduce源码分析：</h4>
+<p><strong><em>建议：写一个简单的MapReduce程序，使用Debug进行跟着源码一步一步的查看</em></strong></p>
+<p><strong>入口点</strong>：<code>boolean flag = job.waitForCompletion(true);</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">boolean</span> waitForCompletion &#123;</span><br><span class="line">主要调用了submit方法</span><br><span class="line">submit()&#123;</span><br><span class="line">	setUseNewAPI() <span class="comment">// 设置新老API的兼容</span></span><br><span class="line">	connect();	<span class="comment">// new Cluster() 设置集群连接信息</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> JobStatus <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	  <span class="keyword">return</span> submitter.submitJobInternal(Job.<span class="keyword">this</span>, cluster)&#123;</span><br><span class="line">			checkSpecs(job) <span class="comment">// 检查输出路径是否存在</span></span><br><span class="line">			addMRFrameworkToDistributedCache(conf)  <span class="comment">// 添加到分布式的缓存当中</span></span><br><span class="line">			<span class="keyword">int</span> maps = writeSplits(job, submitJobDir)&#123;</span><br><span class="line">			 writeNewSplits(job, jobSubmitDir)&#123;</span><br><span class="line">			 List&lt;InputSplit&gt; splits = input.getSplits(job)&#123;</span><br><span class="line">			 </span><br><span class="line">			 &#125;</span><br><span class="line">		  &#125;	</span><br><span class="line">		&#125;</span><br><span class="line">	  &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>获得切片的方法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> List&lt;InputSplit&gt; <span class="title">getSplits</span><span class="params">(JobContext job)</span> <span class="keyword">throws</span> IOException </span>&#123;<span class="comment">// 生成文件并且将他们进行切片</span></span><br><span class="line">    <span class="keyword">long</span> minSize = Math.max(getFormatMinSplitSize(), getMinSplitSize(job)); <span class="comment">// 求minSize</span></span><br><span class="line">    <span class="keyword">long</span> maxSize = getMaxSplitSize(job); <span class="comment">// 求MaxSize</span></span><br><span class="line">    <span class="keyword">long</span> blockSize = file.getBlockSize();</span><br><span class="line">    <span class="keyword">long</span> splitSize = computeSplitSize(blockSize, minSize, maxSize); <span class="comment">// 计算splits的大小</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">long</span> bytesRemaining = length;</span><br><span class="line">	<span class="keyword">while</span> (((<span class="keyword">double</span>) bytesRemaining)/splitSize &gt; SPLIT_SLOP) &#123;<span class="comment">// 设置百分之10的东西 SPLIT_SLOP = 1.1;  </span></span><br><span class="line">	<span class="keyword">int</span> blkIndex = getBlockIndex(blkLocations, length-bytesRemaining);</span><br><span class="line">	splits.add(makeSplit(path, length-bytesRemaining, splitSize,</span><br><span class="line">		blkLocations[blkIndex].getHosts(),</span><br><span class="line">		blkLocations[blkIndex].getCachedHosts()));</span><br><span class="line">		bytesRemaining -= splitSize;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="keyword">return</span> splits;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">long</span> <span class="title">getFormatMinSplitSize</span><span class="params">()</span> </span>&#123;<span class="comment">// 固定值为 1</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> SPLIT_SLOP = <span class="number">1.1</span>;   <span class="comment">// 10% slop</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">getMinSplitSize</span><span class="params">(JobContext job)</span> </span>&#123;<span class="comment">// 默认情况下是 1</span></span><br><span class="line">	<span class="keyword">return</span> job.getConfiguration().getLong(SPLIT_MINSIZE, <span class="number">1L</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">getMaxSplitSize</span><span class="params">(JobContext context)</span> </span>&#123; <span class="comment">// 默认情况是Long类型的最大值</span></span><br><span class="line">    <span class="keyword">return</span> context.getConfiguration().getLong(SPLIT_MAXSIZE, </span><br><span class="line">                                              Long.MAX_VALUE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> blockSize = file.getBlockSize()&#123; <span class="comment">//这里返回的是128M</span></span><br><span class="line">    <span class="keyword">return</span> blocksize;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>// 最终计算分片的大小值</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> splitSize = computeSplitSize(blockSize, minSize, maxSize)&#123;</span><br><span class="line">			<span class="number">1</span>	Long.maxValue	<span class="number">128</span>M		</span><br><span class="line">    <span class="keyword">return</span> Math.max(minSize, Math.min(maxSize, blockSize));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：如果想要控制切片的大小，可以控制上面的 maxSize 的大小，当maxSize小于blockSize时候控制maxSize的大小可以<br>
+改变切片的大小，当maxSize的大小大于blockSize的大小的时候，切片的大小就是blockSize 的大小</p>
+<p>切片是在代码级别对文件进行的切片，并不是完全按照blocksize大小<br>
+blocksize是指概念上对HDFS上的文件进行切分</p>
 
                 
 
@@ -326,12 +237,12 @@ B果         25</p>
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/article/Rundeck 部署使用/" data-toggle="tooltip" data-placement="top" title="Jackson@Rundeck部署">&larr; Previous Post</a>
+                            <a href="/article/Mysql/MySQL分组求TopN/" data-toggle="tooltip" data-placement="top" title="MySQL 分组求 Top N 问题">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/article/SuperSet部署使用/" data-toggle="tooltip" data-placement="top" title="Superset 部署使用">Next Post &rarr;</a>
+                            <a href="/article/Hadoop/Yarn资源调优、调度器/" data-toggle="tooltip" data-placement="top" title="Yarn 资源调优、Yarn 三种调度器">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -381,7 +292,7 @@ B果         25</p>
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#数据仓库"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x6570;&#x636E;&#x4ED3;&#x5E93;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#数据集市"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x6570;&#x636E;&#x96C6;&#x5E02;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#数仓分层"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x6570;&#x4ED3;&#x5206;&#x5C42;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#命名规范"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x547D;&#x540D;&#x89C4;&#x8303;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#为什么要分层"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x5206;&#x5C42;&#xFF1F;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#主表明细表设计"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">&#x4E3B;&#x8868;&#x660E;&#x7EC6;&#x8868;&#x8BBE;&#x8BA1;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#业务表建表规范"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">&#x4E1A;&#x52A1;&#x8868;&#x5EFA;&#x8868;&#x89C4;&#x8303;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#数据建模"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">&#x6570;&#x636E;&#x5EFA;&#x6A21;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#维度建模"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">&#x7EF4;&#x5EA6;&#x5EFA;&#x6A21;</span></a></li></ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#mapreduce源码分析"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">MapReduce&#x6E90;&#x7801;&#x5206;&#x6790;&#xFF1A;</span></a></li></ol>
         
         </div>
       </aside>
@@ -401,7 +312,7 @@ B果         25</p>
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#DataWareHouse" title="DataWareHouse">DataWareHouse</a>
+                          <a class="tag" href="/tags/#源码分析" title="源码分析">源码分析</a>
                         
                     </div>
                 </section>

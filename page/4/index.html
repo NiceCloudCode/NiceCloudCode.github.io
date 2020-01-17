@@ -134,6 +134,13 @@
 
                         
                         <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
                             <a href="/about/">About</a>
                         </li>
                         
@@ -142,13 +149,6 @@
                         
                         <li>
                             <a href="/archive/">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -208,6 +208,83 @@
             
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/article/Error/Linux  oom-kill 和 clean机制/">
+        <h2 class="post-title">
+                                 
+            Linux 的Oom-Kill 机制和 Clean机制
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Linux的oom-kill和clean机制
+
+oom-killer机制: 大数据相关进程是非常消耗内存的，在Linux内核检测到系统内存不足后，会触发oom-kill，挑选占用最大内存的进程杀掉。
+如果我们的进程突然断了，首先查看日志找EROOR，有ERROR具体分析产生的原因，没有ERROR但是INFO信息中断，很可能就是触发了oom-killer机制。
+解决方案：
+使用free -h命......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-10
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Linux" title="Linux">Linux</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Linux/Linux05crontab、软连接、后台执行/">
+        <h2 class="post-title">
+                                 
+            Linux crontab、软连接、后台执行
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.调度工具的选择
+
+airflow
+azkaban		用的比较多
+rundeck		用的比较多
+crontab 	定时脚本（Linux自带）
+
+sh脚本文件：
+开头：#!/bin/bash ===&gt;解释器
+命名：xxx.sh
+没有开头和后缀命名的时候，使用sh命令也可以执行
+脚本需要执行的权限
+2.crontab的使用
+查看命令帮助
+1234567891011121314151617......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-07-15
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Linux" title="Linux">Linux</a>
+            
+        </div>
+    
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -391,11 +468,11 @@
             
         
             
-            <a href="/tags/#Hadoop" title="Hadoop" rel="9">Hadoop</a>
+            <a href="/tags/#DataWareHouse" title="DataWareHouse" rel="1">DataWareHouse</a>
             
         
             
-            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
+            <a href="/tags/#Hadoop" title="Hadoop" rel="10">Hadoop</a>
             
         
             
@@ -403,11 +480,15 @@
             
         
             
-            <a href="/tags/#DataWareHouse" title="DataWareHouse" rel="1">DataWareHouse</a>
+            <a href="/tags/#源码分析" title="源码分析" rel="1">源码分析</a>
             
         
             
-            <a href="/tags/#BigData" title="BigData" rel="3">BigData</a>
+            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
+            
+        
+            
+            <a href="/tags/#BigData" title="BigData" rel="4">BigData</a>
             
         
             
@@ -518,7 +599,7 @@
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>

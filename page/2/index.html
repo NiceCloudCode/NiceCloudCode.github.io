@@ -134,6 +134,13 @@
 
                         
                         <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
                             <a href="/about/">About</a>
                         </li>
                         
@@ -142,13 +149,6 @@
                         
                         <li>
                             <a href="/archive/">Archives</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -372,6 +372,38 @@ The Apache Hive ™ data warehouse software facilitates reading, writing, and ma
 
 <div class="post-preview">
 
+    <a href="/article/Hadoop/MapReduce 切片和流程源码分析/">
+        <h2 class="post-title">
+                                 
+            MapReduce执行流程、切片源码分析
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            MapReduce源码分析：
+建议：写一个简单的MapReduce程序，使用Debug进行跟着源码一步一步的查看
+入口点：boolean flag = job.waitForCompletion(true);
+12345678910111213141516171819public boolean waitForCompletion &#123;主要调用了submit方法submit()&#1......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-27
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#源码分析" title="源码分析">源码分析</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/article/Hadoop/Yarn资源调优、调度器/">
         <h2 class="post-title">
                                  
@@ -449,6 +481,40 @@ MR on Yarn 的流程
 
 <div class="post-preview">
 
+    <a href="/article/Hadoop/HDFS API 操作/">
+        <h2 class="post-title">
+                                 
+            HDFS API 操作
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            HDFS  Java API操作
+首先是完成FileSystem的初始化操作：
+完成连接集群的配置信息
+123456789101112131415161718192021222324252627public class HDFSAPITest &#123;    FileSystem fileSystem;    /**     *  在Before中完成FileSystem的初始化操作  ......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-22
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+              <a href="/tags/#BigData" title="BigData">BigData</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/article/Hadoop/hadoop04HDFS副本、读写/">
         <h2 class="post-title">
                                  
@@ -474,83 +540,6 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
         <p class="post-meta" style="margin: 10px 0;">
             Posted by Jackson on
             2017-08-20
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-              <a href="/tags/#BigData" title="BigData">BigData</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Error/Link/">
-        <h2 class="post-title">
-                                 
-            相关连接地址
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            1.block自动修复:
-2.Linux-Memory:
-3.mysql安装：
-4.window部署dbeaver海狸
-5.cloudera组件下载地址
-6.hadoop版本变动地址：
-7.Apache Hadoop文档
-8.Cloudera Hadoop文档
-9.ssh信任关系
-10.ssh信任关系多台：
-11.Linux两个机制 oom  clean
-...
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-20
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-              <a href="/tags/#BigData" title="BigData">BigData</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Hadoop/hadoop03架构、小文件、Block块/">
-        <h2 class="post-title">
-                                 
-            Hadoop 架构、小文件、Block块
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            block块、 副本数 、小文件、hdfs架构、NN、SNN
-1.block块
-在hdfs-site.xml查看查看：https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml
-dfs.blocksize 134217728   128M   block块大小默认128M
-df......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-18
         </p>
         <div class="tags">
             
@@ -617,11 +606,11 @@ df......
             
         
             
-            <a href="/tags/#Hadoop" title="Hadoop" rel="9">Hadoop</a>
+            <a href="/tags/#DataWareHouse" title="DataWareHouse" rel="1">DataWareHouse</a>
             
         
             
-            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
+            <a href="/tags/#Hadoop" title="Hadoop" rel="10">Hadoop</a>
             
         
             
@@ -629,11 +618,15 @@ df......
             
         
             
-            <a href="/tags/#DataWareHouse" title="DataWareHouse" rel="1">DataWareHouse</a>
+            <a href="/tags/#源码分析" title="源码分析" rel="1">源码分析</a>
             
         
             
-            <a href="/tags/#BigData" title="BigData" rel="3">BigData</a>
+            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
+            
+        
+            
+            <a href="/tags/#BigData" title="BigData" rel="4">BigData</a>
             
         
             
@@ -744,7 +737,7 @@ df......
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>
