@@ -7,6 +7,54 @@
     </url>
 
     <url>
+        <loc>http://www.ruozedata.com/article/ipParse/IP%E5%9C%B0%E5%9D%80%E8%A7%A3%E6%9E%90/</loc>
+        <lastmod>2020-02-11T11:40:52.890Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Hadoop/hadoop01Hadoop%20%E5%AE%89%E8%A3%85%E5%92%8C%E9%83%A8%E7%BD%B2/</loc>
+        <lastmod>2020-02-05T08:06:36.397Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Shell/Shell%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
+        <lastmod>2020-02-05T03:20:16.706Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Spark/Spark%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E6%BA%90/</loc>
+        <lastmod>2020-02-02T10:37:43.026Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/CDH/CDH5.16.1%E7%A6%BB%E7%BA%BF%E9%83%A8%E7%BD%B2(Parcel%E6%96%B9%E5%BC%8F)/</loc>
+        <lastmod>2020-01-30T11:29:10.879Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Hive/Hive%20%E8%A1%8C%E5%88%97%E8%BD%AC%E6%8D%A2%E3%80%81%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E7%9B%AE%E5%BD%95%E3%80%81HiveWC/</loc>
+        <lastmod>2020-01-27T05:34:21.594Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://www.ruozedata.com/article/Hadoop/MapReduce%20%E5%88%87%E7%89%87%E5%92%8C%E6%B5%81%E7%A8%8B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</loc>
         <lastmod>2020-01-16T14:12:24.380Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -225,14 +273,6 @@
     <url>
         <loc>http://www.ruozedata.com/article/Error/Link/</loc>
         <lastmod>2019-12-07T06:50:22.443Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Hadoop/hadoop01Hadoop%20%E5%AE%89%E8%A3%85%E5%92%8C%E9%83%A8%E7%BD%B2/</loc>
-        <lastmod>2019-12-04T11:43:32.554Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

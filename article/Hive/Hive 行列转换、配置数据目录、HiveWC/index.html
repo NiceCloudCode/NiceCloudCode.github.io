@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Hive 行列转换、HiveWC、配置目录 - BigData@Jackson | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/Hive/Hive 行列转换、配置数据目录、HiveWC/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Hive" title="Hive">Hive</a>
+                            
+                        </div>
+                        <h1>Hive 行列转换、HiveWC、配置目录</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Jackson on
+                            2017-09-08
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jackson | @Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <h4 id="hive列转行">Hive列转行</h4>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> company;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> company(</span><br><span class="line"><span class="keyword">name</span> <span class="keyword">string</span>,</span><br><span class="line">deptno <span class="keyword">string</span>,</span><br><span class="line">grade <span class="keyword">string</span></span><br><span class="line">) <span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">','</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/home/hadoop/data/hive/rowtocol.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> company;</span><br></pre></td></tr></table></figure>
+<p><strong>列转行表数据</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">company.name	company.deptno	company.grade</span><br><span class="line">tome			deptno01			A</span><br><span class="line">jack			deptno01			A</span><br><span class="line">apple			deptno02			A</span><br><span class="line">banan			deptno02			A</span><br><span class="line">pair			deptno03			C</span><br><span class="line">double			deptno04			S</span><br><span class="line">Time taken: 0.547 seconds, Fetched: 6 row(s)</span><br></pre></td></tr></table></figure>
+<p><strong>列转行SQL语句</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> t.dept_grade,<span class="keyword">concat_ws</span>(<span class="string">"|"</span>,collect_set(t.name)) </span><br><span class="line"><span class="keyword">from</span> (</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>, <span class="keyword">concat</span>(deptno,<span class="string">","</span>,grade) <span class="keyword">as</span> dept_grade </span><br><span class="line"><span class="keyword">from</span> company)t </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> t.dept_grade</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">t.dept_grade	_c1</span><br><span class="line">deptno01,A		tome|jack</span><br><span class="line">deptno02,A		apple|banan</span><br><span class="line">deptno03,C		pair</span><br><span class="line">deptno04,S		double</span><br><span class="line">Time taken: 36.858 seconds, Fetched: 4 row(s)</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="hive行转列">Hive行转列</h4>
+<p><strong>数据文件</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1,tom,HuaXue:Physical:Math:Chinese</span><br><span class="line">2,jack,HuaXue:Animal:Computer:Java</span><br><span class="line">3,john,ZheXue:ZhengZhi:SiXiu:history</span><br><span class="line">4,alice,C++:Linux:Hadoop:Flink</span><br></pre></td></tr></table></figure>
+<p><strong>创建表</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> score(</span><br><span class="line"><span class="keyword">id</span> <span class="built_in">int</span>,</span><br><span class="line"><span class="keyword">name</span> <span class="keyword">string</span>,</span><br><span class="line">subject <span class="built_in">array</span>&lt;<span class="keyword">string</span>&gt;</span><br><span class="line">) <span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">','</span> </span><br><span class="line">COLLECTION ITEMS <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">':'</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/home/hadoop/data/hive/coltorow.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span>  score;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">score.id	score.name	score.subject</span><br><span class="line">1			tom			["HuaXue","Physical","Math","Chinese"]</span><br><span class="line">2			jack		["HuaXue","Animal","Computer","Java"]</span><br><span class="line">3			john		["ZheXue","ZhengZhi","SiXiu","history"]</span><br><span class="line">4			alice		["C++","Linux","Hadoop","Flink"]</span><br></pre></td></tr></table></figure>
+<p><strong>SQL语句</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span>,sub <span class="keyword">from</span> </span><br><span class="line">score lateral <span class="keyword">view</span> explode(subject) tmp <span class="keyword">as</span> sub;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">hive (company)&gt; select id,name,sub from </span><br><span class="line">              &gt; score lateral view explode(subject) tmp as sub;</span><br><span class="line">OK</span><br><span class="line">id	name	sub</span><br><span class="line">1	tom	    HuaXue</span><br><span class="line">1	tom	    Physical</span><br><span class="line">1	tom	    Math</span><br><span class="line">1	tom	    Chinese</span><br><span class="line">2	jack	HuaXue</span><br><span class="line">2	jack	Animal</span><br><span class="line">2	jack	Computer</span><br><span class="line">2	jack	Java</span><br><span class="line">3	john	ZheXue</span><br><span class="line">3	john	ZhengZhi</span><br><span class="line">3	john	SiXiu</span><br><span class="line">3	john	history</span><br><span class="line">4	alice	C++</span><br><span class="line">4	alice	Linux</span><br><span class="line">4	alice	Hadoop</span><br><span class="line">4	alice	Flink</span><br><span class="line">Time taken: 0.163 seconds, Fetched: 16 row(s)</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="hive的wordcount">Hive的WordCount</h4>
+<p><strong>创建表</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> wc(</span><br><span class="line">word <span class="keyword">string</span></span><br><span class="line">)<span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\r\n'</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>加载数据</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">'/home/hadoop/data/hive/wc.txt'</span> <span class="keyword">into</span> <span class="keyword">table</span> wc;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">split</span>(word,<span class="string">','</span>) <span class="keyword">from</span> wc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> explode(<span class="keyword">split</span>(word,<span class="string">','</span>)) word <span class="keyword">from</span> wc</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> word ,<span class="keyword">count</span>(<span class="number">1</span>) coun</span><br><span class="line"><span class="keyword">from</span> (</span><br><span class="line">		<span class="keyword">select</span> explode(<span class="keyword">split</span>(word,<span class="string">','</span>)) word </span><br><span class="line">		<span class="keyword">from</span> wc)t </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> word ;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">word	coun</span><br><span class="line">flink	1</span><br><span class="line">hadoop	3</span><br><span class="line">hive	3</span><br><span class="line">spark	2</span><br><span class="line">Time taken: 84.445 seconds, Fetched: 4 row(s)</span><br></pre></td></tr></table></figure>
+<p><strong>查看Hive的元数据信息</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from dbs \G;</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">*************************** 1. row ***************************</span><br><span class="line">          DB_ID: 1</span><br><span class="line">           DESC: Default Hive database</span><br><span class="line">DB_LOCATION_URI: hdfs://bigdata01:9000/user/hive/warehouse</span><br><span class="line">           NAME: default</span><br><span class="line">     OWNER_NAME: public</span><br><span class="line">     OWNER_TYPE: ROLE</span><br><span class="line">*************************** 2. row ***************************</span><br><span class="line">          DB_ID: 2</span><br><span class="line">           DESC: this is jackson database</span><br><span class="line">DB_LOCATION_URI: hdfs://bigdata01:9000/bigdata_hive/hive_test</span><br><span class="line">           NAME: bigdata_hive</span><br><span class="line">     OWNER_NAME: hadoop</span><br><span class="line">     OWNER_TYPE: USER</span><br><span class="line">*************************** 3. row ***************************</span><br><span class="line">          DB_ID: 7</span><br><span class="line">           DESC: NULL</span><br><span class="line">DB_LOCATION_URI: hdfs://bigdata01:9000/user/hive/warehouse/ruozedata_erp.db</span><br><span class="line">           NAME: ruozedata_erp</span><br><span class="line">     OWNER_NAME: hadoop</span><br><span class="line">     OWNER_TYPE: USER</span><br><span class="line">3 rows in <span class="keyword">set</span> (<span class="number">0.06</span> sec)</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="hive的metatool">Hive的Metatool</h4>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 hive]$ bin/metatool <span class="comment">--help</span></span><br><span class="line">usage: metatool</span><br><span class="line"> -dryRun                               Perform a dry run of updateLocation</span><br><span class="line">                                       changes.When run with the dryRun</span><br><span class="line">                                       option updateLocation changes are</span><br><span class="line">                                       displayed but not persisted. dryRun</span><br><span class="line">                                       is valid only with the</span><br><span class="line">                                       updateLocation option.</span><br><span class="line"> -executeJDOQL &lt;query-string&gt;          execute the given JDOQL query</span><br><span class="line"> -<span class="keyword">help</span>                                 print this message</span><br><span class="line"> -listFSRoot                           print the <span class="keyword">current</span> FS root locations</span><br><span class="line"> -serdePropKey &lt;serde-prop-<span class="keyword">key</span>&gt;        Specify the <span class="keyword">key</span> <span class="keyword">for</span> serde property</span><br><span class="line">                                       <span class="keyword">to</span> be updated. serdePropKey <span class="keyword">option</span></span><br><span class="line">                                       <span class="keyword">is</span> valid <span class="keyword">only</span> <span class="keyword">with</span> updateLocation</span><br><span class="line">                                       option.</span><br><span class="line"> -tablePropKey &lt;<span class="keyword">table</span>-prop-<span class="keyword">key</span>&gt;        Specify the <span class="keyword">key</span> <span class="keyword">for</span> <span class="keyword">table</span> property</span><br><span class="line">                                       <span class="keyword">to</span> be updated. tablePropKey <span class="keyword">option</span></span><br><span class="line">                                       <span class="keyword">is</span> valid <span class="keyword">only</span> <span class="keyword">with</span> updateLocation</span><br><span class="line">                                       option.</span><br><span class="line"> -updateLocation &lt;<span class="keyword">new</span>-loc&gt; &lt;<span class="keyword">old</span>-loc&gt;   <span class="keyword">Update</span> FS root location <span class="keyword">in</span> the</span><br><span class="line">                                       metastore <span class="keyword">to</span> <span class="keyword">new</span> location.Both</span><br><span class="line">                                       <span class="keyword">new</span>-loc <span class="keyword">and</span> <span class="keyword">old</span>-loc should be valid</span><br><span class="line">                                       URIs <span class="keyword">with</span> valid host <span class="keyword">names</span> <span class="keyword">and</span></span><br><span class="line">                                       schemes.When run <span class="keyword">with</span> the dryRun</span><br><span class="line">                                       <span class="keyword">option</span> changes <span class="keyword">are</span> displayed but</span><br><span class="line">                                       <span class="keyword">are</span> <span class="keyword">not</span> persisted. <span class="keyword">When</span> run <span class="keyword">with</span></span><br><span class="line">                                       the serdepropKey/tablePropKey</span><br><span class="line">                                       <span class="keyword">option</span> updateLocation looks <span class="keyword">for</span> the</span><br><span class="line">                                       serde-prop-<span class="keyword">key</span>/<span class="keyword">table</span>-prop-<span class="keyword">key</span> that</span><br><span class="line">                                       <span class="keyword">is</span> specified <span class="keyword">and</span> updates its <span class="keyword">value</span></span><br><span class="line">                                       <span class="keyword">if</span> found.</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@bigdata01 hive]$ metatool -listFSRoot</span><br><span class="line">20/01/27 11:05:52 INFO metastore.ObjectStore: Initialized ObjectStore</span><br><span class="line">Listing FS Roots..</span><br><span class="line">hdfs://bigdata01:9000/user/hive/warehouse Hive在HDFS上面默认的目录</span><br><span class="line">hdfs://bigdata01:9000/user/hive/warehouse/company.db		其他的Hive数据库的目录</span><br><span class="line">hdfs://bigdata01:9000/user/hive/warehouse/ruozedata_erp.db  其他的Hive数据库的目录</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Hive中多文件夹递归共计wordcount，文件存储在Hadoop HDFS上面</span><br><span class="line">准备数据文件：</span><br><span class="line">[hadoop@bigdata01 hive]$ hadoop fs -ls /hive/mutli_dir</span><br><span class="line">20/01/27 11:32:26 WARN util.NativeCodeLoader: Unable to <span class="keyword">load</span> <span class="keyword">native</span>-hadoop <span class="keyword">library</span> <span class="keyword">for</span> your platform... <span class="keyword">using</span> builtin-<span class="keyword">java</span> classes <span class="keyword">where</span> applicable</span><br><span class="line"><span class="keyword">Found</span> <span class="number">2</span> items</span><br><span class="line">drwxr-xr-x   - hadoop supergroup          <span class="number">0</span> <span class="number">2020</span><span class="number">-01</span><span class="number">-27</span> <span class="number">11</span>:<span class="number">31</span> /hive/mutli_dir/dir_2</span><br><span class="line">-rw-r<span class="comment">--r--   1 hadoop supergroup         42 2020-01-27 11:30 /hive/mutli_dir/word.txt</span></span><br><span class="line"></span><br><span class="line">[hadoop@bigdata01 hive]$ hadoop fs -ls /hive/mutli_dir/dir_2</span><br><span class="line"><span class="number">20</span>/<span class="number">01</span>/<span class="number">27</span> <span class="number">11</span>:<span class="number">32</span>:<span class="number">55</span> WARN util.NativeCodeLoader: Unable <span class="keyword">to</span> <span class="keyword">load</span> <span class="keyword">native</span>-hadoop <span class="keyword">library</span> <span class="keyword">for</span> your platform... <span class="keyword">using</span> builtin-<span class="keyword">java</span> classes <span class="keyword">where</span> applicable</span><br><span class="line"><span class="keyword">Found</span> <span class="number">1</span> items</span><br><span class="line">-rw-r<span class="comment">--r--   1 hadoop supergroup         42 2020-01-27 11:31 /hive/mutli_dir/dir_2/word.txt</span></span><br><span class="line"></span><br><span class="line">[hadoop@bigdata01 hive]$ hadoop fs -cat /hive/mutli_dir/dir_2/word.txt</span><br><span class="line"><span class="number">20</span>/<span class="number">01</span>/<span class="number">27</span> <span class="number">11</span>:<span class="number">33</span>:<span class="number">33</span> WARN util.NativeCodeLoader: Unable <span class="keyword">to</span> <span class="keyword">load</span> <span class="keyword">native</span>-hadoop <span class="keyword">library</span> <span class="keyword">for</span> your platform... <span class="keyword">using</span> builtin-<span class="keyword">java</span> classes <span class="keyword">where</span> applicable</span><br><span class="line">hadoop,flume</span><br><span class="line">hive,hive,flink</span><br><span class="line">spark,hbase,</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="hive配置多目录输入">Hive配置多目录输入</h4>
+<p><strong>wordcount程序，输入为多目录时候的设置</strong></p>
+<p>hadoop 自带的wordcount程序</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">hadoop jar /home/hadoop/app/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0-cdh5.16.2.jar wordcount /hive/mutli_dir   /hive/out1</span><br><span class="line"></span><br><span class="line">报错：</span><br><span class="line">Caused by: org.apache.hadoop.ipc.RemoteException(java.io.FileNotFoundException): Path is not a file: /hive/mutli_dir/dir_2</span><br><span class="line">	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:70)</span><br><span class="line">	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:56)</span><br><span class="line">	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsInt(FSNamesystem.java:2157)</span><br><span class="line">	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:2127)</span><br><span class="line">	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:2040)</span><br><span class="line">	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getBlockLocations(NameNodeRpcServer.java:583)</span><br><span class="line">	at org.apache.hadoop.hdfs.server.namenode.AuthorizationProviderProxyClientProtocol.getBlockLocations(AuthorizationProviderProxyClientProtocol.java:94)</span><br><span class="line">	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getBlockLocations(ClientNamenodeProtocolServerSideTranslatorPB.java:377)</span><br><span class="line">	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)</span><br><span class="line">	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:617)</span><br><span class="line">	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:1073)</span><br><span class="line">	at org.apache.hadoop.ipc.Server$<span class="keyword">Handler</span>$<span class="number">1.</span>run(Server.java:<span class="number">2278</span>)</span><br><span class="line">	<span class="keyword">at</span> org.apache.hadoop.ipc.Server$<span class="keyword">Handler</span>$<span class="number">1.</span>run(Server.java:<span class="number">2274</span>)</span><br><span class="line">	<span class="keyword">at</span> java.security.AccessController.doPrivileged(<span class="keyword">Native</span> Method)</span><br><span class="line">	<span class="keyword">at</span> javax.security.auth.Subject.doAs(Subject.java:<span class="number">422</span>)</span><br><span class="line">	<span class="keyword">at</span> org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:<span class="number">1924</span>)</span><br><span class="line">	<span class="keyword">at</span> org.apache.hadoop.ipc.Server$Handler.run(Server.java:<span class="number">2272</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>修改mapred-site.xml 配置信息</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;mapreduce.input.fileinputformat.input.dir.recursive&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/Hive/hive四种by/" data-toggle="tooltip" data-placement="top" title="Hive Order By、Sort By、Distribute By、Cluster By">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Mysql/MySQL行列转换/" data-toggle="tooltip" data-placement="top" title="MySQL列转行、行转列">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive列转行"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Hive&#x5217;&#x8F6C;&#x884C;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive行转列"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Hive&#x884C;&#x8F6C;&#x5217;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive的wordcount"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Hive&#x7684;WordCount</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive的metatool"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Hive&#x7684;Metatool</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hive配置多目录输入"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Hive&#x914D;&#x7F6E;&#x591A;&#x76EE;&#x5F55;&#x8F93;&#x5165;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Hive" title="Hive">Hive</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jackson 2020 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

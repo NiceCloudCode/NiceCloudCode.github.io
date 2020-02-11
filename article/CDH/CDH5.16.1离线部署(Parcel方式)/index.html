@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          CDH5.16.1集群部署(Parcel方式) - BigData@Jackson | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/CDH/CDH5.16.1离线部署(Parcel方式)/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#CDH" title="CDH">CDH</a>
+                            
+                        </div>
+                        <h1>CDH5.16.1集群部署(Parcel方式)</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Jackson on
+                            2018-01-29
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jackson | @Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><strong>CDH5.16.1集群离线部署</strong></p>
+<h3 id="离线部署节点规划">离线部署节点规划：</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">节点</th>
+<th style="text-align:left">MySQL组件</th>
+<th style="text-align:left">Parcel文件离线源</th>
+<th style="text-align:left">CM服务进程</th>
+<th style="text-align:left">大数据组件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Hadoop001</td>
+<td style="text-align:left">MySQL</td>
+<td style="text-align:left">Parcel</td>
+<td style="text-align:left">Activity Monitor</td>
+<td style="text-align:left">NN RM DN NM</td>
+</tr>
+<tr>
+<td style="text-align:left">Hadoop002</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">Alert Publisher Event Server</td>
+<td style="text-align:left">DN NM</td>
+</tr>
+<tr>
+<td style="text-align:left">Hadoop003</td>
+<td style="text-align:left"></td>
+<td style="text-align:left"></td>
+<td style="text-align:left">Host Monitor Service Monitor</td>
+<td style="text-align:left">DN NM</td>
+</tr>
+</tbody>
+</table>
+<p><strong>离线部署步骤：</strong></p>
+<ul>
+<li>mysql离线部署</li>
+<li>CM 离线部署</li>
+<li>Parcel离线部署</li>
+</ul>
+<p><strong>下载源</strong>：</p>
+<p><strong>JDK</strong><br>
+<a href="https://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase8-2177648.html" target="_blank" rel="noopener">https://www.oracle.com/technetwork/java/javase/downloads/java-archive-javase8-2177648.html</a><br>
+下载jdk-8u202-linux-x64.tar.gz</p>
+<p><strong>MySQL</strong><br>
+<a href="https://dev.mysql.com/downloads/mysql/5.7.html#downloads" target="_blank" rel="noopener">https://dev.mysql.com/downloads/mysql/5.7.html#downloads</a></p>
+<p><strong>MySQL JDBC Jar</strong><br>
+<a href="http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.47/mysql-connector-java-5.1.47.jar" target="_blank" rel="noopener">http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.47/mysql-connector-java-5.1.47.jar</a><br>
+使用的时候去掉版本号mv mysql-connector-java-5.1.47.jar mysql-connector-java.jar</p>
+<p><strong>CM</strong><br>
+<a href="http://archive.cloudera.com/cm5/cm/5/cloudera-manager-centos7-cm5.16.1_x86_64.tar.gz" target="_blank" rel="noopener">http://archive.cloudera.com/cm5/cm/5/cloudera-manager-centos7-cm5.16.1_x86_64.tar.gz</a></p>
+<p><strong>Parcel</strong><br>
+<a href="http://archive.cloudera.com/cdh5/parcels/5.16.1/CDH-5.16.1-1.cdh5.16.1.p0.3-el7.parcel" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/parcels/5.16.1/CDH-5.16.1-1.cdh5.16.1.p0.3-el7.parcel</a><br>
+<a href="http://archive.cloudera.com/cdh5/parcels/5.16.1/CDH-5.16.1-1.cdh5.16.1.p0.3-el7.parcel.sha1" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/parcels/5.16.1/CDH-5.16.1-1.cdh5.16.1.p0.3-el7.parcel.sha1</a><br>
+<a href="http://archive.cloudera.com/cdh5/parcels/5.16.1/manifest.json" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/parcels/5.16.1/manifest.json</a></p>
+<h3 id="集群机器的准备工作">集群机器的准备工作：</h3>
+<p>1.所有节点配置Linux机器的hosts文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">192.168.52.200 hadoop001</span><br><span class="line">192.168.52.210 hadoop002</span><br><span class="line">192.168.52.230 hadoop003</span><br></pre></td></tr></table></figure>
+<p>2.所有节点禁用防火墙并清空规则</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">查看防火墙状态：firewall-cmd --state</span><br><span class="line">关闭防火墙：systemctl stop firewalld</span><br><span class="line">禁用防火墙：systemctl <span class="built_in">disable</span> firewalld</span><br><span class="line">清空规则：iptables -F</span><br></pre></td></tr></table></figure>
+<p>3.关闭所有节点的selinux</p>
+<p><code>vi /etc/selinux/config</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">将SELINUX=enforcing改为SELINUX=disabled  重启生效</span><br></pre></td></tr></table></figure>
+<p>4.设置所有节点时钟同步</p>
+<p>查看时间及时区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop001 ~]<span class="comment"># timedatectl</span></span><br><span class="line">      Local time: Wed 2018-01-29 17:38:16 CST</span><br><span class="line">  Universal time: Wed 2018-01-29 09:38:16 UTC</span><br><span class="line">        RTC time: Wed 2018-01-29 09:38:17</span><br><span class="line">       Time zone: Asia/Shanghai (CST, +0800)</span><br><span class="line">     NTP enabled: no</span><br><span class="line">NTP synchronized: yes</span><br><span class="line"> RTC <span class="keyword">in</span> <span class="built_in">local</span> TZ: no</span><br><span class="line">      DST active: n/a</span><br></pre></td></tr></table></figure>
+<p>查看timedatectl 使用帮助</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop001 ~]<span class="comment"># timedatectl --help</span></span><br><span class="line">timedatectl [OPTIONS...] COMMAND ...</span><br><span class="line"></span><br><span class="line">Query or change system time and date settings.</span><br><span class="line"></span><br><span class="line">  -h --<span class="built_in">help</span>                Show this <span class="built_in">help</span> message</span><br><span class="line">     --version             Show package version</span><br><span class="line">     --no-pager            Do not pipe output into a pager</span><br><span class="line">     --no-ask-password     Do not prompt <span class="keyword">for</span> password</span><br><span class="line">  -H --host=[USER@]HOST    Operate on remote host</span><br><span class="line">  -M --machine=CONTAINER   Operate on <span class="built_in">local</span> container</span><br><span class="line">     --adjust-system-clock Adjust system clock when changing <span class="built_in">local</span> RTC mode</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  status                   Show current time settings</span><br><span class="line">  <span class="built_in">set</span>-time TIME            Set system time</span><br><span class="line">  <span class="built_in">set</span>-timezone ZONE        Set system time zone</span><br><span class="line">  list-timezones           Show known time zones</span><br><span class="line">  <span class="built_in">set</span>-local-rtc BOOL       Control whether RTC is <span class="keyword">in</span> <span class="built_in">local</span> time</span><br><span class="line">  <span class="built_in">set</span>-ntp BOOL             Control whether NTP is enabled</span><br></pre></td></tr></table></figure>
+<p>配置时钟同步：这里以hadoop001 联网进行时钟同步，其他节点与hadoop001同步<br>
+安装ntp<code>yum install -y ntp</code></p>
+<p><strong>hadoop001 配置</strong>：<br>
+<code>vi /etc/ntp.conf</code> 增加如下内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#time</span></span><br><span class="line">server 0.asia.pool.ntp.org</span><br><span class="line">server 1.asia.pool.ntp.org</span><br><span class="line">server 2.asia.pool.ntp.org</span><br><span class="line">server 3.asia.pool.ntp.org</span><br><span class="line"><span class="comment">#当外部时间不可⽤时，可使⽤本地硬件时间</span></span><br><span class="line">server 127.127.1.0 iburst <span class="built_in">local</span> clock</span><br><span class="line"><span class="comment">#允许哪些⽹段的机器来同步时间</span></span><br><span class="line">restrict 192.168.52.0 mask 255.255.255.0 nomodify notrap</span><br></pre></td></tr></table></figure>
+<p>开启ntp及查看状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop001 ~]<span class="comment">#  systemctl start ntpd</span></span><br><span class="line">[root@hadoop001 ~]<span class="comment"># systemctl status ntpd</span></span><br><span class="line">● ntpd.service - Network Time Service</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/ntpd.service; enabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Wed 2018-01-29 17:11:32 CST; 32min ago</span><br><span class="line">  Process: 9170 ExecStart=/usr/sbin/ntpd -u ntp:ntp <span class="variable">$OPTIONS</span> (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 9200 (ntpd)</span><br><span class="line">   CGroup: /system.slice/ntpd.service</span><br><span class="line">           └─9200 /usr/sbin/ntpd -u ntp:ntp -g</span><br><span class="line"></span><br><span class="line">Jan 29 17:11:34 hadoop001 ntpd_intres[9202]: DNS 2.asia.pool.ntp.org -&gt; 120.25.115.20</span><br><span class="line">Jan 29 17:11:34 hadoop001 ntpd_intres[9202]: DNS 3.asia.pool.ntp.org -&gt; 150.95.187.128</span><br><span class="line">Jan 29 17:11:34 hadoop001 ntpd_intres[9202]: DNS 0.centos.pool.ntp.org -&gt; 84.16.67.12</span><br><span class="line">Jan 29 17:11:34 hadoop001 ntpd_intres[9202]: DNS 1.centos.pool.ntp.org -&gt; 78.46.102.180</span><br><span class="line">Jan 29 17:11:34 hadoop001 ntpd_intres[9202]: DNS 2.centos.pool.ntp.org -&gt; 95.216.200.137</span><br><span class="line">Jan 29 17:11:34 hadoop001 ntpd_intres[9202]: DNS 3.centos.pool.ntp.org -&gt; 193.182.111.14</span><br><span class="line">Jan 29 17:11:34 hadoop001 ntpd[9200]: Listen normally on 4 ens33 192.168.52.200 UDP 123</span><br><span class="line">Jan 29 17:11:34 hadoop001 ntpd[9200]: new interface(s) found: waking up resolver</span><br><span class="line">Jan 29 17:11:36 hadoop001 ntpd[9200]: Listen normally on 5 ens33 fe80::d8d:fbba:1681:5d8 UDP 123</span><br><span class="line">Jan 29 17:11:36 hadoop001 ntpd[9200]: new interface(s) found: waking up resolver</span><br></pre></td></tr></table></figure>
+<p>其他从节点停⽌禁⽤ntpd服务，并向hadoop001 进行时钟同步<br>
+从节点执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@hadoop002 ~]<span class="comment"># systemctl stop ntpd</span></span><br><span class="line">[root@hadoop002 ~]<span class="comment"># systemctl disable ntpd</span></span><br><span class="line">Removed symlink /etc/systemd/system/multi-user.target.wants/ntpd.service.</span><br><span class="line">[root@hadoop002 ~]<span class="comment"># /usr/sbin/ntpdate hadoop001</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">设置定时任务每天隔10分钟同步hadoop001节点时间</span><br><span class="line"></span><br><span class="line">[root@hadoop002 ~]<span class="comment"># crontab -e</span></span><br><span class="line">*/10 * * * * /usr/sbin/ntpdate hadoop001</span><br></pre></td></tr></table></figure>
+<h4 id="安装jdk">安装JDK</h4>
+<p>将jdk统一安装到/usr/java 下面<br>
+<code>mkdir /usr/java</code><br>
+<code>tar -xzvf jdk-8u45-linux-x64.tar.gz -C /usr/java/</code><br>
+#切记必须修正所属⽤户及⽤户组<br>
+<code>chown -R root:root /usr/java/jdk1.8.0_45</code><br>
+配置环境变量：<br>
+<code>vim /etc/profile</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_HOME=/usr/java/jdk1.8.0_45</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br><span class="line"><span class="built_in">which</span> java</span><br></pre></td></tr></table></figure>
+<h4 id="hadoop001节点-安装mysql">hadoop001节点 安装MySQL</h4>
+<p>创建CDH的元数据库和⽤户、amon服务的数据库及⽤户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">create database cmf DEFAULT CHARACTER SET utf8;</span><br><span class="line">create database amon DEFAULT CHARACTER SET utf8;</span><br><span class="line">grant all on cmf.* TO <span class="string">'cmf'</span>@<span class="string">'%'</span> IDENTIFIED BY <span class="string">'bigdata123456!'</span>;</span><br><span class="line">grant all on amon.* TO <span class="string">'amon'</span>@<span class="string">'%'</span> IDENTIFIED BY <span class="string">'bigdata123456!'</span>;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+<h4 id="hadoop001-部署mysql驱动包">hadoop001 部署mysql驱动包</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p /usr/share/java/</span><br><span class="line">cp mysql-connector-java.jar /usr/share/java/</span><br></pre></td></tr></table></figure>
+<h3 id="cdh部署">CDH部署</h3>
+<h4 id="1离线部署cm-server及agent">1.离线部署cm server及agent</h4>
+<p>1.1.所有节点创建⽬录及解压<br>
+<code>mkdir /opt/cloudera-manager</code><br>
+tar -zxvf cloudera-manager-centos7-cm5.16.1_x86_64.tar.gz -C /opt/cloudera-manager/</p>
+<p>1.2.所有节点修改agent的配置，指向server的节点hadoop001<br>
+<code>vi /opt/cloudera-manager/cm5.16.1/etc/cloudera-scm-agent/config.ini</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Hostname of the CM server.</span></span><br><span class="line">server_host=hadoop001</span><br></pre></td></tr></table></figure>
+<p>1.3.主节点修改server的配置:<br>
+<code>vi /opt/cloudera-manager/cm-5.16.1/etc/cloudera-scm-server/db.properties</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">com.cloudera.cmf.db.type=mysql</span><br><span class="line">com.cloudera.cmf.db.host=hadoop001</span><br><span class="line">com.cloudera.cmf.db.name=cmf</span><br><span class="line">com.cloudera.cmf.db.user=cmf</span><br><span class="line">com.cloudera.cmf.db.password=Ruozedata123456!</span><br><span class="line">com.cloudera.cmf.db.setupType=EXTERNAL</span><br></pre></td></tr></table></figure>
+<p>1.4.所有节点创建⽤户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">useradd --system --home=/opt/cloudera-manager/cm-5.16.1/run/cloudera-scm-server/ --no-create-home --shell=/bin/<span class="literal">false</span> --comment <span class="string">"Cloudera SCM User"</span> cloudera-scm</span><br></pre></td></tr></table></figure>
+<p>1.5.⽬录修改⽤户及⽤户组<br>
+<code>chown -R cloudera-scm:cloudera-scm /opt/cloudera-manager</code></p>
+<h4 id="2hadoop001节点部署离线parcel源">2.hadoop001节点部署离线parcel源</h4>
+<p>2.1.部署离线parcel源</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir -p /opt/cloudera/parcel-repo</span><br><span class="line">$ cp CDH-5.16.1-1.cdh5.16.1.p0.3-el7.parcel /opt/cloudera/parcel-repo/</span><br></pre></td></tr></table></figure>
+<p>#切记cp时，重命名去掉1，不然在部署过程CM认为如上⽂件下载未完整，会持续下载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cp CDH-5.16.1-1.cdh5.16.1.p0.3-el7.parcel.sha1 /opt/cloudera/parcel-repo/CDH-5.16.1-1.cdh5.16.1.p0.3-el7.parcel.sha</span><br><span class="line">$ cp manifest.json /opt/cloudera/parcel-repo/</span><br></pre></td></tr></table></figure>
+<p>2.2.⽬录修改⽤户及⽤户组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ chown -R cloudera-scm:cloudera-scm /opt/cloudera/</span><br></pre></td></tr></table></figure>
+<h4 id="3所有节点创建软件安装目录-用户及用户组权限">3.所有节点创建软件安装⽬录、⽤户及⽤户组权限</h4>
+<p><code>mkdir -p /opt/cloudera/parcels chown -R cloudera-scm:cloudera-scm /opt/cloudera/</code></p>
+<h4 id="4hadoop001节点启动server">4.hadoop001节点启动Server</h4>
+<p>4.1.启动server<br>
+<code>/opt/cloudera-manager/cm-5.16.1/etc/init.d/cloudera-scm-server start</code></p>
+<p>4.2.云主机web界⾯，设置该hadoop001节点防⽕墙放开7180端⼝</p>
+<p>4.3.等待1min，打开 <a href="http://hadoop001:7180" target="_blank" rel="noopener">http://hadoop001:7180</a> 账号密码:admin/admin</p>
+<p>4.4.假如打不开，去看server的log，根据错误仔细排查错误</p>
+<p>4.5使用<code>tail -F /opt/cloudera-manager/cm-5.16.1/log/cloudera-scm-server/cloudera-scm-server.log监控日志</code></p>
+<h4 id="5所有节点启动agent">5.所有节点启动Agent</h4>
+<p><code>/opt/cloudera-manager/cm-5.16.1/etc/init.d/cloudera-scm-agent start</code></p>
+<h4 id="6登录web界面安装集群">6.登录web界面安装集群</h4>
+<p>bigdata123456!</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/Spark/Spark自定义外部数据源/" data-toggle="tooltip" data-placement="top" title="Spark 自定义外部数据源">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Spark/Spark action算子操作/" data-toggle="tooltip" data-placement="top" title="Spark RDD 的 Action操作">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#离线部署节点规划"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">&#x79BB;&#x7EBF;&#x90E8;&#x7F72;&#x8282;&#x70B9;&#x89C4;&#x5212;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#集群机器的准备工作"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x96C6;&#x7FA4;&#x673A;&#x5668;&#x7684;&#x51C6;&#x5907;&#x5DE5;&#x4F5C;&#xFF1A;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#安装jdk"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">&#x5B89;&#x88C5;JDK</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hadoop001节点-安装mysql"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">hadoop001&#x8282;&#x70B9; &#x5B89;&#x88C5;MySQL</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#hadoop001-部署mysql驱动包"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">hadoop001 &#x90E8;&#x7F72;mysql&#x9A71;&#x52A8;&#x5305;</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#cdh部署"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">CDH&#x90E8;&#x7F72;</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#1离线部署cm-server及agent"><span class="toc-nav-number">3.1.</span> <span class="toc-nav-text">1.&#x79BB;&#x7EBF;&#x90E8;&#x7F72;cm server&#x53CA;agent</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#2hadoop001节点部署离线parcel源"><span class="toc-nav-number">3.2.</span> <span class="toc-nav-text">2.hadoop001&#x8282;&#x70B9;&#x90E8;&#x7F72;&#x79BB;&#x7EBF;parcel&#x6E90;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#3所有节点创建软件安装目录-用户及用户组权限"><span class="toc-nav-number">3.3.</span> <span class="toc-nav-text">3.&#x6240;&#x6709;&#x8282;&#x70B9;&#x521B;&#x5EFA;&#x8F6F;&#x4EF6;&#x5B89;&#x88C5;&#x2F6C;&#x5F55;&#x3001;&#x2F64;&#x6237;&#x53CA;&#x2F64;&#x6237;&#x7EC4;&#x6743;&#x9650;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#4hadoop001节点启动server"><span class="toc-nav-number">3.4.</span> <span class="toc-nav-text">4.hadoop001&#x8282;&#x70B9;&#x542F;&#x52A8;Server</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#5所有节点启动agent"><span class="toc-nav-number">3.5.</span> <span class="toc-nav-text">5.&#x6240;&#x6709;&#x8282;&#x70B9;&#x542F;&#x52A8;Agent</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#6登录web界面安装集群"><span class="toc-nav-number">3.6.</span> <span class="toc-nav-text">6.&#x767B;&#x5F55;web&#x754C;&#x9762;&#x5B89;&#x88C5;&#x96C6;&#x7FA4;</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#CDH" title="CDH">CDH</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jackson 2020 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

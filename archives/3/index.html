@@ -18,7 +18,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/page/2/">
+    <link rel="canonical" href="http://www.ruozedata.com/archives/3/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -134,13 +134,6 @@
 
                         
                         <li>
-                            <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
                             <a href="/about/">About</a>
                         </li>
                         
@@ -149,6 +142,13 @@
                         
                         <li>
                             <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
                         </li>
                         
                     
@@ -208,199 +208,6 @@
             
                 <!-- Main Content -->
 
-
-<div class="post-preview">
-
-    <a href="/article/Mysql/MySQL行列转换/">
-        <h2 class="post-title">
-                                 
-            MySQL列转行、行转列
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            准备数据
-创建表：
-123456789DROP TABLE IF EXISTS tb_score;CREATE TABLE tb_score(    id INT(11) NOT NULL auto_increment,    userid VARCHAR(20) NOT NULL COMMENT '用户id',    subject VARCHAR(20) COMMENT '科目',   ......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-09-07
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Hive/Hive Join、multi data type/">
-        <h2 class="post-title">
-                                 
-            Hive Join、复杂数据类型操作
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Hive 中的Join操作
-Inner Join
-inner join：只返回连接条件匹配上的数据
-Left Join ：左外连接，以左表的全部数据和右边关联的数据，缺失补NULL
-Right Join：右外连接，以右表的全部数据和左边关联的数据，缺失补NULL
-Full Join：   全外连接，返回全部的关联数据，缺失补NULL
-hiveserver2
-启动HiveServer2 服务端......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-09-06
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hive" title="Hive">Hive</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/">
-        <h2 class="post-title">
-                                 
-            Hive DML、DDL、Load Data
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            DDL
-首先要创建表才能对Hive中的数据进行操作。
-创建一个外部表：
-12345678910CREATE EXTERNAL TABLE emp(empno int,ename string,job string,mgr int,hiredate string,sal double,comm double,deptno int) ROW FORMAT DELIMITED FIELDS TER......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-09-04
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hive" title="Hive">Hive</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Hive/Hive 架构、部署、配置/">
-        <h2 class="post-title">
-                                 
-            Hive架构、部署、配置
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Hive 概述
-Hive 官网 https://hive.apache.org/
-The Apache Hive ™ data warehouse software facilitates reading, writing, and managing large datasets residing in distributed storage using SQL. Structure can......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-09-02
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hive" title="Hive">Hive</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Mysql/MySQL分组求TopN/">
-        <h2 class="post-title">
-                                 
-            MySQL 分组求 Top N 问题
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            数据表及字段信息：
-12345CREATE TABLE `lesson` (  `sno` varchar(100) DEFAULT NULL,  `course` varchar(100) DEFAULT NULL,  `score` int(11) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1
-第一列no为学号，第二列course为......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-28
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Hadoop/MapReduce 切片和流程源码分析/">
-        <h2 class="post-title">
-                                 
-            MapReduce执行流程、切片源码分析
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            MapReduce源码分析：
-建议：写一个简单的MapReduce程序，使用Debug进行跟着源码一步一步的查看
-入口点：boolean flag = job.waitForCompletion(true);
-12345678910111213141516171819public boolean waitForCompletion &#123;主要调用了submit方法submit()&#1......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-27
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#源码分析" title="源码分析">源码分析</a>
-            
-        </div>
-    
-
-</div>
-<hr>
 
 <div class="post-preview">
 
@@ -553,6 +360,211 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
 </div>
 <hr>
 
+<div class="post-preview">
+
+    <a href="/article/Error/Link/">
+        <h2 class="post-title">
+                                 
+            相关连接地址
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.block自动修复:
+2.Linux-Memory:
+3.mysql安装：
+4.window部署dbeaver海狸
+5.cloudera组件下载地址
+6.hadoop版本变动地址：
+7.Apache Hadoop文档
+8.Cloudera Hadoop文档
+9.ssh信任关系
+10.ssh信任关系多台：
+11.Linux两个机制 oom  clean
+...
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-20
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+              <a href="/tags/#BigData" title="BigData">BigData</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Hadoop/hadoop03架构、小文件、Block块/">
+        <h2 class="post-title">
+                                 
+            Hadoop 架构、小文件、Block块
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            block块、 副本数 、小文件、hdfs架构、NN、SNN
+1.block块
+在hdfs-site.xml查看查看：https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml
+dfs.blocksize 134217728   128M   block块大小默认128M
+df......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-18
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+              <a href="/tags/#BigData" title="BigData">BigData</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Hadoop/hadoop03jps正确姿势/">
+        <h2 class="post-title">
+                                 
+            Jps的正确使用姿势
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Hadoop 的 jps 命令
+jps的主要功能是查看java接口的进程号
+jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查看当前所有java进程PID的命令，缺点是只支持当前用户的Java进程，要显示其他用户还是只能够 用ps命令
+
+1.jps命令类似于Linux的ps命令 ，直接运行jps命令，显示的是java程序的......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-17
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Mysql/MYSQL timestamp和datetime区别/">
+        <h2 class="post-title">
+                                 
+            MySQL 中 datetime 和 timestamp 的区别
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            占用空间
+12datetime	8 字节	yyyy-mm-dd hh:mm:sstimestamp	4 字节	yyyy-mm-dd hh:mm:ss
+表示范围
+12datetime	'1000-01-01 00:00:00.000000' to '9999-12-31 23:59:59.999999'timestamp	'1970-01-01 00:00:01.000000' to '203......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-16
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Error/HDFS NameNode启动不了的ERROR/">
+        <h2 class="post-title">
+                                 
+            Hadoop NameNode 启动不了
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            报错信息为：
+1234567891011121314org.apache.hadoop.hdfs.server.namenode.FSNamesystem: Encountered exception loading fsimageorg.apache.hadoop.hdfs.server.common.InconsistentFSStateException: Directory /hom......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-15
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#ERROR" title="ERROR">ERROR</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Hadoop/hadoop02Yarn部署和使用/">
+        <h2 class="post-title">
+                                 
+            Hadoop 之 Yarn部署和使用
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            1.Yarn 伪分布式 单点部署 主从架构
+Yarn的单点部署文档：https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html
+1.1 Configure parameters as follows
+etc/hadoop/mapred-site.xml:
+123456&......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-14
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
 
 
 <!-- Pager -->
@@ -560,12 +572,12 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
 <ul class="pager">
     
         <li class="previous">
-            <a href="/">&larr; Newer Posts</a>
+            <a href="/archives/2/">&larr; Newer Posts</a>
         </li>
     
     
         <li class="next">
-            <a href="/page/3/">Older Posts &rarr;</a>
+            <a href="/archives/4/">Older Posts &rarr;</a>
         </li>
     
 </ul>
@@ -610,19 +622,11 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
             
         
             
-            <a href="/tags/#Hadoop" title="Hadoop" rel="10">Hadoop</a>
-            
-        
-            
             <a href="/tags/#ERROR" title="ERROR" rel="1">ERROR</a>
             
         
             
-            <a href="/tags/#源码分析" title="源码分析" rel="1">源码分析</a>
-            
-        
-            
-            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
+            <a href="/tags/#Hadoop" title="Hadoop" rel="10">Hadoop</a>
             
         
             
@@ -630,7 +634,15 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
             
         
             
-            <a href="/tags/#Hive" title="Hive" rel="4">Hive</a>
+            <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
+            
+        
+            
+            <a href="/tags/#源码分析" title="源码分析" rel="1">源码分析</a>
+            
+        
+            
+            <a href="/tags/#Hive" title="Hive" rel="5">Hive</a>
             
         
             
@@ -638,7 +650,19 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
             
         
             
-            <a href="/tags/#Spark" title="Spark" rel="5">Spark</a>
+            <a href="/tags/#Spark" title="Spark" rel="6">Spark</a>
+            
+        
+            
+            <a href="/tags/#Shell" title="Shell" rel="1">Shell</a>
+            
+        
+            
+            <a href="/tags/#Java" title="Java" rel="1">Java</a>
+            
+        
+            
+            <a href="/tags/#CDH" title="CDH" rel="1">CDH</a>
             
         
             
@@ -698,6 +722,14 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
     <ul>
       
         <li>
+          <a href="/article/Spark/Spark自定义外部数据源/">Spark 自定义外部数据源</a>
+        </li>
+      
+        <li>
+          <a href="/article/CDH/CDH5.16.1离线部署(Parcel方式)/">CDH5.16.1集群部署(Parcel方式)</a>
+        </li>
+      
+        <li>
           <a href="/article/Spark/Spark action算子操作/">Spark RDD 的 Action操作</a>
         </li>
       
@@ -707,14 +739,6 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
       
         <li>
           <a href="/article/Spark/SparkContext、SparkConf/">SparkContext 、SparkConf 、Spark-Shell</a>
-        </li>
-      
-        <li>
-          <a href="/article/Spark/RDD 创建/">Spark RDD 的创建</a>
-        </li>
-      
-        <li>
-          <a href="/article/Spark/Rdd/">Spark RDD概念、特性、源码体现</a>
         </li>
       
     </ul>
@@ -737,7 +761,7 @@ HDFS默认三副本，在hdfs-site.xml  文件中进行配置，参数 dfs.repli
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>
