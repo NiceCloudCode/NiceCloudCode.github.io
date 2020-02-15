@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          flume 基础配置和使用 - BigData@Jackson | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/Flume/flume配置和基础使用/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Flume" title="Flume">Flume</a>
+                            
+                        </div>
+                        <h1>flume 基础配置和使用</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Jackson on
+                            2017-12-14
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jackson | @Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p><strong>flume 基础配置文件example.conf</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># Name the components on this agent 设置Agent各个组件的名称</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source 配置Agent的source</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = localhost</span><br><span class="line">a1.sources.r1.port = <span class="number">44444</span></span><br><span class="line"></span><br><span class="line"># Describe the sink 配置Agent的sink</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory 配置Agent的channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = <span class="number">1000</span></span><br><span class="line">a1.channels.c1.transactionCapacity = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel 配置source连接channel和channel连接sink</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line"></span><br><span class="line">a1 为flume Agent的名称</span><br></pre></td></tr></table></figure>
+<p>安装NetCat yum -y install nc</p>
+<p><strong>命令：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bin/flume-ng agent \</span><br><span class="line">--conf /home/hadoop/app/flume-<span class="number">1.6</span>.0-cdh5.16.2-bin/conf \</span><br><span class="line">--conf-file /home/hadoop/app/flume-<span class="number">1.6</span>.0-cdh5.16.2-bin/script/example.conf \</span><br><span class="line">--name a1 \</span><br><span class="line">-Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<p>查看flume-ng 的命令帮助，主要使用global option 和global options</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[hadoop<span class="meta">@bigdata</span>01 flume-<span class="number">1.6</span>.0-cdh5.16.2-bin]$ bin/flume-ng</span><br><span class="line">Error: Unknown or unspecified command <span class="string">''</span></span><br><span class="line"></span><br><span class="line">Usage: bin/flume-ng &lt;command&gt; [options]...</span><br><span class="line"></span><br><span class="line">commands:</span><br><span class="line">  help                      display <span class="keyword">this</span> help text</span><br><span class="line">  agent                     run a Flume agent</span><br><span class="line">  avro-client               run an avro Flume client</span><br><span class="line">  version                   show Flume version info</span><br><span class="line"></span><br><span class="line">global options:</span><br><span class="line">  --conf,-c &lt;conf&gt;          use configs in &lt;conf&gt; directory</span><br><span class="line">  --classpath,-C &lt;cp&gt;       append to the classpath</span><br><span class="line">  --dryrun,-d               <span class="keyword">do</span> not actually start Flume, just print the command</span><br><span class="line">  --plugins-path &lt;dirs&gt;     colon-separated list of plugins.d directories. See the</span><br><span class="line">                            plugins.d section in the user guide <span class="keyword">for</span> more details.</span><br><span class="line">                            Default: $FLUME_HOME/plugins.d</span><br><span class="line">  -Dproperty=value          sets a Java system property value</span><br><span class="line">  -Xproperty=value          sets a Java -X option</span><br><span class="line"></span><br><span class="line">agent options:</span><br><span class="line">  --name,-n &lt;name&gt;          <span class="function">the name of <span class="keyword">this</span> <span class="title">agent</span> <span class="params">(required)</span></span></span><br><span class="line"><span class="function">  --conf-file,-f &lt;file&gt;     specify a config <span class="title">file</span> <span class="params">(required <span class="keyword">if</span> -z missing)</span></span></span><br><span class="line"><span class="function">  --zkConnString,-z &lt;str&gt;   specify the ZooKeeper connection to <span class="title">use</span> <span class="params">(required <span class="keyword">if</span> -f missing)</span></span></span><br><span class="line"><span class="function">  --zkBasePath,-p &lt;path&gt;    specify the base path in ZooKeeper <span class="keyword">for</span> agent configs</span></span><br><span class="line"><span class="function">  --no-reload-conf          <span class="keyword">do</span> not reload config file <span class="keyword">if</span> changed</span></span><br><span class="line"><span class="function">  --help,-h                 display help text</span></span><br></pre></td></tr></table></figure>
+<p><strong>启动日志分析：</strong></p>
+<ul>
+<li>通过配置文件找到env信息，然后拷贝jar包</li>
+<li>确定Agent 名字为a1</li>
+<li>创建channel， 创建channel的实例memory，创建channel c1</li>
+<li>创建source的实例类型为netcat r1</li>
+<li>创建sink实例类型为logger k1</li>
+<li>使用channel连接r1和k1</li>
+<li>开启channel，休眠0.5秒等待channel开启，成功启动channel c1</li>
+<li>启动Sink， 启动Source，创建serverSocket</li>
+</ul>
+<p>运行flume-ng 之后采用telnet的方式连接44444并且发送hadoop。。。发现控制台即可输出</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">56</span>:<span class="number">31</span>,<span class="number">342</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) </span><br><span class="line">[INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:<span class="number">95</span>)] </span><br><span class="line">Event: &#123; headers:&#123;&#125; body: <span class="number">68</span> <span class="number">61</span> <span class="number">64</span> <span class="number">6F</span> <span class="number">6F</span> <span class="number">70</span> <span class="number">0</span>D                            hadoop. &#125;</span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">56</span>:<span class="number">32</span>,<span class="number">884</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) </span><br><span class="line">[INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:<span class="number">95</span>)] </span><br><span class="line">Event: &#123; headers:&#123;&#125; body: <span class="number">68</span> <span class="number">69</span> <span class="number">76</span> <span class="number">65</span> <span class="number">0</span>D                                  hive. &#125;</span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">56</span>:<span class="number">34</span>,<span class="number">604</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) </span><br><span class="line">[INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:<span class="number">95</span>)] </span><br><span class="line">Event: &#123; headers:&#123;&#125; body: <span class="number">73</span> <span class="number">70</span> <span class="number">61</span> <span class="number">72</span> <span class="number">6</span>B <span class="number">0</span>D                               spark. &#125;</span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">56</span>:<span class="number">36</span>,<span class="number">989</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) </span><br><span class="line">[INFO - org.apache.flume.sink.LoggerSink.process(LoggerSink.java:<span class="number">95</span>)] </span><br><span class="line">Event: &#123; headers:&#123;&#125; body: <span class="number">66</span> <span class="number">6</span>C <span class="number">69</span> <span class="number">6</span>E <span class="number">6</span>B <span class="number">0</span>D                               hadoop. &#125;</span><br></pre></td></tr></table></figure>
+<p>接收到Event，Event由两部分组成，一部分是headers:{}可选的， 另一部分是body，body中存放我们的数据</p>
+<h4 id="netcat-tcp-source">NetCat TCP Source</h4>
+<p>监听一个给定的端口并且将每一行通过channel转换成为一个event，可以使用<code>nc -k -l host port</code> 换句话说NetCat Source打开一个确定的端口并且监听数据。<br>
+基础的NetCat配置如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a1.sources.r1.type = netcat   &lt;===Source 的类型</span><br><span class="line">a1.sources.r1.bind = <span class="number">0.0</span>.0.0  &lt;===Source绑定的ip</span><br><span class="line">a1.sources.r1.port = <span class="number">6666</span>     &lt;===Source绑定的端口号</span><br><span class="line">a1.sources.r1.channels = c1   &lt;===Source绑定的channel</span><br></pre></td></tr></table></figure>
+<h4 id="logger-sink">Logger Sink</h4>
+<p>日志级别的Logs Event，Logger Sink通常是用于测试或者debug调试的目的，必须要设置的参数是有一个即：Type，maxBytesToLog参数可以设置Event中body的最大字节数，默认为16</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">example：a1.sinks.k1.type = logger</span><br></pre></td></tr></table></figure>
+<h4 id="memory-channel">Memory Channel</h4>
+<p>Event被存储在内存的队列中，并且可以配置最大值，对于需要更高吞吐量并且准备在Agent挂掉时会丢失分段数据的流来说，这是理想的。必须参数：Type</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a1.channels.c1.type = memory						&lt;===channel 的类型</span><br><span class="line">a1.channels.c1.capacity = <span class="number">10000</span>						&lt;===channel 中能存储的Event的最大个数</span><br><span class="line">a1.channels.c1.transactionCapacity = <span class="number">10000</span>			&lt;===channel 传递的一个批次的最大Event个数</span><br><span class="line">a1.channels.c1.byteCapacityBufferPercentage = <span class="number">20</span>	&lt;===the percent of buffer between byteCapacity and the estimated total size of all events in the channel, </span><br><span class="line">														to account <span class="keyword">for</span> data in headers.</span><br></pre></td></tr></table></figure>
+<h4 id="采集数据写到hdfs上面">采集数据写到HDFS上面</h4>
+<p>source：exec source<br>
+channel：memory channel<br>
+sink：hdfs sink</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># Name the components on this agent 设置Agent各个组件的名称</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source 配置Agent的source</span><br><span class="line">a1.sources.r1.type = exec</span><br><span class="line">a1.sources.r1.command = tail -F /home/hadoop/data/flumeData/word.log</span><br><span class="line">a1.sources.r1.shell = /bin/bash -c</span><br><span class="line"></span><br><span class="line"># Describe the sink 配置Agent的sink</span><br><span class="line">a1.sinks.k1.type = hdfs</span><br><span class="line">a1.sinks.k1.hdfs.path = hdfs:<span class="comment">//bigdata01:9000/flume/events</span></span><br><span class="line">a1.sinks.k1.hdfs.filePrefix = bigdata-</span><br><span class="line">a1.sinks.k1.hdfs.fileType = DataStream </span><br><span class="line">a1.sinks.k1.hdfs.writeFormat = Text </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory 配置Agent的channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = <span class="number">1000</span></span><br><span class="line">a1.channels.c1.transactionCapacity = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel 配置source连接channel和channel连接sink</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+<p><strong>命令：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bin/flume-ng agent \</span><br><span class="line">--conf /home/hadoop/app/flume-<span class="number">1.6</span>.0-cdh5.16.2-bin/conf \</span><br><span class="line">--conf-file /home/hadoop/app/flume-<span class="number">1.6</span>.0-cdh5.16.2-bin/script/exec-hdfs.conf \</span><br><span class="line">--name a1 \</span><br><span class="line">-Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<p>写入数据到word.log日志分析：</p>
+<ul>
+<li>1.在HDFS创建文件并且命名为.tmp</li>
+<li>2.关闭创建的.tmp文件</li>
+<li>3.重命名文件去掉.tmp 后缀</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">19</span>:<span class="number">29</span>:<span class="number">42</span>,<span class="number">636</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) </span><br><span class="line">[INFO - org.apache.flume.sink.hdfs.BucketWriter.open(BucketWriter.java:<span class="number">246</span>)] </span><br><span class="line">Creating hdfs:<span class="comment">//bigdata01:9000/flume/events/bigdata-.1581679782308.tmp  &lt;=== 在HDFS创建文件并且命名为.tmp</span></span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">19</span>:<span class="number">29</span>:<span class="number">42</span>,<span class="number">787</span> (hdfs-k1-call-runner-<span class="number">0</span>) </span><br><span class="line">[WARN - org.apache.hadoop.util.NativeCodeLoader.&lt;clinit&gt;(NativeCodeLoader.java:<span class="number">62</span>)] </span><br><span class="line">Unable to load <span class="keyword">native</span>-hadoop library <span class="keyword">for</span> your platform... using builtin-java classes</span><br><span class="line"> where applicable</span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">19</span>:<span class="number">29</span>:<span class="number">48</span>,<span class="number">915</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - </span><br><span class="line">org.apache.flume.sink.hdfs.BucketWriter.doClose(BucketWriter.java:<span class="number">438</span>)] Closing </span><br><span class="line">hdfs:<span class="comment">//bigdata01:9000/flume/events/bigdata-.1581679782308.tmp  &lt;=== 关闭创建的.tmp文件</span></span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">19</span>:<span class="number">29</span>:<span class="number">48</span>,<span class="number">957</span> (hdfs-k1-call-runner-<span class="number">3</span>) [INFO - org.apache.flume.sink.hdfs.BucketWriter$<span class="number">7</span>.call(BucketWriter.java:<span class="number">681</span>)] Renaming </span><br><span class="line">hdfs:<span class="comment">//bigdata01:9000/flume/events/bigdata-.1581679782308.tmp to </span></span><br><span class="line">hdfs:<span class="comment">//bigdata01:9000/flume/events/bigdata-.1581679782308  &lt;=== 重命名文件去掉.tmp 后缀</span></span><br></pre></td></tr></table></figure>
+<p><strong>此种方式存在的问题：</strong></p>
+<ul>
+<li>1.tail -F挂掉怎么办？只能够监控文件</li>
+<li>2.缺失了offset的概念</li>
+<li>3.小文件太多</li>
+</ul>
+<p><strong>因此HDFS Sink提供了三个参数来解决小文件的问题</strong></p>
+<ul>
+<li>hdfs.rollInterval	30	多长时间滚动一次文件 0代表不滚动</li>
+<li>hdfs.rollSize	1024	文件到达多大合并 0 不基于此参数滚动</li>
+<li>hdfs.rollCount	10	    写入文件中的event的个数达到多少合并 不基于此参数滚动</li>
+</ul>
+<h4 id="监控目录下面的数据采集到hdfs上面">监控目录下面的数据采集到HDFS上面</h4>
+<h4 id="spooling-directory-source">spooling Directory Source</h4>
+<p>这个Source将监视新文件的指定目录，并在新文件出现时解析它们。事件解析逻辑是可插拔的。<br>
+将给定的文件完全读入通道后，默认情况下通过重命名该文件来表示完成，或者可以删除该文件，或者使用trackerDir跟踪已处理的文件。<br>
+不同于EXEC Source的是，Spooling Directory Source是可靠的，并且不会丢失数据甚至当flume重启或者挂掉的时候都不会丢失数据，保证可靠性的代价是只有不可变，唯一命名的文件可以被放到监控目录下面<br>
+为了避免发生异常，添加具有唯一标识的文件到监控目录下面</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"># Name the components on this agent 设置Agent各个组件的名称</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source 配置Agent的source</span><br><span class="line">a1.sources.r1.type = spooldir</span><br><span class="line">a1.sources.r1.spoolDir =  /home/hadoop/data/flumeData/spool</span><br><span class="line">a1.sources.r1.fileHeader = </span><br><span class="line"></span><br><span class="line"># Describe the sink 配置Agent的sink</span><br><span class="line">a1.sinks.k1.type = hdfs</span><br><span class="line">a1.sinks.k1.hdfs.path = hdfs:<span class="comment">//bigdata01:9000/flume/spool/%Y%m%d%H%M</span></span><br><span class="line">a1.sinks.k1.hdfs.filePrefix = bigdata-</span><br><span class="line">a1.sinks.k1.hdfs.fileType = DataStream </span><br><span class="line">a1.sinks.k1.hdfs.writeFormat = Text </span><br><span class="line">a1.sinks.k1.hdfs.useLocalTimeStamp = <span class="keyword">true</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory 配置Agent的channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = <span class="number">1000</span></span><br><span class="line">a1.channels.c1.transactionCapacity = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel 配置source连接channel和channel连接sink</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+<p><strong>命令：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bin/flume-ng agent \</span><br><span class="line">--conf $FLUME_HOME/conf \</span><br><span class="line">--conf-file $FLUME_HOME/script/flume-spool-hdfs.conf \</span><br><span class="line">--name a1 \</span><br><span class="line">-Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<p><strong>日志分析：</strong></p>
+<ul>
+<li>1.读取文件内容，如果还有滚动到下一个文件</li>
+<li>2.重命名文件加上后缀.COMPLETED</li>
+<li>3.创建HDFS文件xxx.tmp</li>
+<li>4.关闭HDFS文件xxx.tmp</li>
+<li>5.重命名HDFS文件xxx</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">36</span>:<span class="number">04</span>,<span class="number">867</span> (pool-<span class="number">5</span>-thread-<span class="number">1</span>) [INFO - </span><br><span class="line">org.apache.flume.client.avro.ReliableSpoolingFileEventReader.readEvents(ReliableSpoolin</span><br><span class="line">gFileEventReader.java:<span class="number">324</span>)] Last read took us just up to a file boundary. Rolling to</span><br><span class="line"> the next file, <span class="keyword">if</span> there is one.</span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">36</span>:<span class="number">04</span>,<span class="number">868</span> (pool-<span class="number">5</span>-thread-<span class="number">1</span>) [INFO - </span><br><span class="line">org.apache.flume.client.avro.ReliableSpoolingFileEventReader.rollCurrentFile(ReliableSp</span><br><span class="line">oolingFileEventReader.java:<span class="number">433</span>)] Preparing to move file </span><br><span class="line">/home/hadoop/data/flumeData/spool/word.log to </span><br><span class="line">/home/hadoop/data/flumeData/spool/word.log.COMPLETED</span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">36</span>:<span class="number">04</span>,<span class="number">877</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - </span><br><span class="line">org.apache.flume.sink.hdfs.HDFSDataStream.configure(HDFSDataStream.java:<span class="number">57</span>)] Serializer</span><br><span class="line"> = TEXT, UseRawLocalFileSystem = <span class="keyword">false</span></span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">36</span>:<span class="number">05</span>,<span class="number">146</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - </span><br><span class="line">org.apache.flume.sink.hdfs.BucketWriter.open(BucketWriter.java:<span class="number">246</span>)] Creating </span><br><span class="line">hdfs:<span class="comment">//bigdata01:9000/flume/spoool/202002142036/bigdata-.1581683764877.tmp</span></span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">36</span>:<span class="number">05</span>,<span class="number">285</span> (hdfs-k1-call-runner-<span class="number">0</span>) [WARN - org.apache.hadoop.util.NativeCodeLoader.&lt;clinit&gt;(NativeCodeLoader.java:<span class="number">62</span>)] Unable to </span><br><span class="line">load <span class="keyword">native</span>-hadoop library <span class="keyword">for</span> your platform... using builtin-java classes where </span><br><span class="line">applicable</span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">36</span>:<span class="number">06</span>,<span class="number">582</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) [INFO - </span><br><span class="line">org.apache.flume.sink.hdfs.BucketWriter.doClose(BucketWriter.java:<span class="number">438</span>)] Closing </span><br><span class="line">hdfs:<span class="comment">//bigdata01:9000/flume/spoool/202002142036/bigdata-.1581683764877.tmp</span></span><br><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">20</span>:<span class="number">36</span>:<span class="number">06</span>,<span class="number">598</span> (hdfs-k1-call-runner-<span class="number">3</span>) [INFO - </span><br><span class="line">org.apache.flume.sink.hdfs.BucketWriter$<span class="number">7</span>.call(BucketWriter.java:<span class="number">681</span>)] Renaming </span><br><span class="line">hdfs:<span class="comment">//bigdata01:9000/flume/spoool/202002142036/bigdata-.1581683764877.tmp to </span></span><br><span class="line">hdfs:<span class="comment">//bigdata01:9000/flume/spoool/202002142036/bigdata-.1581683764877</span></span><br></pre></td></tr></table></figure>
+<p>Spooling Directory Source只能够支持目录，不支持文件</p>
+<h4 id="taildir-source">Taildir Source</h4>
+<p><strong>TailDir Source 既可以支持文件，也可以支持目录</strong></p>
+<p>监控一个文件一旦这个文件有新的行写入，该source可以以接近实时的方式监控到。<br>
+如果这个文件正在写入数据，Taildir Source等到该文件写入完成然后再次试图读取该文件。<br>
+Taildir Source不会丢失数据，它会周期性的将最后一次读取的偏移量以json的形式写入指定的文件中。<br>
+如果Flume因为某些原因停掉了，它可以从文件中读取之前监控的位置，同样也可以监控多个文件。<br>
+文件将会以他们被写入时候的顺序被消费掉。最开始写入的数据将会最先被消费到。<br>
+该Source不会删除或者修改正在被监控的文件，并且该Source不支持二进制的文件，它能够一行一行的读取text文件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"># Name the components on this agent 设置Agent各个组件的名称</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source 配置Agent的source</span><br><span class="line">a1.sources.r1.type = TAILDIR</span><br><span class="line">a1.sources.r1.writePosInterval = <span class="number">3000</span></span><br><span class="line">a1.sources.r1.positionFile = /home/hadoop/app/flume-<span class="number">1.6</span>.0-cdh5.16.2-bin/log/taildir_position.json</span><br><span class="line">a1.sources.r1.filegroups = f1 f2</span><br><span class="line">a1.sources.r1.filegroups.f1 = /home/hadoop/data/flumeData/test1/example.log</span><br><span class="line">a1.sources.r1.headers.f1.headerKey1 = value1</span><br><span class="line">a1.sources.r1.filegroups.f2 = /home/hadoop/data/flumeData/test2/.*log.*</span><br><span class="line">a1.sources.r1.headers.f2.headerKey1 = value2</span><br><span class="line">a1.sources.r1.headers.f2.headerKey2 = value2-<span class="number">2</span></span><br><span class="line"></span><br><span class="line"># Describe the sink 配置Agent的sink</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory 配置Agent的channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = <span class="number">1000</span></span><br><span class="line">a1.channels.c1.transactionCapacity = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel 配置source连接channel和channel连接sink</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+<p><strong>命令：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bin/flume-ng agent \</span><br><span class="line">--conf $FLUME_HOME/conf \</span><br><span class="line">--conf-file $FLUME_HOME/script/tail-logger.conf \</span><br><span class="line">--name a1 \</span><br><span class="line">-Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<h4 id="报错信息">报错信息</h4>
+<p>我们使用时间戳的时候需要重flume的event中的header里面取数据，但是并没有设置header<br>
+需要设置hdfs sink 中的 参数来进行解决</p>
+<p>报错：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2017</span>-<span class="number">12</span>-<span class="number">14</span> <span class="number">23</span>:<span class="number">14</span>:<span class="number">13</span>,<span class="number">824</span> (SinkRunner-PollingRunner-DefaultSinkProcessor) [ERROR - org.apache.flume.SinkRunner$PollingRunner.run(SinkRunner.java:<span class="number">158</span>)] Unable to deliver event. Exception follows.</span><br><span class="line">org.apache.flume.EventDeliveryException: java.lang.NullPointerException: Expected timestamp in the Flume event headers, but it was <span class="keyword">null</span></span><br><span class="line">        at org.apache.flume.sink.hdfs.HDFSEventSink.process(HDFSEventSink.java:<span class="number">449</span>)</span><br><span class="line">        at org.apache.flume.sink.DefaultSinkProcessor.process(DefaultSinkProcessor.java:<span class="number">67</span>)</span><br><span class="line">        at org.apache.flume.SinkRunner$PollingRunner.run(SinkRunner.java:<span class="number">145</span>)</span><br><span class="line">        at java.lang.Thread.run(Thread.java:<span class="number">745</span>)</span><br><span class="line">Caused by: java.lang.NullPointerException: Expected timestamp in the Flume event headers, but it was <span class="keyword">null</span></span><br><span class="line">        at com.google.common.base.Preconditions.checkNotNull(Preconditions.java:<span class="number">204</span>)</span><br><span class="line">        at org.apache.flume.formatter.output.BucketPath.replaceShorthand(BucketPath.java:<span class="number">251</span>)</span><br><span class="line">        at org.apache.flume.formatter.output.BucketPath.escapeString(BucketPath.java:<span class="number">460</span>)</span><br><span class="line">        at org.apache.flume.sink.hdfs.HDFSEventSink.process(HDFSEventSink.java:<span class="number">366</span>)</span><br><span class="line">        ... <span class="number">3</span> more</span><br></pre></td></tr></table></figure>
+<h4 id="idea-日志采集到flume">IDEA 日志采集到Flume</h4>
+<h4 id="idea中配置log4jproperties往44444端口发送数据">IDEA中配置Log4j.properties往44444端口发送数据</h4>
+<p>log4j.rootCategory=info,console,flume</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 控制台中日志的格式设置</span><br><span class="line">log4j.appender.console=org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.console.target=System.out</span><br><span class="line">log4j.appender.console.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.console.layout.ConversionPattern=%d&#123;HH:mm:ss.SSS&#125; [%t] [%t] [%t] - %m%n</span><br><span class="line"># Flume中日志的格式设置</span><br><span class="line">log4j.appender.flume = org.apache.flume.clients.log4jappender.Log4jAppender</span><br><span class="line">log4j.appender.flume.Hostname = <span class="number">192.168</span>.52.50</span><br><span class="line">log4j.appender.flume.Port = <span class="number">44444</span></span><br><span class="line">log4j.appender.flume.UnsafeMode = <span class="keyword">true</span></span><br><span class="line">log4j.appender.flume.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.flume.layout.ConversionPattern=%m</span><br></pre></td></tr></table></figure>
+<h4 id="pomxml-文件中添加依赖">pom.xml 文件中添加依赖</h4>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--配置flume依赖和log4j依赖--&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.apache.flume.flume-ng-clients&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;flume-ng-log4jappender&lt;/artifactId&gt;</span><br><span class="line">	&lt;version&gt;1.6.0&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="flume的采集文件配置">Flume的采集文件配置</h4>
+<ul>
+<li>Source采用的是avro source 往44444端口发送数据</li>
+<li>Channel采用的是memory channel</li>
+<li>Sink 采用的是logger的方式，向控制台发送数据</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source 配置Agent的source</span><br><span class="line">a1.sources.r1.type = avro</span><br><span class="line">a1.sources.r1.bind = <span class="number">0.0</span>.0.0</span><br><span class="line">a1.sources.r1.port = <span class="number">44444</span></span><br><span class="line"></span><br><span class="line"># Describe the sink 配置Agent的sink</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory 配置Agent的channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = <span class="number">1000</span></span><br><span class="line">a1.channels.c1.transactionCapacity = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel 配置source连接channel和channel连接sink</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/CDH/CDH5.16.1离线部署(Parcel方式)/" data-toggle="tooltip" data-placement="top" title="CDH5.16.1集群部署(Parcel方式)">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Spark/Spark action算子操作/" data-toggle="tooltip" data-placement="top" title="Spark RDD 的 Action操作">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#netcat-tcp-source"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">NetCat TCP Source</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#logger-sink"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Logger Sink</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#memory-channel"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Memory Channel</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#采集数据写到hdfs上面"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x91C7;&#x96C6;&#x6570;&#x636E;&#x5199;&#x5230;HDFS&#x4E0A;&#x9762;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#监控目录下面的数据采集到hdfs上面"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x76D1;&#x63A7;&#x76EE;&#x5F55;&#x4E0B;&#x9762;&#x7684;&#x6570;&#x636E;&#x91C7;&#x96C6;&#x5230;HDFS&#x4E0A;&#x9762;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#spooling-directory-source"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">spooling Directory Source</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#taildir-source"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">Taildir Source</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#报错信息"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">&#x62A5;&#x9519;&#x4FE1;&#x606F;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#idea-日志采集到flume"><span class="toc-nav-number">9.</span> <span class="toc-nav-text">IDEA &#x65E5;&#x5FD7;&#x91C7;&#x96C6;&#x5230;Flume</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#idea中配置log4jproperties往44444端口发送数据"><span class="toc-nav-number">10.</span> <span class="toc-nav-text">IDEA&#x4E2D;&#x914D;&#x7F6E;Log4j.properties&#x5F80;44444&#x7AEF;&#x53E3;&#x53D1;&#x9001;&#x6570;&#x636E;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#pomxml-文件中添加依赖"><span class="toc-nav-number">11.</span> <span class="toc-nav-text">pom.xml &#x6587;&#x4EF6;&#x4E2D;&#x6DFB;&#x52A0;&#x4F9D;&#x8D56;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#flume的采集文件配置"><span class="toc-nav-number">12.</span> <span class="toc-nav-text">Flume&#x7684;&#x91C7;&#x96C6;&#x6587;&#x4EF6;&#x914D;&#x7F6E;</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Flume" title="Flume">Flume</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jackson 2020 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
