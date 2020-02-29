@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          SparkContext 、SparkConf 、Spark-Shell - BigData@Jackson | Blog
+          Scala语言介绍 - BigData@Jackson | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/article/Spark/SparkContext、SparkConf/">
+    <link rel="canonical" href="http://www.ruozedata.com/article/Scala/scala学习之chapter01/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -88,14 +88,14 @@
                     <div class="post-heading">
                         <div class="tags">
                             
-                              <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
+                              <a class="tag" href="/tags/#Scala" title="Scala">Scala</a>
                             
                         </div>
-                        <h1>SparkContext 、SparkConf 、Spark-Shell</h1>
+                        <h1>Scala语言介绍</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Jackson on
-                            2017-10-14
+                            2017-10-13
                         </span>
                     </div>
                 
@@ -212,115 +212,45 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p>SparkContext 、SparkConf 、Spark-Shell</p>
-<p><strong>Spark 官网</strong>：<a href="http://spark.apache.org/docs/2.2.0/rdd-programming-guide.html" target="_blank" rel="noopener">http://spark.apache.org/docs/2.2.0/rdd-programming-guide.html</a><br>
-<strong>Spark Download</strong>：<a href="https://archive.apache.org/dist/spark/" target="_blank" rel="noopener">https://archive.apache.org/dist/spark/</a></p>
-<p>The first thing a Spark program must do is to create a SparkContext object, which tells Spark how to access a cluster.<br>
-To create a SparkContext you first need to build a SparkConf object that contains information about your application.</p>
-<p>第一步就是创建一个SparkContext，如果你想要进行Spark的编程的话，SparkContext可以告诉Spark如何去链接到集群，<br>
-创建SparkContext前，你需要创建一个SparkConf，来存放应用程序的相关信息。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">val conf = <span class="keyword">new</span> SparkConf().setAppName(appName).setMaster(master)</span><br><span class="line">val sc = <span class="keyword">new</span> SparkContext(conf)</span><br></pre></td></tr></table></figure>
-<p>Spark-Shell 参数讲解</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">可选参数</th>
-<th style="text-align:left">释义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">–master MASTER_URL</td>
-<td style="text-align:left">spark://host:port, mesos://host:port, yarn, or local.</td>
-</tr>
-<tr>
-<td style="text-align:left">–name NAME</td>
-<td style="text-align:left">A name of your application.</td>
-</tr>
-<tr>
-<td style="text-align:left">–jars JARS</td>
-<td style="text-align:left">Comma-separated list of local jars to include on the driver and executor classpaths.</td>
-</tr>
-<tr>
-<td style="text-align:left">–driver-memory MEM</td>
-<td style="text-align:left">Memory for driver (e.g. 1000M, 2G) (Default: 1024M).</td>
-</tr>
-<tr>
-<td style="text-align:left">–executor-memory MEM</td>
-<td style="text-align:left">Memory per executor (e.g. 1000M, 2G) (Default: 1G).</td>
-</tr>
-<tr>
-<td style="text-align:left">–executor-cores NUM</td>
-<td style="text-align:left">Number of cores per executor. (Default: 1 in YARN mode,or all available cores on the worker in standalone mode)</td>
-</tr>
-<tr>
-<td style="text-align:left">–driver-cores NUM</td>
-<td style="text-align:left">Number of cores used by the driver, only in cluster mode</td>
-</tr>
-<tr>
-<td style="text-align:left">–queue QUEUE_NAME</td>
-<td style="text-align:left">The YARN queue to submit to (Default: “default”).</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Spark-shell启动过程的日志信息</strong>：</p>
-<p>Spark context Web UI available at <a href="http://ip:4040" target="_blank" rel="noopener">http://ip:4040</a><br>
-Spark context available as ‘sc’ (master = local[2], app id = local-1577503784325).<br>
-Spark session available as ‘spark’.</p>
-<p>在Spark-Master URL中启动过程的参数如下：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">Master URL</th>
-<th style="text-align:left">Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">local</td>
-<td style="text-align:left">Run Spark locally with one worker thread (i.e. no parallelism at all).</td>
-</tr>
-<tr>
-<td style="text-align:left">local[K]</td>
-<td style="text-align:left">Run Spark locally with K worker threads (ideally, set this to the number of cores on your machine).</td>
-</tr>
-<tr>
-<td style="text-align:left">local[K,F]</td>
-<td style="text-align:left">Run Spark locally with K worker threads and F maxFailures (see spark.task.maxFailures for an explanation of this variable)</td>
-</tr>
-<tr>
-<td style="text-align:left">local[*]</td>
-<td style="text-align:left">Run Spark locally with as many worker threads as logical cores on your machine.</td>
-</tr>
-<tr>
-<td style="text-align:left">local[*,F]</td>
-<td style="text-align:left">Run Spark locally with as many worker threads as logical cores on your machine and F maxFailures.</td>
-</tr>
-<tr>
-<td style="text-align:left">spark://HOST:PORT</td>
-<td style="text-align:left">Connect to the given Spark standalone cluster master. The port must be whichever one your master is configured to use, which is 7077 by default.</td>
-</tr>
-<tr>
-<td style="text-align:left">spark://HOST1:PORT1,HOST2:PORT2</td>
-<td style="text-align:left">Connect to the given Spark standalone cluster with standby masters with Zookeeper. The list must have all the master hosts in the high availability cluster set up with Zookeeper. The port must be whichever each master is configured to use, which is 7077 by default.</td>
-</tr>
-<tr>
-<td style="text-align:left">mesos://HOST:PORT</td>
-<td style="text-align:left">Connect to the given Mesos cluster. The port must be whichever one your is configured to use, which is 5050 by default. Or, for a Mesos cluster using ZooKeeper, use mesos://zk://… To submit with --deploy-mode cluster, the HOST:PORT should be configured to connect to the MesosClusterDispatcher.</td>
-</tr>
-<tr>
-<td style="text-align:left">yarn</td>
-<td style="text-align:left">Connect to a YARN cluster in client or cluster mode depending on the value of --deploy-mode. The cluster location will be found based on the HADOOP_CONF_DIR or YARN_CONF_DIR variable.</td>
-</tr>
-</tbody>
-</table>
-<p>在Spark WebUI界面可以查看Spark的相关信息<br>
-Spark2.x 当中Saprk的Jars单独放置的，在1.x中是达成一个单独的包，此处存在调优点，<br>
-如果采用Spark on Yarn 的方式进行提交，这些jar包需要上传，对于资源的开销是非常大的。</p>
-<p>在Spark-Shell中自己创建的SparkContext是不能够使用的。</p>
-<p><a href="http://1.spark.app.name" target="_blank" rel="noopener">1.spark.app.name</a>	Spark shell 的来源 ===&gt; 底层也是采用的spark-submit 来进行提交作业的。<br>
-<a href="http://2.spark.app.id" target="_blank" rel="noopener">2.spark.app.id</a>	local-1577503784325 的来源<br>
-3.java.io.tmpdir	的位置是系统的/tmp</p>
+                <p>Scala之chapter01</p>
+<h4 id="scala语言特点">Scala语言特点：</h4>
+<p>Scala 是一门以 java 虚拟机（JVM）为运行环境并将面向对象和函数式编程的最佳特性结合在一起的静态类型编程语言。</p>
+<ul>
+<li>1.Scala 是一门多范式 (multi-paradigm) 的编程语言，Scala 支持面向对象和函数式编程</li>
+<li>2.scala 源代码(.scala)会被编译成 Java 字节码(.class)，然后运行于 JVM 之上，并可以调用现有的Java 类库，实现两种语言的无缝对接。</li>
+<li>3.scala 单作为一门语言来看， 非常的简洁高效  （三元运算， ++ ， --）</li>
+<li>4.搞清楚 Scala 和 java 相同点和不同点，就可以快速的掌握</li>
+<li>5.学习 scala的特有的语法，区别 scala和 Java，如何规范使用 scala。</li>
+</ul>
+<h4 id="正确的缩进和空白">正确的缩进和空白</h4>
+<ul>
+<li>1.使用一次 tab 操作，实现缩进,默认整体向右边移动，时候用 shift+tab 整体向左移</li>
+<li>2.或者使用 ctrl + alt + L 来进行格式化 [演示]</li>
+<li>3.运算符两边习惯性各加一个空格。比如：2 + 4 * 5。</li>
+<li>4.一行最长不超过 80 个字符，超过的使用换行展示，尽量保持格式优雅</li>
+</ul>
+<h4 id="scala变量的使用">Scala变量的使用</h4>
+<ul>
+<li>1.声明变量时，类型可以省略（编译器自动推导,即类型推导）</li>
+<li>2.类型确定后，就不能修改，说明 Scala 是强数据类型语言.</li>
+<li>3.在声明/定义一个变量时，可以使用 var 或者 val 来修饰， var 修饰的变量可改变，val 修饰的变量不可改</li>
+<li>4.val 修饰的变量在编译后，等同于加上 final。</li>
+<li>5.var 修饰的对象引用可以改变，val 修饰的则不可改变，但对象的状态(值)却是可以改变的。</li>
+</ul>
+<h4 id="数据类型">数据类型</h4>
+<ul>
+<li>1.Scala 与 Java 有着相同的数据类型，在 Scala 中数据类型都是对象，也就是说 scala 没有 java 中的原生类型。</li>
+<li>2.Scala 数据类型分为两大类 AnyVal(值类型) 和 AnyRef(引用类型)， 注意：不管是 AnyVal 还是 AnyRef 都是对象。</li>
+<li>3.相对于 java 的类型系统，scala 要复杂些！也正是这复杂多变的类型系统才让面向对象编程和函数式编程完美的融合在了一起。</li>
+</ul>
+<h4 id="数据类型结构">数据类型结构</h4>
+<ul>
+<li>1.在 scala 中有一个根类型 Any ,他是所有类的父类.</li>
+<li>2.scala 中一切皆为对象，分为两大类 AnyVal(值类型)， AnyRef(引用类型)， 他们都是 Any 子类.</li>
+<li>3.Null 类型是 scala 的特别类型，它只有一个值 null, 他是 bottom calss ,是 所有 AnyRef 类型的子类.</li>
+<li>4.Nothing 类型也是 bottom class ,他是所有类的子类，在开发中通常可以将 Nothing 类型的值返回给任意变量或者函数， 这里抛出异常使用很多.</li>
+<li>5.在 scala 中仍然遵守，低精度的值，向高精度的值自动转换(implicit conversion) 隐式转换.</li>
+</ul>
 
                 
 
@@ -329,12 +259,12 @@ Spark2.x 当中Saprk的Jars单独放置的，在1.x中是达成一个单独的�
                 <ul class="pager">
                     
                         <li class="previous">
-                            <a href="/article/Spark/Spark的transformation算子操作/" data-toggle="tooltip" data-placement="top" title="Spark RDD 的Transformation 操作">&larr; Previous Post</a>
+                            <a href="/article/Scala/scala构造器、抽象、trait、case calss、数组/" data-toggle="tooltip" data-placement="top" title="Scala面向对象">&larr; Previous Post</a>
                         </li>
                     
                     
                         <li class="next">
-                            <a href="/article/Scala/scala构造器、抽象、trait、case calss、数组/" data-toggle="tooltip" data-placement="top" title="Scala面向对象">Next Post &rarr;</a>
+                            <a href="/article/Spark/RDD 创建/" data-toggle="tooltip" data-placement="top" title="Spark RDD 的创建">Next Post &rarr;</a>
                         </li>
                     
                 </ul>
@@ -384,7 +314,7 @@ Spark2.x 当中Saprk的Jars单独放置的，在1.x中是达成一个单独的�
         <div id="toc" class="toc-article">
         <strong class="toc-title">Contents</strong>
         
-          <ol class="nav">none</ol>
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#scala语言特点"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Scala&#x8BED;&#x8A00;&#x7279;&#x70B9;&#xFF1A;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#正确的缩进和空白"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x6B63;&#x786E;&#x7684;&#x7F29;&#x8FDB;&#x548C;&#x7A7A;&#x767D;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#scala变量的使用"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Scala&#x53D8;&#x91CF;&#x7684;&#x4F7F;&#x7528;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#数据类型"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">&#x6570;&#x636E;&#x7C7B;&#x578B;</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#数据类型结构"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">&#x6570;&#x636E;&#x7C7B;&#x578B;&#x7ED3;&#x6784;</span></a></li></ol>
         
         </div>
       </aside>
@@ -404,7 +334,7 @@ Spark2.x 当中Saprk的Jars单独放置的，在1.x中是达成一个单独的�
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
                        
-                          <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
+                          <a class="tag" href="/tags/#Scala" title="Scala">Scala</a>
                         
                     </div>
                 </section>

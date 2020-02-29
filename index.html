@@ -302,6 +302,40 @@ Host Monitor ......
 
 <div class="post-preview">
 
+    <a href="/article/Flume/flume进阶/">
+        <h2 class="post-title">
+                                 
+            flume 进阶
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            案例1：双层Flume串联
+双层flume衔接，第一层从exec采集sink到avro中，第二层从上一层的avro接收采集输出到控制台
+第一层采用 exec source ===&gt; memory channel ===&gt; avro sink
+第二层采用 avro source ===&gt; memory channel ===&gt; logger sink
+Agent1
+12......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2018-01-06
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Flume" title="Flume">Flume</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/article/Flume/flume配置和基础使用/">
         <h2 class="post-title">
                                  
@@ -431,29 +465,20 @@ The first thing a Spark program mus......
 
 <div class="post-preview">
 
-    <a href="/article/ipParse/IP地址解析/">
+    <a href="/article/Scala/scala构造器、抽象、trait、case calss、数组/">
         <h2 class="post-title">
                                  
-            IP地址解析对应省市地区
+            Scala面向对象
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            IP 地址解析
-采用ip2region 来解析IP地址
-1.下载离线的IP库
-下载地址：https://github.com/lionsoul2014/ip2region/tree/master/data
-
-下载ip2region.db
-2.导入Maven依赖
-
-    org.lionsoul
-    ip2region
-    1.7.2
-
-3.编写解析IP工具类
-默认的格式解析出来的是......
+            spark源码：https://github.com/apache/spark/archive/v2.2.2.zip
+scala的构造器、主构造器和附属构造器
+主构造器用clclass定义，附属构造器用def定义名称为this()，
+在附属构造器的第一行必须调用主构造器和其他附属构造器。
+123456789101112131415161718192021/** * scala 中的构造器 *......
         </div>
     </a>
     
@@ -463,7 +488,41 @@ The first thing a Spark program mus......
         </p>
         <div class="tags">
             
-              <a href="/tags/#Java" title="Java">Java</a>
+              <a href="/tags/#Scala" title="Scala">Scala</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Scala/scala学习之chapter01/">
+        <h2 class="post-title">
+                                 
+            Scala语言介绍
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Scala之chapter01
+Scala语言特点：
+Scala 是一门以 java 虚拟机（JVM）为运行环境并将面向对象和函数式编程的最佳特性结合在一起的静态类型编程语言。
+
+1.Scala 是一门多范式 (multi-paradigm) 的编程语言，Scala 支持面向对象和函数式编程
+2.scala 源代码(.scala)会被编译成 Java 字节码(.class)，然后运行于 JV......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-10-13
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Scala" title="Scala">Scala</a>
             
         </div>
     
@@ -495,69 +554,6 @@ There are two ways to create RDDs: parallelizing an existing collection in your 
         <div class="tags">
             
               <a href="/tags/#Spark" title="Spark">Spark</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Spark/Rdd/">
-        <h2 class="post-title">
-                                 
-            Spark RDD概念、特性、源码体现
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Spark RDD概念、特性、源码体现
-RDD 的GitHub地址：
-https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/rdd/RDD.scala
-12345678910111213141516171819202122232425262728/** * A Resilient Di......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-10-13
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Spark" title="Spark">Spark</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Rundeck 部署使用/">
-        <h2 class="post-title">
-                                 
-            Jackson@Rundeck部署
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Jackson@Rundeck部署
-1.下载解压
-1234567[root@bigdata001 ~]# su - hadoop[hadoop@bigdata001 ~]$ cd app/[hadoop@bigdata001 app]$ mkdir rundeck[hadoop@bigdata001 app]$ cd rundeck/[hadoop@bigdata001 rundeck]$ ......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-09-18
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Schedul" title="Schedul">Schedul</a>
             
         </div>
     
@@ -626,15 +622,15 @@ https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark
             
         
             
-            <a href="/tags/#BigData" title="BigData" rel="4">BigData</a>
-            
-        
-            
             <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
             
         
             
             <a href="/tags/#源码分析" title="源码分析" rel="1">源码分析</a>
+            
+        
+            
+            <a href="/tags/#BigData" title="BigData" rel="4">BigData</a>
             
         
             
@@ -646,7 +642,7 @@ https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark
             
         
             
-            <a href="/tags/#Shell" title="Shell" rel="1">Shell</a>
+            <a href="/tags/#Scala" title="Scala" rel="2">Scala</a>
             
         
             
@@ -654,7 +650,7 @@ https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark
             
         
             
-            <a href="/tags/#CDH" title="CDH" rel="1">CDH</a>
+            <a href="/tags/#Shell" title="Shell" rel="1">Shell</a>
             
         
             
@@ -662,11 +658,15 @@ https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark
             
         
             
-            <a href="/tags/#Sqoop" title="Sqoop" rel="1">Sqoop</a>
+            <a href="/tags/#CDH" title="CDH" rel="1">CDH</a>
             
         
             
-            <a href="/tags/#Flume" title="Flume" rel="1">Flume</a>
+            <a href="/tags/#Flume" title="Flume" rel="2">Flume</a>
+            
+        
+            
+            <a href="/tags/#Sqoop" title="Sqoop" rel="1">Sqoop</a>
             
         
     </div>
@@ -730,15 +730,15 @@ https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark
         </li>
       
         <li>
+          <a href="/article/Flume/flume进阶/">flume 进阶</a>
+        </li>
+      
+        <li>
           <a href="/article/Flume/flume配置和基础使用/">flume 基础配置和使用</a>
         </li>
       
         <li>
           <a href="/article/Spark/Spark action算子操作/">Spark RDD 的 Action操作</a>
-        </li>
-      
-        <li>
-          <a href="/article/Spark/Spark的transformation算子操作/">Spark RDD 的Transformation 操作</a>
         </li>
       
     </ul>
@@ -761,7 +761,7 @@ https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>

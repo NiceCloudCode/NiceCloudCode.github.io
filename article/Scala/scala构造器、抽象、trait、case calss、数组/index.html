@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Do Not Stop Your Step">
+    <meta name="keyword"  content="BigData  Hadoop Spark Flink">
+    <link rel="shortcut icon" href="/img/ironman-draw.png">
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <title>
+        
+          Scala面向对象 - BigData@Jackson | Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://www.ruozedata.com/article/Scala/scala构造器、抽象、trait、case calss、数组/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS --> 
+    <link rel="stylesheet" href="/css/beantech.min.css">
+
+    <link rel="stylesheet" href="/css/donate.css">
+    
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <link rel="stylesheet" href="/css/widget.css">
+
+    <link rel="stylesheet" href="/css/rocket.css">
+
+    <link rel="stylesheet" href="/css/signature.css">
+
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+	<!-- Modified by Yu-Hsuan Yen -->
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        
+            background-image: url('/img/article_header/article_header.png')
+            /*post*/
+        
+    }
+    
+</style>
+
+<header class="intro-header" >
+    <!-- Signature -->
+    <div id="signature">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                
+                    <div class="post-heading">
+                        <div class="tags">
+                            
+                              <a class="tag" href="/tags/#Scala" title="Scala">Scala</a>
+                            
+                        </div>
+                        <h1>Scala面向对象</h1>
+                        <h2 class="subheading"></h2>
+                        <span class="meta">
+                            Posted by Jackson on
+                            2017-10-13
+                        </span>
+                    </div>
+                
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+	
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Jackson | @Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Modify by Yu-Hsuan Yen -->
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+            <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <p>spark源码：<a href="https://github.com/apache/spark/archive/v2.2.2.zip" target="_blank" rel="noopener">https://github.com/apache/spark/archive/v2.2.2.zip</a></p>
+<h3 id="scala的构造器-主构造器和附属构造器">scala的构造器、主构造器和附属构造器</h3>
+<p>主构造器用clclass定义，附属构造器用def定义名称为this()，<br>
+在附属构造器的第一行必须调用主构造器和其他附属构造器。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * scala 中的构造器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">// 主构造器</span><br><span class="line">class ContructTest(name: String, age: Int) &#123;</span><br><span class="line">  val famila: String = "hello"</span><br><span class="line">  val height: Int = 10</span><br><span class="line"></span><br><span class="line">  def this(name: String) &#123;</span><br><span class="line">    this(name, 12)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 辅助构造器第一行必须调用主构造器或者其他附属构造器</span><br><span class="line">  def this(name: String, age: Int, salary: Int) &#123;</span><br><span class="line">    this(name)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  def eat(): String = &#123;</span><br><span class="line">    " eat breakfast"</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="抽象类和抽象方法">抽象类和抽象方法</h3>
+<p>在抽象类中定义的方法如果没有方法体，那么在子类中必须重写该方法</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">abstract class Animal &#123;</span><br><span class="line">  val color: String</span><br><span class="line">  def eat()</span><br><span class="line">  def run()=&#123;</span><br><span class="line">    println("hello")</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Bord extends Animal &#123;</span><br><span class="line">  override val color: String = ""</span><br><span class="line">  override def eat(): Unit = &#123;</span><br><span class="line">    println("eat")</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>半生类和半生对象，当class定义的类名和object定义的名称相同的时候，class定义的叫做objec 对象的伴生类，object定义的叫做class的陪伴生对象。<br>
+一般在object里面定义一个apply方法，该方法通常的作用是new 一个类对象。如何判断是class的apply还是object的apply方法？<br>
+class的对象在spark的源码中调用apply方法的时候对象都是小写的<br>
+<strong>object一般都是大写的，用大写的object名称调用apply方法，即大写开头调object 小写开头调class</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class Student(name: String, age: Int) &#123;</span><br><span class="line">  val money = 200</span><br><span class="line"></span><br><span class="line">  def write() = &#123;</span><br><span class="line">    println("student write homework")</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">object Student &#123;</span><br><span class="line">  val project: String = "math"</span><br><span class="line"></span><br><span class="line">  def study() = &#123;</span><br><span class="line">    println("student study")</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  def apply(name: String, age: Int): Student = new Student(name, age)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="样例类">样例类</h3>
+<p>样例类 用case class 来修定义样例类，可以当做静态来理解，用Dog()这种方式使用<br>
+与object 不同的是object <a href="http://xn--Dog-2s0eu4plm2atwddnv62ip3cj9ab8tmk5d.xxx" target="_blank" rel="noopener">调用的时候直接是名称Dog.xxx</a> 而caseclass则是Dog().xxx<br>
+特点是不用new可以直接使用，并且在spark sql中使用的比较多</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">object CaseClassApp &#123;</span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    Dog("Tom").eat()</span><br><span class="line">    println(Cat().age)</span><br><span class="line">    Cat().eat()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">case class Cat() &#123;</span><br><span class="line">  val age: Int = 39</span><br><span class="line">  def eat() = &#123;</span><br><span class="line">    println("Cat  eat fish")</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">case class Dog(name: String) &#123;</span><br><span class="line">  val aa = "hh"</span><br><span class="line">  def eat(): Unit = &#123;</span><br><span class="line">    println(name + "  eat chicken")</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="trait">Trait</h3>
+<p><strong>实现Trait和abstract的时候都用extends 当有多个的时候第一个用extends，后面的用with</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">object TraitApp &#123;</span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    val controller = new AnimalController()</span><br><span class="line">    controller.eat()</span><br><span class="line">    controller.run()</span><br><span class="line">    controller.serviec()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">class AnimalController extends Dog with AnimalService with Animal &#123;</span><br><span class="line">  override def run(): Unit = &#123;</span><br><span class="line">    println("run")</span><br><span class="line">  &#125;</span><br><span class="line">  override def serviec(): Unit = &#123;</span><br><span class="line">    println("service")</span><br><span class="line">  &#125;</span><br><span class="line">  override def eat(): Unit = &#123;</span><br><span class="line">    println("eat")</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">trait Animal &#123;</span><br><span class="line">  def eat()</span><br><span class="line">&#125;</span><br><span class="line">trait AnimalService &#123;</span><br><span class="line">  def serviec()</span><br><span class="line">&#125;</span><br><span class="line">abstract class Dog() &#123;</span><br><span class="line">  def run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="scala中的数组array">scala中的数组Array</h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">第一种方式定义数组 </span><br><span class="line">val array = new Array[Int](10) </span><br><span class="line">for (arr &lt;- array) &#123;</span><br><span class="line">  println(arr)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">第二种方式定义数组 </span><br><span class="line">val arr1 = Array("hello","spark","hive","hbase")</span><br><span class="line">for (arr &lt;-arr1)&#123;</span><br><span class="line">  println(arr)</span><br><span class="line">&#125;</span><br><span class="line">// 变长数组定义</span><br><span class="line">    val arrbuff = ArrayBuffer[String]()</span><br><span class="line">    // 添加元素</span><br><span class="line">    arrbuff.append("hello")</span><br><span class="line">    arrbuff.append("spark")</span><br><span class="line">    arrbuff.append("scala")</span><br><span class="line"></span><br><span class="line">    // 获取元素</span><br><span class="line">    println(arrbuff(0))</span><br><span class="line">    for (arr &lt;- arrbuff) &#123;</span><br><span class="line">      println(arr)</span><br><span class="line">    &#125;</span><br><span class="line">    // 修改元素</span><br><span class="line">    arrbuff(0) = "hadoop"</span><br><span class="line"></span><br><span class="line">    // 删除元素</span><br><span class="line">    arrbuff.remove(0)</span><br><span class="line">    // 获取长度</span><br><span class="line">    arrbuff.length</span><br></pre></td></tr></table></figure>
+<h3 id="变长数组声明泛型">变长数组(声明泛型)</h3>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">val arr2 = ArrayBuffer[Int]() </span><br><span class="line"></span><br><span class="line">变长数组的分析 </span><br><span class="line">1) ArrayBuffer 是变长数组，类似 java 的 ArrayList </span><br><span class="line">2) val arr2 = ArrayBuffer[Int]() 也是使用的 apply 方法构建对象 </span><br><span class="line">3) def append(elems: A*) &#123; appendAll(elems) &#125; 接收的是可变参数. </span><br><span class="line">4) 每append一次，arr在底层会重新分配空间，进行扩容，arr2的内存地址会发生变化，也就成为新的ArrayBuffer </span><br><span class="line"></span><br><span class="line">定长数组与变长数组的转换 </span><br><span class="line"> </span><br><span class="line">1) arr1.toBuffer  //定长数组转可变数组 </span><br><span class="line">2) arr2.toArray  //可变数组转定长数组</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="scala中的list">Scala中的List</h3>
+<p>Scala 中的 List 和 Java List 不一样，在 Java 中 List 是一个接口，真正存放数据是 ArrayList，而 Scala 的 List<br>
+可以直接存放数据，就是一个 object，默认情况下 Scala 的 List 是不可变的，List 属于序列 Seq。</p>
+<p>创建List<br>
+val list1 = List(1, 2, 3)</p>
+<ol>
+<li>List 默认为不可变的集合</li>
+<li>List 在 scala 包对象声明的,因此不需要引入其它包也可以使用</li>
+<li>val List = scala.collection.immutable.List</li>
+<li>List 中可以放任何数据类型，比如 arr1 的类型为 List[Any]</li>
+<li>如果希望得到一个空列表，可以使用 Nil 对象, 在 scala 包对象声明的,因此不需要引入其它包也可以使用</li>
+</ol>
+<p>向列表中增加元素, 会返回新的列表/集合对象。注意：Scala 中 List 元素的追加形式非常独特，和 Java 不一样。</p>
+<p>List的语法糖操作如下</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">val list1 = List(1, 2, 3)</span><br><span class="line">val list3 = List("hello|Spark", "word|Wall", "New|Year")</span><br><span class="line"></span><br><span class="line">// + 进行的是字符串的拼接</span><br><span class="line">val list4 = list3 + "hadoop"</span><br><span class="line">//(hello|Spark, word,Wall, New|Year)hadoop</span><br><span class="line"></span><br><span class="line">// +: 是在list的头部进行的拼接</span><br><span class="line">val list5 = list3 +:("hadoop")</span><br><span class="line">// List(hadoop, hello|Spark, word,Wall, New|Year)</span><br><span class="line"></span><br><span class="line">//    val list6 = "hadoop" :+ list3</span><br><span class="line">// Vector(h, a, d, o, o, p, List(hello|Spark, word,Wall, New|Year))</span><br><span class="line"></span><br><span class="line">// :: 是将前面的List作为一个整体拼接到后面的List上面</span><br><span class="line">val list7 = list1 :: list3</span><br><span class="line">// List(List(1, 2, 3), hello|Spark, word|Wall, New|Year)</span><br><span class="line"></span><br><span class="line">// zip() 是将两个List中的元素每个元素对应位置形成一个键值对</span><br><span class="line">val list8 = list1.zip(list3)</span><br><span class="line">// List((1,hello|Spark), (2,word,Wall), (3,New|Year))</span><br><span class="line"></span><br><span class="line">// ::: 是将两个List中的元素进行拼接形成一个新的List</span><br><span class="line">val list9 = list1.:::(List("Flink", "Flink2"))</span><br><span class="line">// LList(Flink, Flink2, 1, 2, 3)</span><br><span class="line"></span><br><span class="line">// flatMap是将一个值映射成为多个值</span><br><span class="line">val list10 = list3.flatMap(x =&gt; x.split(","))</span><br><span class="line">// List(hello, Spark, word, Wall, New, Year)</span><br><span class="line"></span><br><span class="line">// ++ 是将后面List中的每一项拼接到前面List中</span><br><span class="line">val list11 = list3.++(List("Shell", "Kafka"))</span><br><span class="line">// List(hello|Spark, word,Wall, New|Year, Shell, Kafka)</span><br><span class="line"></span><br><span class="line">// 对List中的每一个值进行处理，返回处理后的结果</span><br><span class="line">val list12 = list1.map(x =&gt; x + 1)</span><br><span class="line">// List(2, 3, 4)</span><br><span class="line"></span><br><span class="line">// 对List中的每一个值作用上传入的函数</span><br><span class="line">list1.foreach(println(_))</span><br><span class="line"></span><br><span class="line">// List 内容的反转</span><br><span class="line">val list14 = list1.reverse</span><br><span class="line">// List(3, 2, 1)</span><br></pre></td></tr></table></figure>
+<h3 id="listbuffer">ListBuffer</h3>
+<p>// ListBuffer 的创建<br>
+val buffer = ListBuffer<a href="">String</a><br>
+// 添加单个元素<br>
+buffer.append(“Hadoop”)<br>
+buffer.append(“HDFS”)</p>
+<p>// 在指定位置添加元素<br>
+buffer.insert(0,“Shell”)</p>
+<p>// 在指定位置添加一个List<br>
+buffer.insertAll(0,List(“Kafka”,“Hive”))</p>
+<p>// 删除指定位置的元素<br>
+buffer.remove(0)</p>
+<p>// 更新指定位置的元素<br>
+buffer.update(0,“HIVE”)</p>
+<p>// 获取buffer的头部<br>
+println(buffer.head)</p>
+<p>// 获取buffer的尾部<br>
+println(buffer.tail)</p>
+<p>// 获取buffer的大小<br>
+println(buffer.length)<br>
+println(buffer.size)</p>
+<p>// 清空buffer<br>
+buffer.clear()</p>
+
+                
+
+                <hr>
+                <!-- Pager -->
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/article/Spark/SparkContext、SparkConf/" data-toggle="tooltip" data-placement="top" title="SparkContext 、SparkConf 、Spark-Shell">&larr; Previous Post</a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/article/Scala/scala学习之chapter01/" data-toggle="tooltip" data-placement="top" title="Scala语言介绍">Next Post &rarr;</a>
+                        </li>
+                    
+                </ul>
+
+                <br>
+
+                <!--打赏-->
+                
+                <!--打赏-->
+
+                <br>
+                <!--分享-->
+                
+                    <div class="social-share"  data-wechat-qrcode-helper="" align="center"></div>
+                    <!--  css & js -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+                
+                <!--分享-->
+                <br>                       
+                
+                <!-- require APlayer -->
+                
+
+                <!-- duoshuo Share start -->
+                
+                <!-- 多说 Share end-->
+
+                <!-- 多说评论框 start -->
+                
+                <!-- 多说评论框 end -->
+
+                <!-- disqus comment start -->
+                
+                <!-- disqus comment end -->
+
+                
+
+            </div>
+            
+            <!-- Tabe of Content -->
+            <!-- Table of Contents -->
+
+  
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#scala的构造器-主构造器和附属构造器"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">scala&#x7684;&#x6784;&#x9020;&#x5668;&#x3001;&#x4E3B;&#x6784;&#x9020;&#x5668;&#x548C;&#x9644;&#x5C5E;&#x6784;&#x9020;&#x5668;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#抽象类和抽象方法"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">&#x62BD;&#x8C61;&#x7C7B;&#x548C;&#x62BD;&#x8C61;&#x65B9;&#x6CD5;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#样例类"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">&#x6837;&#x4F8B;&#x7C7B;</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#trait"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Trait</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#scala中的数组array"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">scala&#x4E2D;&#x7684;&#x6570;&#x7EC4;Array</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#变长数组声明泛型"><span class="toc-nav-number">6.</span> <span class="toc-nav-text">&#x53D8;&#x957F;&#x6570;&#x7EC4;(&#x58F0;&#x660E;&#x6CDB;&#x578B;)</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#scala中的list"><span class="toc-nav-number">7.</span> <span class="toc-nav-text">Scala&#x4E2D;&#x7684;List</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#listbuffer"><span class="toc-nav-number">8.</span> <span class="toc-nav-text">ListBuffer</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+                
+            <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/tags/#Scala" title="Scala">Scala</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="https://nicecloudcode.github.io/" target="_blank">GitHub Blog</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'left',
+          icon: 'rz'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+<!-- chrome Firefox 中文锚点定位失效-->
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<!-- smooth scroll behavior polyfill  -->
+<script type="text/javascript" src="/js/smoothscroll.js"></script>
+<script>
+        $('#toc').on('click','a',function(a){
+            // var isChrome = window.navigator.userAgent.indexOf("Chrome") !== -1;
+            // console.log(window.navigator.userAgent,isChrome)
+                // if(isChrome) {
+                    // console.log(a.currentTarget.outerHTML);
+                    // console.log($(a.currentTarget).attr("href"));
+                    //跳转到指定锚点
+                    // document.getElementById(a.target.innerText.toLowerCase()).scrollIntoView(true);
+                    document.getElementById($(a.currentTarget).attr("href").replace("#","")).scrollIntoView({behavior: 'smooth' });
+                // }
+        })  
+</script>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/NiceCloudCode">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Jackson 2020 
+                    By <a href="https://github.com/NiceCloudCode/NiceCloudCode.github.io">Do Not Stop Your Step!</a> | BigData
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=ruozedata&repo=Bigdata&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://www.ruozedata.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-XXXXXXXX-X';
+    var _gaDomain = 'yoursite';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'xxx';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+
+
+
+	<a id="rocket" href="#top" class=""></a>
+	<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+    <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+<!-- Image to hack wechat -->
+<img src="http://www.ruozedata.com/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

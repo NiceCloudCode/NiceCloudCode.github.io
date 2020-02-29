@@ -211,6 +211,100 @@
 
 <div class="post-preview">
 
+    <a href="/article/Hive/Hive 建表、加载数据、DDM、DML/">
+        <h2 class="post-title">
+                                 
+            Hive DML、DDL、Load Data
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            DDL
+首先要创建表才能对Hive中的数据进行操作。
+创建一个外部表：
+12345678910CREATE EXTERNAL TABLE emp(empno int,ename string,job string,mgr int,hiredate string,sal double,comm double,deptno int) ROW FORMAT DELIMITED FIELDS TER......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-09-04
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hive" title="Hive">Hive</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Hive/Hive 架构、部署、配置/">
+        <h2 class="post-title">
+                                 
+            Hive架构、部署、配置
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            Hive 概述
+Hive 官网 https://hive.apache.org/
+The Apache Hive ™ data warehouse software facilitates reading, writing, and managing large datasets residing in distributed storage using SQL. Structure can......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-09-02
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Hive" title="Hive">Hive</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/article/Mysql/MySQL分组求TopN/">
+        <h2 class="post-title">
+                                 
+            MySQL 分组求 Top N 问题
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            数据表及字段信息：
+12345CREATE TABLE `lesson` (  `sno` varchar(100) DEFAULT NULL,  `course` varchar(100) DEFAULT NULL,  `score` int(11) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=latin1
+第一列no为学号，第二列course为......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-08-28
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/article/Hadoop/MapReduce 切片和流程源码分析/">
         <h2 class="post-title">
                                  
@@ -469,101 +563,6 @@ df......
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/article/Hadoop/hadoop03jps正确姿势/">
-        <h2 class="post-title">
-                                 
-            Jps的正确使用姿势
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Hadoop 的 jps 命令
-jps的主要功能是查看java接口的进程号
-jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查看当前所有java进程PID的命令，缺点是只支持当前用户的Java进程，要显示其他用户还是只能够 用ps命令
-
-1.jps命令类似于Linux的ps命令 ，直接运行jps命令，显示的是java程序的......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-17
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Hadoop" title="Hadoop">Hadoop</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Mysql/MYSQL timestamp和datetime区别/">
-        <h2 class="post-title">
-                                 
-            MySQL 中 datetime 和 timestamp 的区别
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            占用空间
-12datetime	8 字节	yyyy-mm-dd hh:mm:sstimestamp	4 字节	yyyy-mm-dd hh:mm:ss
-表示范围
-12datetime	'1000-01-01 00:00:00.000000' to '9999-12-31 23:59:59.999999'timestamp	'1970-01-01 00:00:01.000000' to '203......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-16
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#MySQL" title="MySQL">MySQL</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Error/HDFS NameNode启动不了的ERROR/">
-        <h2 class="post-title">
-                                 
-            Hadoop NameNode 启动不了
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            报错信息为：
-1234567891011121314org.apache.hadoop.hdfs.server.namenode.FSNamesystem: Encountered exception loading fsimageorg.apache.hadoop.hdfs.server.common.InconsistentFSStateException: Directory /hom......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-08-15
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#ERROR" title="ERROR">ERROR</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -629,15 +628,15 @@ jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查
             
         
             
-            <a href="/tags/#BigData" title="BigData" rel="4">BigData</a>
-            
-        
-            
             <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
             
         
             
             <a href="/tags/#源码分析" title="源码分析" rel="1">源码分析</a>
+            
+        
+            
+            <a href="/tags/#BigData" title="BigData" rel="4">BigData</a>
             
         
             
@@ -649,7 +648,7 @@ jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查
             
         
             
-            <a href="/tags/#Shell" title="Shell" rel="1">Shell</a>
+            <a href="/tags/#Scala" title="Scala" rel="2">Scala</a>
             
         
             
@@ -657,7 +656,7 @@ jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查
             
         
             
-            <a href="/tags/#CDH" title="CDH" rel="1">CDH</a>
+            <a href="/tags/#Shell" title="Shell" rel="1">Shell</a>
             
         
             
@@ -665,11 +664,15 @@ jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查
             
         
             
-            <a href="/tags/#Sqoop" title="Sqoop" rel="1">Sqoop</a>
+            <a href="/tags/#CDH" title="CDH" rel="1">CDH</a>
             
         
             
-            <a href="/tags/#Flume" title="Flume" rel="1">Flume</a>
+            <a href="/tags/#Flume" title="Flume" rel="2">Flume</a>
+            
+        
+            
+            <a href="/tags/#Sqoop" title="Sqoop" rel="1">Sqoop</a>
             
         
     </div>
@@ -733,15 +736,15 @@ jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查
         </li>
       
         <li>
+          <a href="/article/Flume/flume进阶/">flume 进阶</a>
+        </li>
+      
+        <li>
           <a href="/article/Flume/flume配置和基础使用/">flume 基础配置和使用</a>
         </li>
       
         <li>
           <a href="/article/Spark/Spark action算子操作/">Spark RDD 的 Action操作</a>
-        </li>
-      
-        <li>
-          <a href="/article/Spark/Spark的transformation算子操作/">Spark RDD 的Transformation 操作</a>
         </li>
       
     </ul>
@@ -764,7 +767,7 @@ jps(Java Virtual Machine Process Status Tool) 是JDK 提供给我们的一个查
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>
