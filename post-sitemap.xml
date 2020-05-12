@@ -7,6 +7,22 @@
     </url>
 
     <url>
+        <loc>http://www.ruozedata.com/article/Spark/Spark%E5%8D%A0%E5%9D%91/</loc>
+        <lastmod>2020-05-12T06:19:24.765Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.ruozedata.com/article/Scala/Scala%E7%9A%84set%E3%80%81map%E3%80%81%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D/</loc>
+        <lastmod>2020-03-01T06:23:47.047Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://www.ruozedata.com/article/Scala/scala%E6%9E%84%E9%80%A0%E5%99%A8%E3%80%81%E6%8A%BD%E8%B1%A1%E3%80%81trait%E3%80%81case%20calss%E3%80%81%E6%95%B0%E7%BB%84/</loc>
         <lastmod>2020-02-29T08:31:15.704Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -57,14 +73,6 @@
     <url>
         <loc>http://www.ruozedata.com/article/Shell/Shell%E8%84%9A%E6%9C%AC%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
         <lastmod>2020-02-05T03:20:16.706Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.ruozedata.com/article/Spark/Spark%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A4%96%E9%83%A8%E6%95%B0%E6%8D%AE%E6%BA%90/</loc>
-        <lastmod>2020-02-02T10:37:43.026Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

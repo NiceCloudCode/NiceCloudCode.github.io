@@ -134,6 +134,13 @@
 
                         
                         <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
                             <a href="/about/">About</a>
                         </li>
                         
@@ -142,13 +149,6 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -211,18 +211,17 @@
 
 <div class="post-preview">
 
-    <a href="/article/Spark/Spark自定义外部数据源/">
+    <a href="/article/Spark/Spark占坑/">
         <h2 class="post-title">
                                  
-            Spark 自定义外部数据源
+            Spark 占坑
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            Spark自定义外部数据源：
-官方文档：http://spark.apache.org/docs/2.3.1/sql-programming-guide.html#jdbc-to-other-databases
-在sparksql中可以使用JDBC的方式从其他的数据源读取数据，这个可以优先于使用jdbcrdd 因为使用JDBC的方式返回的是一个DataFrame，能够很好的支持sparksq......
+            官方文档：http://spark.apache.org/docs/2.3.1/sql-programming-guide.html#jdbc-to-other-databases
+...
         </div>
     </a>
     
@@ -465,20 +464,29 @@ The first thing a Spark program mus......
 
 <div class="post-preview">
 
-    <a href="/article/Scala/scala构造器、抽象、trait、case calss、数组/">
+    <a href="/article/ipParse/IP地址解析/">
         <h2 class="post-title">
                                  
-            Scala面向对象
+            IP地址解析对应省市地区
         </h2>
         <h3 class="post-subtitle">
             
         </h3>
         <div class="post-content-preview">
-            spark源码：https://github.com/apache/spark/archive/v2.2.2.zip
-scala的构造器、主构造器和附属构造器
-主构造器用clclass定义，附属构造器用def定义名称为this()，
-在附属构造器的第一行必须调用主构造器和其他附属构造器。
-123456789101112131415161718192021/** * scala 中的构造器 *......
+            IP 地址解析
+采用ip2region 来解析IP地址
+1.下载离线的IP库
+下载地址：https://github.com/lionsoul2014/ip2region/tree/master/data
+
+下载ip2region.db
+2.导入Maven依赖
+
+    org.lionsoul
+    ip2region
+    1.7.2
+
+3.编写解析IP工具类
+默认的格式解析出来的是......
         </div>
     </a>
     
@@ -488,41 +496,7 @@ scala的构造器、主构造器和附属构造器
         </p>
         <div class="tags">
             
-              <a href="/tags/#Scala" title="Scala">Scala</a>
-            
-        </div>
-    
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/article/Scala/scala学习之chapter01/">
-        <h2 class="post-title">
-                                 
-            Scala语言介绍
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            Scala之chapter01
-Scala语言特点：
-Scala 是一门以 java 虚拟机（JVM）为运行环境并将面向对象和函数式编程的最佳特性结合在一起的静态类型编程语言。
-
-1.Scala 是一门多范式 (multi-paradigm) 的编程语言，Scala 支持面向对象和函数式编程
-2.scala 源代码(.scala)会被编译成 Java 字节码(.class)，然后运行于 JV......
-        </div>
-    </a>
-    
-        <p class="post-meta" style="margin: 10px 0;">
-            Posted by Jackson on
-            2017-10-13
-        </p>
-        <div class="tags">
-            
-              <a href="/tags/#Scala" title="Scala">Scala</a>
+              <a href="/tags/#Java" title="Java">Java</a>
             
         </div>
     
@@ -561,6 +535,39 @@ There are two ways to create RDDs: parallelizing an existing collection in your 
 </div>
 <hr>
 
+<div class="post-preview">
+
+    <a href="/article/Scala/scala构造器、抽象、trait、case calss、数组/">
+        <h2 class="post-title">
+                                 
+            Scala面向对象
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            spark源码：https://github.com/apache/spark/archive/v2.2.2.zip
+scala的构造器、主构造器和附属构造器
+主构造器用clclass定义，附属构造器用def定义名称为this()，
+在附属构造器的第一行必须调用主构造器和其他附属构造器。
+123456789101112131415161718192021/** * scala 中的构造器 *......
+        </div>
+    </a>
+    
+        <p class="post-meta" style="margin: 10px 0;">
+            Posted by Jackson on
+            2017-10-13
+        </p>
+        <div class="tags">
+            
+              <a href="/tags/#Scala" title="Scala">Scala</a>
+            
+        </div>
+    
+
+</div>
+<hr>
+
 
 
 <!-- Pager -->
@@ -569,7 +576,7 @@ There are two ways to create RDDs: parallelizing an existing collection in your 
     
     
         <li class="next">
-            <a href="/page/2/">Older Posts &rarr;</a>
+            <a href="/archives/2/">Older Posts &rarr;</a>
         </li>
     
 </ul>
@@ -610,7 +617,7 @@ There are two ways to create RDDs: parallelizing an existing collection in your 
             
         
             
-            <a href="/tags/#DataWareHouse" title="DataWareHouse" rel="1">DataWareHouse</a>
+            <a href="/tags/#Hadoop" title="Hadoop" rel="10">Hadoop</a>
             
         
             
@@ -618,19 +625,19 @@ There are two ways to create RDDs: parallelizing an existing collection in your 
             
         
             
-            <a href="/tags/#Hadoop" title="Hadoop" rel="10">Hadoop</a>
-            
-        
-            
             <a href="/tags/#Linux" title="Linux" rel="6">Linux</a>
             
         
             
-            <a href="/tags/#源码分析" title="源码分析" rel="1">源码分析</a>
+            <a href="/tags/#BigData" title="BigData" rel="4">BigData</a>
             
         
             
-            <a href="/tags/#BigData" title="BigData" rel="4">BigData</a>
+            <a href="/tags/#DataWareHouse" title="DataWareHouse" rel="1">DataWareHouse</a>
+            
+        
+            
+            <a href="/tags/#源码分析" title="源码分析" rel="1">源码分析</a>
             
         
             
@@ -642,7 +649,7 @@ There are two ways to create RDDs: parallelizing an existing collection in your 
             
         
             
-            <a href="/tags/#Scala" title="Scala" rel="2">Scala</a>
+            <a href="/tags/#Scala" title="Scala" rel="3">Scala</a>
             
         
             
@@ -722,7 +729,7 @@ There are two ways to create RDDs: parallelizing an existing collection in your 
     <ul>
       
         <li>
-          <a href="/article/Spark/Spark自定义外部数据源/">Spark 自定义外部数据源</a>
+          <a href="/article/Spark/Spark占坑/">Spark 占坑</a>
         </li>
       
         <li>
@@ -761,7 +768,7 @@ There are two ways to create RDDs: parallelizing an existing collection in your 
         
     <h5>ARCHIVES</h5>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">July 2017</a><span class="archive-list-count">5</span></li></ul>
     </div>
 
         <hr>

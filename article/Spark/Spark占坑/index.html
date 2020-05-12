@@ -14,11 +14,11 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <title>
         
-          Spark 自定义外部数据源 - BigData@Jackson | Blog
+          Spark 占坑 - BigData@Jackson | Blog
         
     </title>
 
-    <link rel="canonical" href="http://www.ruozedata.com/article/Spark/Spark自定义外部数据源/">
+    <link rel="canonical" href="http://www.ruozedata.com/article/Spark/Spark占坑/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -91,7 +91,7 @@
                               <a class="tag" href="/tags/#Spark" title="Spark">Spark</a>
                             
                         </div>
-                        <h1>Spark 自定义外部数据源</h1>
+                        <h1>Spark 占坑</h1>
                         <h2 class="subheading"></h2>
                         <span class="meta">
                             Posted by Jackson on
@@ -142,6 +142,13 @@
 
                         
                         <li>
+                            <a href="/archive/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
                             <a href="/about/">About</a>
                         </li>
                         
@@ -150,13 +157,6 @@
                         
                         <li>
                             <a href="/tags/">Tags</a>
-                        </li>
-                        
-                    
-
-                        
-                        <li>
-                            <a href="/archive/">Archives</a>
                         </li>
                         
                     
@@ -212,39 +212,8 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-                <p><strong>Spark自定义外部数据源：</strong></p>
-<p><strong>官方文档</strong>：<a href="http://spark.apache.org/docs/2.3.1/sql-programming-guide.html#jdbc-to-other-databases" target="_blank" rel="noopener">http://spark.apache.org/docs/2.3.1/sql-programming-guide.html#jdbc-to-other-databases</a></p>
-<p>在sparksql中可以使用JDBC的方式从其他的数据源读取数据，这个可以优先于使用jdbcrdd 因为使用JDBC的方式返回的是一个DataFrame，能够很好的支持sparksql或者和其他的数据源join操作。</p>
-<p>首先需要将jdbc的驱动放到包放到spark的classpath下面，在启动的时候指定driver-class-path 和jar包的位置。<br>
-例如：bin/spark-shell --driver-class-path postgresql-9.4.1207.jar --jars postgresql-9.4.1207.jar</p>
-<p>比如可以通过如下的方式进行设置spark的外部数据源</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">val jdbcDF = spark.read</span><br><span class="line">  .format(<span class="string">"jdbc"</span>)</span><br><span class="line">  .option(<span class="string">"url"</span>, <span class="string">"jdbc:postgresql:dbserver"</span>)</span><br><span class="line">  .option(<span class="string">"dbtable"</span>, <span class="string">"schema.tablename"</span>)</span><br><span class="line">  .option(<span class="string">"user"</span>, <span class="string">"username"</span>)</span><br><span class="line">  .option(<span class="string">"password"</span>, <span class="string">"password"</span>)</span><br><span class="line">  .load()</span><br></pre></td></tr></table></figure>
-<p>在程序里面给定url、TableName、UserName、Passward 等信息</p>
-<p>各种形式的数据(JSON、PARQUET)可能存放在不同的文件系统(HDFS/S3/OSS)上面</p>
-<p><a href="https://github.com/apache/spark/blob/branch-2.3/examples/src/main/java/org/apache/spark/examples/sql/JavaSQLDataSourceExample.java" target="_blank" rel="noopener">https://github.com/apache/spark/blob/branch-2.3/examples/src/main/java/org/apache/spark/examples/sql/JavaSQLDataSourceExample.java</a></p>
-<p>想要使用SparkSQL处理我们的结构化数据</p>
-<ol>
-<li>RDD</li>
-<li>Schema</li>
-<li>RDD + Schema = DataFrame</li>
-</ol>
-<p><strong>BaseRelation</strong> :定义我们的Schema信息  ===&gt; 将我们的数据转换成RDD[Row]<br>
-<strong>RelationProvider</strong>: 创建BaseRelation<br>
-<strong>TableScan</strong>：读取数据，并构建行</p>
-<p>BaseRelation</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseRelation</span> </span>&#123;</span><br><span class="line">  def sqlContext: SQLContext</span><br><span class="line">  def schema: StructType</span><br><span class="line">  。。。。。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>RelationProvider</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">trait RelationProvider &#123;</span><br><span class="line">   <span class="comment">// 方法 Returns a new base relation with the given parameters.</span></span><br><span class="line">  <span class="function">def <span class="title">createRelation</span><span class="params">(sqlContext: SQLContext, parameters: Map[String, String])</span>: BaseRelation</span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>TableScan</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">trait TableScan &#123;</span><br><span class="line">  <span class="function">def <span class="title">buildScan</span><span class="params">()</span>: RDD[Row] <span class="comment">// 返回的类型是Row类型</span></span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">trait PrunedScan </span>&#123; <span class="comment">// 可以选择列</span></span><br><span class="line">  <span class="function">def <span class="title">buildScan</span><span class="params">(requiredColumns: Array[String])</span>: RDD[Row]</span></span><br><span class="line"><span class="function">&#125;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">trait PrunedFilteredScan </span>&#123; <span class="comment">// 根据条件进行过滤</span></span><br><span class="line">  <span class="function">def <span class="title">buildScan</span><span class="params">(requiredColumns: Array[String], filters: Array[Filter])</span>: RDD[Row]</span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>InsertableRelation</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">trait InsertableRelation &#123; <span class="comment">// 数据可以回写的方法，实现该trait可以通过save的方式写出去</span></span><br><span class="line">  <span class="function">def <span class="title">insert</span><span class="params">(data: DataFrame, overwrite: Boolean)</span>: Unit</span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
-<p>JDBCRelation</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span>[sql] <span class="function"><span class="keyword">case</span> class <span class="title">JDBCRelation</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    parts: Array[Partition], jdbcOptions: JDBCOptions)</span><span class="params">(@<span class="keyword">transient</span> val sparkSession: SparkSession)</span></span></span><br><span class="line"><span class="function">  extends BaseRelation</span></span><br><span class="line"><span class="function">  with PrunedFilteredScan</span></span><br><span class="line"><span class="function">  with InsertableRelation </span>&#123;</span><br><span class="line">  </span><br><span class="line">  override def sqlContext: SQLContext = sparkSession.sqlContext</span><br><span class="line"></span><br><span class="line">  override val needConversion: Boolean = <span class="keyword">false</span></span><br><span class="line"></span><br><span class="line">  override val schema: StructType = JDBCRDD.resolveTable(jdbcOptions)</span><br><span class="line">  。。。</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>resolveTable</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">def <span class="title">resolveTable</span><span class="params">(options: JDBCOptions)</span>: StructType </span>= &#123;</span><br><span class="line">  val url = options.url</span><br><span class="line">  val table = options.table</span><br><span class="line">  val dialect = JdbcDialects.get(url)</span><br><span class="line">  val conn: Connection = JdbcUtils.createConnectionFactory(options)()</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    val statement = conn.prepareStatement(dialect.getSchemaQuery(table))</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      val rs = statement.executeQuery()</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        JdbcUtils.getSchema(rs, dialect)</span><br><span class="line">      &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        rs.close()</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      statement.close()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    conn.close()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>JDBCOptions</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">object JDBCOptions &#123; </span><br><span class="line">  <span class="keyword">private</span> val jdbcOptionNames = collection.mutable.Set[String]()</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> def <span class="title">newOption</span><span class="params">(name: String)</span>: String </span>= &#123;</span><br><span class="line">    jdbcOptionNames += name.toLowerCase</span><br><span class="line">    name</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  val JDBC_URL = newOption(<span class="string">"url"</span>)</span><br><span class="line">  val JDBC_TABLE_NAME = newOption(<span class="string">"dbtable"</span>)</span><br><span class="line">  val JDBC_DRIVER_CLASS = newOption(<span class="string">"driver"</span>)</span><br><span class="line">  val JDBC_PARTITION_COLUMN = newOption(<span class="string">"partitionColumn"</span>)</span><br><span class="line">  val JDBC_LOWER_BOUND = newOption(<span class="string">"lowerBound"</span>)</span><br><span class="line">  val JDBC_UPPER_BOUND = newOption(<span class="string">"upperBound"</span>)</span><br><span class="line">  val JDBC_NUM_PARTITIONS = newOption(<span class="string">"numPartitions"</span>)</span><br><span class="line">  val JDBC_BATCH_FETCH_SIZE = newOption(<span class="string">"fetchsize"</span>)</span><br><span class="line">  val JDBC_TRUNCATE = newOption(<span class="string">"truncate"</span>)</span><br><span class="line">  val JDBC_CREATE_TABLE_OPTIONS = newOption(<span class="string">"createTableOptions"</span>)</span><br><span class="line">  val JDBC_BATCH_INSERT_SIZE = newOption(<span class="string">"batchsize"</span>)</span><br><span class="line">  val JDBC_TXN_ISOLATION_LEVEL = newOption(<span class="string">"isolationLevel"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                <p><strong>官方文档</strong>：<a href="http://spark.apache.org/docs/2.3.1/sql-programming-guide.html#jdbc-to-other-databases" target="_blank" rel="noopener">http://spark.apache.org/docs/2.3.1/sql-programming-guide.html#jdbc-to-other-databases</a></p>
+
                 
 
                 <hr>
